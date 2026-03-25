@@ -788,14 +788,6 @@ export default function App() {
       ) : (
         <>
           <Landing onGetStarted={()=>openAuth('signup')} onJoinWaitlist={(email)=>openAuth('signup',email)}/>
-          <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto'}}>
-            {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i)=>(
-              <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:'15px 22px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
-                {tab}{[1,2,3,4].includes(i)&&<span style={{marginLeft:5,fontSize:8,color:'#E8000D'}}>PRO</span>}
-              </button>
-            ))}
-          </div>
-          <div style={{minHeight:'80vh'}}>{renderTab()}</div>
           <Footer/>
         </>
       )}
