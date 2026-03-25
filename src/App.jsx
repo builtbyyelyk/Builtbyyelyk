@@ -94,20 +94,12 @@ function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTa
     <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'space-between', padding: scrolled?(isMobile?'10px 16px':'12px 40px'):(isMobile?'14px 16px':'18px 40px'), background: scrolled?'rgba(8,8,8,0.98)':'rgba(8,8,8,0.92)', backdropFilter:'blur(20px)', borderBottom:'1px solid #1e1e1e', transition:'all 0.3s' }}>
       <div onClick={() => window.scrollTo({top:0,behavior:'smooth'})}><Logo /></div>
       {isLoggedIn ? (
-        !isMobile && (
-          <div style={{ display:'flex', overflowX:'auto', gap:0 }}>
-            {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i) => (
-              <button key={i} onClick={() => setActiveTab(i)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', color:activeTab===i?'#F5F5F5':'#6a6a6a', background:'none', border:'none', borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent', padding:'10px 18px', cursor:'pointer', whiteSpace:'nowrap' }}>
-                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:8,color:'#E8000D'}}>PRO</span>}
-              </button>
-            ))}
-          </div>
-        )
+        null
       ) : (
         !isMobile && (
           <div style={{ display:'flex', gap:28 }}>
             {['features','pricing','faq','waitlist'].map(id => (
-              <button key={id} onClick={() => scrollTo(id)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2.5px', textTransform:'uppercase', color:'#6a6a6a', background:'none', border:'none', cursor:'pointer' }}
+              <button key={id} onClick={() => scrollTo(id)} style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:'2px', textTransform:'uppercase', color:'#6a6a6a', background:'none', border:'none', cursor:'pointer' }}
                 onMouseOver={e=>e.target.style.color='#F5F5F5'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
                 {id==='waitlist'?'Early Access':id.charAt(0).toUpperCase()+id.slice(1)}
               </button>
@@ -117,11 +109,11 @@ function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTa
       )}
       <div style={{ display:'flex', gap:isMobile?6:10, alignItems:'center' }}>
         {isLoggedIn ? (
-          <button onClick={onSignOut} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 12px':'9px 18px', cursor:'pointer' }}>Sign Out</button>
+          <button onClick={onSignOut} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:500, letterSpacing:'1.5px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 14px':'10px 20px', cursor:'pointer' }}>Sign Out</button>
         ) : (
           <>
-            <button onClick={onSignIn} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:isMobile?'1px':'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 12px':'9px 18px', cursor:'pointer' }}>Sign In</button>
-            <button onClick={() => scrollTo('waitlist')} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:isMobile?'1px':'2px', textTransform:'uppercase', background:'#E8000D', color:'#080808', border:'none', padding:isMobile?'9px 14px':'10px 20px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>Get Started</button>
+            <button onClick={onSignIn} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:500, letterSpacing:isMobile?'1px':'1.5px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 14px':'10px 20px', cursor:'pointer' }}>Sign In</button>
+            <button onClick={() => scrollTo('waitlist')} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:600, letterSpacing:isMobile?'1px':'1.5px', textTransform:'uppercase', background:'#E8000D', color:'#080808', border:'none', padding:isMobile?'9px 14px':'11px 22px', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>Get Started</button>
           </>
         )}
       </div>
@@ -817,8 +809,8 @@ export default function App() {
         <>
           <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto',marginTop:isMobile?56:65,WebkitOverflowScrolling:'touch',scrollbarWidth:'none'}}>
             {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i)=>(
-              <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?9:10,letterSpacing:isMobile?'1px':'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:isMobile?'12px 14px':'15px 22px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
-                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:4,fontSize:8,color:'#E8000D'}}>PRO</span>}
+              <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Barlow',sans-serif",fontSize:isMobile?12:14,fontWeight:500,letterSpacing:isMobile?'1px':'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:isMobile?'14px 14px':'16px 24px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
+                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:10,color:'#E8000D',fontWeight:600}}>PRO</span>}
               </button>
             ))}
           </div>
