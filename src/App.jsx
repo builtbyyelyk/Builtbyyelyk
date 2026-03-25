@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+ import React, { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import './index.css'
 
@@ -29,6 +29,45 @@ function ToastContainer({ toasts }) {
   )
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768)
+  useEffect(() => {
+    const h = () => setIsMobile(window.innerWidth <= 768)
+    window.addEventListener('resize', h)
+    return () => window.removeEventListener('resize', h)
+  }, [])
+  return isMobile
+}
+
+function WelcomePopup({ onSignIn, onSignUp, onClose }) {
+  const isMobile = useIsMobile()
+  return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.88)', backdropFilter:'blur(12px)', zIndex:900, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
+      <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 24px':48, width:'100%', maxWidth:460, position:'relative', textAlign:'center' }} onClick={e=>e.stopPropagation()}>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer', fontFamily:"'Share Tech Mono',monospace" }}>✕</button>
+        <div style={{ display:'flex', justifyContent:'center', marginBottom:24 }}><Logo /></div>
+        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:isMobile?32:42, fontWeight:900, textTransform:'uppercase', lineHeight:0.9, marginBottom:12, color:'#F5F5F5' }}>
+          GET <span style={{color:'#E8000D'}}>BUILT.</span>
+        </h2>
+        <p style={{ color:'#aaaaaa', fontSize:isMobile?13:15, lineHeight:1.8, fontWeight:300, marginBottom:28, maxWidth:340, margin:'0 auto 28px' }}>
+          Precision macro targets, training intelligence, and AI physique rating — built by a real coach.
+        </p>
+        <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
+          <button onClick={onSignUp} style={{ width:'100%', background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
+            Create Account →
+          </button>
+          <button onClick={onSignIn} style={{ width:'100%', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', padding:'14px', cursor:'pointer' }}>
+            I Already Have An Account
+          </button>
+        </div>
+        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', letterSpacing:1.5, marginTop:18, lineHeight:1.6 }}>
+          Join the waitlist · Lock in founding member pricing
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function Logo() {
   return (
     <div style={{ display:'flex', alignItems:'center', gap:11, cursor:'pointer' }}>
@@ -51,6 +90,7 @@ function Logo() {
 
 function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTab }) {
   const [scrolled, setScrolled] = useState(false)
+  const isMobile = useIsMobile()
   useEffect(() => {
     const h = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', h)
@@ -58,33 +98,37 @@ function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTa
   }, [])
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
   return (
-    <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'space-between', padding: scrolled?'12px 40px':'18px 40px', background: scrolled?'rgba(8,8,8,0.98)':'rgba(8,8,8,0.92)', backdropFilter:'blur(20px)', borderBottom:'1px solid #1e1e1e', transition:'all 0.3s' }}>
+    <nav style={{ position:'fixed', top:0, left:0, right:0, zIndex:500, display:'flex', alignItems:'center', justifyContent:'space-between', padding: scrolled?(isMobile?'10px 16px':'12px 40px'):(isMobile?'14px 16px':'18px 40px'), background: scrolled?'rgba(8,8,8,0.98)':'rgba(8,8,8,0.92)', backdropFilter:'blur(20px)', borderBottom:'1px solid #1e1e1e', transition:'all 0.3s' }}>
       <div onClick={() => window.scrollTo({top:0,behavior:'smooth'})}><Logo /></div>
       {isLoggedIn ? (
-        <div style={{ display:'flex', overflowX:'auto', gap:0 }}>
-          {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i) => (
-            <button key={i} onClick={() => setActiveTab(i)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', color:activeTab===i?'#F5F5F5':'#6a6a6a', background:'none', border:'none', borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent', padding:'10px 18px', cursor:'pointer', whiteSpace:'nowrap' }}>
-              {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:8,color:'#E8000D'}}>PRO</span>}
-            </button>
-          ))}
-        </div>
+        !isMobile && (
+          <div style={{ display:'flex', overflowX:'auto', gap:0 }}>
+            {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i) => (
+              <button key={i} onClick={() => setActiveTab(i)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', color:activeTab===i?'#F5F5F5':'#6a6a6a', background:'none', border:'none', borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent', padding:'10px 18px', cursor:'pointer', whiteSpace:'nowrap' }}>
+                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:8,color:'#E8000D'}}>PRO</span>}
+              </button>
+            ))}
+          </div>
+        )
       ) : (
-        <div style={{ display:'flex', gap:28 }}>
-          {['features','pricing','faq','waitlist'].map(id => (
-            <button key={id} onClick={() => scrollTo(id)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2.5px', textTransform:'uppercase', color:'#6a6a6a', background:'none', border:'none', cursor:'pointer' }}
-              onMouseOver={e=>e.target.style.color='#F5F5F5'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
-              {id==='waitlist'?'Early Access':id.charAt(0).toUpperCase()+id.slice(1)}
-            </button>
-          ))}
-        </div>
+        !isMobile && (
+          <div style={{ display:'flex', gap:28 }}>
+            {['features','pricing','faq','waitlist'].map(id => (
+              <button key={id} onClick={() => scrollTo(id)} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2.5px', textTransform:'uppercase', color:'#6a6a6a', background:'none', border:'none', cursor:'pointer' }}
+                onMouseOver={e=>e.target.style.color='#F5F5F5'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
+                {id==='waitlist'?'Early Access':id.charAt(0).toUpperCase()+id.slice(1)}
+              </button>
+            ))}
+          </div>
+        )
       )}
-      <div style={{ display:'flex', gap:10, alignItems:'center' }}>
+      <div style={{ display:'flex', gap:isMobile?6:10, alignItems:'center' }}>
         {isLoggedIn ? (
-          <button onClick={onSignOut} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:'9px 18px', cursor:'pointer' }}>Sign Out</button>
+          <button onClick={onSignOut} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 12px':'9px 18px', cursor:'pointer' }}>Sign Out</button>
         ) : (
           <>
-            <button onClick={onSignIn} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:'9px 18px', cursor:'pointer' }}>Sign In</button>
-            <button onClick={() => scrollTo('waitlist')} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:'2px', textTransform:'uppercase', background:'#E8000D', color:'#080808', border:'none', padding:'10px 20px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>Get Started Free</button>
+            <button onClick={onSignIn} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:isMobile?'1px':'2px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 12px':'9px 18px', cursor:'pointer' }}>Sign In</button>
+            <button onClick={() => scrollTo('waitlist')} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:isMobile?9:10, letterSpacing:isMobile?'1px':'2px', textTransform:'uppercase', background:'#E8000D', color:'#080808', border:'none', padding:isMobile?'9px 14px':'10px 20px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>Get Started</button>
           </>
         )}
       </div>
@@ -205,6 +249,7 @@ function Paywall({ feature, onUpgrade }) {
 }
 
 function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
+  const isMobile = useIsMobile()
   const [form, setForm] = useState({
     age:'', gender:'male', feet:'5', inches:'10',
     weight:'', activity:'moderately', goal:'maintain',
@@ -291,12 +336,12 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
   const LS={fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,textTransform:'uppercase',color:'#aaaaaa',marginBottom:7,display:'block'}
 
   return (
-    <div style={{padding:'40px',maxWidth:1200,margin:'0 auto'}}>
-      <div style={{marginBottom:36}}>
+    <div style={{padding:isMobile?'24px 16px':'40px',maxWidth:1200,margin:'0 auto'}}>
+      <div style={{marginBottom:isMobile?24:36}}>
         <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:10}}>
           <span style={{width:20,height:1,background:'#E8000D',opacity:0.4}}/>Macro Engine<span style={{width:32,height:1,background:'#E8000D',opacity:0.4}}/>
         </div>
-        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(36px,5vw,64px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9}}>
+        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(32px,8vw,48px)':'clamp(36px,5vw,64px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9}}>
           Your Exact<br/><span style={{color:'#E8000D'}}>Targets.</span>
         </h2>
       </div>
@@ -306,7 +351,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
           <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'9px 20px',cursor:'pointer',fontWeight:600}}>Upgrade →</button>
         </div>
       )}
-      <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:20}}>
+      <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:20}}>
         <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32}}>
           <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:24,display:'flex',alignItems:'center',gap:8}}>
             <span style={{flex:1,height:1,background:'#E8000D',opacity:0.3}}/>Your Stats<span style={{flex:1,height:1,background:'#E8000D',opacity:0.3}}/>
@@ -463,6 +508,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
   const [wlCount, setWlCount] = useState(null)
   const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     const fetchCount = async () => {
@@ -489,32 +535,34 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
     ['Can I cancel anytime?','Always. Cancel in under 30 seconds. No fees. You keep Pro through end of billing period then drop to free.'],
   ]
 
+  const pad = isMobile ? '40px 20px' : '80px 40px'
+
   return (
-    <div style={{paddingTop:65}}>
-      <section style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:'80px 40px',position:'relative',overflow:'hidden'}}>
+    <div style={{paddingTop:isMobile?56:65}}>
+      <section style={{minHeight:'100vh',display:'flex',alignItems:'center',padding:isMobile?'60px 20px':'80px 40px',position:'relative',overflow:'hidden'}}>
         <div style={{position:'absolute',inset:0,background:'repeating-linear-gradient(-52deg,transparent,transparent 80px,rgba(232,0,13,0.015) 80px,rgba(232,0,13,0.015) 81px)',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',right:'8%',top:'45%',transform:'translateY(-50%)',width:500,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(232,0,13,0.09) 0%,transparent 65%)',pointerEvents:'none'}}/>
-        <div style={{position:'absolute',right:-10,top:'50%',transform:'translateY(-50%)',fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(140px,18vw,260px)',fontWeight:900,textTransform:'uppercase',color:'transparent',WebkitTextStroke:'1px rgba(232,0,13,0.04)',pointerEvents:'none',lineHeight:1,whiteSpace:'nowrap',letterSpacing:-4}}>BUILT</div>
+        {!isMobile&&<div style={{position:'absolute',right:'8%',top:'45%',transform:'translateY(-50%)',width:500,height:500,borderRadius:'50%',background:'radial-gradient(circle,rgba(232,0,13,0.09) 0%,transparent 65%)',pointerEvents:'none'}}/>}
+        {!isMobile&&<div style={{position:'absolute',right:-10,top:'50%',transform:'translateY(-50%)',fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(140px,18vw,260px)',fontWeight:900,textTransform:'uppercase',color:'transparent',WebkitTextStroke:'1px rgba(232,0,13,0.04)',pointerEvents:'none',lineHeight:1,whiteSpace:'nowrap',letterSpacing:-4}}>BUILT</div>}
         <div style={{position:'relative',zIndex:2,maxWidth:820}}>
-          <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:22}}>
+          <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?9:10,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:isMobile?16:22}}>
             <span style={{width:28,height:1,background:'#E8000D'}}/>Precision Nutrition &amp; Training Intelligence
           </div>
-          <h1 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(68px,11vw,148px)',fontWeight:900,lineHeight:0.86,letterSpacing:-1,textTransform:'uppercase'}}>
+          <h1 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(52px,14vw,80px)':'clamp(68px,11vw,148px)',fontWeight:900,lineHeight:0.86,letterSpacing:-1,textTransform:'uppercase'}}>
             <span style={{display:'block',color:'#F5F5F5'}}>GET</span>
             <span style={{display:'block',color:'#E8000D'}}>BUILT.</span>
-            <span style={{display:'block',color:'transparent',WebkitTextStroke:'1.5px rgba(245,245,245,0.18)'}}>BY YELYK.</span>
+            <span style={{display:'block',color:'transparent',WebkitTextStroke:isMobile?'1px rgba(245,245,245,0.18)':'1.5px rgba(245,245,245,0.18)'}}>BY YELYK.</span>
           </h1>
-          <div style={{display:'flex',alignItems:'center',gap:14,margin:'22px 0 0'}}>
+          <div style={{display:'flex',alignItems:'center',gap:isMobile?10:14,margin:'22px 0 0'}}>
             <span style={{flex:1,maxWidth:44,height:1,background:'#2a2a2a'}}/>
-            <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:3,textTransform:'uppercase',color:'#aaaaaa',whiteSpace:'nowrap'}}>Built Different. Built by YELYK.</span>
+            <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?9:11,letterSpacing:isMobile?2:3,textTransform:'uppercase',color:'#aaaaaa',whiteSpace:'nowrap'}}>Built Different. Built by YELYK.</span>
             <span style={{flex:1,maxWidth:44,height:1,background:'#2a2a2a'}}/>
           </div>
-          <p style={{fontSize:17,color:'#aaaaaa',maxWidth:500,marginTop:22,lineHeight:1.82,fontWeight:300}}>The precision macro calculator, training intelligence score, AI physique rating, and meal timing engine for athletes who are done guessing.</p>
-          <div style={{display:'flex',alignItems:'center',gap:14,marginTop:40,flexWrap:'wrap'}}>
-            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free →</button>
-            <button onClick={()=>scrollTo('features')} style={{background:'transparent',color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'1px solid #2a2a2a',padding:'15px 28px',cursor:'pointer'}}>See The Engines</button>
+          <p style={{fontSize:isMobile?14:17,color:'#aaaaaa',maxWidth:500,marginTop:isMobile?18:22,lineHeight:1.82,fontWeight:300}}>The precision macro calculator, training intelligence score, AI physique rating, and meal timing engine for athletes who are done guessing.</p>
+          <div style={{display:'flex',alignItems:'center',gap:isMobile?10:14,marginTop:isMobile?28:40,flexWrap:'wrap'}}>
+            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?11:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:isMobile?'14px 28px':'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free →</button>
+            <button onClick={()=>scrollTo('features')} style={{background:'transparent',color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'1px solid #2a2a2a',padding:isMobile?'13px 22px':'15px 28px',cursor:'pointer'}}>See The Engines</button>
           </div>
-          <div style={{display:'flex',gap:0,marginTop:56,paddingTop:28,borderTop:'1px solid #1e1e1e',flexWrap:'wrap'}}>
+          <div style={{display:'flex',gap:0,marginTop:isMobile?36:56,paddingTop:isMobile?20:28,borderTop:'1px solid #1e1e1e',flexWrap:'wrap'}}>
             {[['5','Engines'],['100','Pt Score'],['2','Free/Day'],['AI','Physique'],['5min','Setup']].map(([n,l],i)=>(
               <div key={l} style={{paddingRight:28,marginRight:28,borderRight:i<4?'1px solid #1e1e1e':'none',marginBottom:16}}>
                 <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:40,fontWeight:900,color:'#E8000D',lineHeight:1,letterSpacing:-2}}>{n}</div>
@@ -525,9 +573,9 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         </div>
       </section>
 
-      <section style={{padding:'80px 40px',borderTop:'1px solid #1e1e1e'}} id="features">
-        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:48}}>Built Different.<br/>Built Precise.</h2>
-        <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e'}}>
+      <section style={{padding:pad,borderTop:'1px solid #1e1e1e'}} id="features">
+        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(36px,10vw,56px)':'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:isMobile?32:48}}>Built Different.<br/>Built Precise.</h2>
+        <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'repeat(3,1fr)',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e'}}>
           {[{n:'01',t:'Macro Engine',d:'Precise daily protein, carb, fat and calorie targets. Steps, workout intensity, and duration all factored in.'},{n:'02',t:'Training Score',d:'0–100 grade on your program with volume, frequency, balance, and recovery scored.'},{n:'03',t:'Meal Timing',d:'Every meal mapped to your schedule and training windows. Timed and portioned automatically.'},{n:'04',t:'AI Physique Rating',d:'Upload a photo. AI analyzes your physique and gives exact training fixes for weak points.'},{n:'05',t:'Progress Tracking',d:'Log weight and body fat. Visual charts show whether your plan is actually working.'},{n:'06',t:'Food Database',d:'Full food logging with barcode scanning. Coming Phase 2.',soon:true}].map((f,i)=>(
             <div key={i} style={{background:'#111111',padding:'44px 34px',position:'relative',overflow:'hidden',opacity:f.soon?0.6:1,transition:'background 0.3s'}}
               onMouseOver={e=>!f.soon&&(e.currentTarget.style.background='#141414')}
@@ -544,9 +592,9 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         </div>
       </section>
 
-      <section style={{padding:'80px 40px',background:'#0d0d0d',borderTop:'1px solid #1e1e1e'}} id="pricing">
-        <div style={{textAlign:'center',marginBottom:44}}>
-          <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:24}}>Start Free.<br/>Scale Up.</h2>
+      <section style={{padding:pad,background:'#0d0d0d',borderTop:'1px solid #1e1e1e'}} id="pricing">
+        <div style={{textAlign:'center',marginBottom:isMobile?32:44}}>
+          <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(36px,10vw,56px)':'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:24}}>Start Free.<br/>Scale Up.</h2>
           <div style={{display:'flex',alignItems:'center',justifyContent:'center',gap:14}}>
             <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',color:'#aaaaaa'}}>Monthly</span>
             <div onClick={()=>setAnnual(a=>!a)} style={{width:46,height:25,background:annual?'#E8000D':'#2a2a2a',borderRadius:13,position:'relative',cursor:'pointer',transition:'background 0.3s'}}>
@@ -556,7 +604,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#22c55e',background:'rgba(34,197,94,0.08)',border:'1px solid rgba(34,197,94,0.25)',padding:'3px 10px'}}>Save 20%</span>
           </div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:'1fr 1.08fr 1fr',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e',maxWidth:960,margin:'0 auto'}}>
+        <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1.08fr 1fr',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e',maxWidth:960,margin:'0 auto'}}>
           <div style={{background:'#111111',padding:'36px 28px',display:'flex',flexDirection:'column'}}>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:900,textTransform:'uppercase',letterSpacing:2,marginBottom:4}}>Free</div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:52,fontWeight:900,color:'#F5F5F5',lineHeight:1,marginBottom:4}}>$0</div>
@@ -603,8 +651,8 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         </div>
       </section>
 
-      <section style={{padding:'80px 40px'}} id="faq">
-        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,textAlign:'center',marginBottom:48}}>Got Questions.<br/>We've Got Answers.</h2>
+      <section style={{padding:pad}} id="faq">
+        <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(32px,9vw,48px)':'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,textAlign:'center',marginBottom:isMobile?32:48}}>Got Questions.<br/>We've Got Answers.</h2>
         <div style={{maxWidth:760,margin:'0 auto',border:'1px solid #1e1e1e'}}>
           {faqs.map((faq,i)=>(
             <div key={i} style={{borderBottom:i<faqs.length-1?'1px solid #1e1e1e':'none'}}>
@@ -623,7 +671,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         </div>
       </section>
 
-      <section style={{padding:'120px 40px',textAlign:'center',position:'relative',overflow:'hidden',background:'#0d0d0d',borderTop:'1px solid #1e1e1e'}} id="waitlist">
+      <section style={{padding:isMobile?'80px 20px':'120px 40px',textAlign:'center',position:'relative',overflow:'hidden',background:'#0d0d0d',borderTop:'1px solid #1e1e1e'}} id="waitlist">
         <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:700,height:700,borderRadius:'50%',background:'radial-gradient(circle,rgba(232,0,13,0.06) 0%,transparent 65%)',pointerEvents:'none'}}/>
         <div style={{position:'relative',zIndex:1}}>
           <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:'clamp(52px,9vw,112px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.88,letterSpacing:-1,marginBottom:18}}>
@@ -652,14 +700,15 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
   )
 }function Footer() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
+  const isMobile = useIsMobile()
   return (
-    <footer style={{background:'#0d0d0d',borderTop:'1px solid #1e1e1e',padding:'48px 40px 28px'}}>
-      <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:32,marginBottom:40,paddingBottom:40,borderBottom:'1px solid #1e1e1e'}}>
+    <footer style={{background:'#0d0d0d',borderTop:'1px solid #1e1e1e',padding:isMobile?'36px 20px 20px':'48px 40px 28px'}}>
+      <div style={{display:'flex',flexDirection:isMobile?'column':'row',justifyContent:'space-between',alignItems:'flex-start',flexWrap:'wrap',gap:isMobile?24:32,marginBottom:isMobile?28:40,paddingBottom:isMobile?28:40,borderBottom:'1px solid #1e1e1e'}}>
         <div>
           <Logo/>
           <p style={{fontSize:13,color:'#6a6a6a',lineHeight:1.85,fontWeight:300,marginTop:14,maxWidth:240}}>Precision nutrition and training intelligence built by YELYK Fitness.</p>
         </div>
-        <div style={{display:'flex',gap:48,flexWrap:'wrap'}}>
+        <div style={{display:'flex',gap:isMobile?32:48,flexWrap:'wrap'}}>
           {[['Product',[['Features',()=>scrollTo('features')],['Pricing',()=>scrollTo('pricing')],['FAQ',()=>scrollTo('faq')]]],['YELYK',[['YELYK Fitness',null],['Instagram',null],['Coaching 2026',null]]]].map(([title,links])=>(
             <div key={title}>
               <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,letterSpacing:3,textTransform:'uppercase',color:'#6a6a6a',marginBottom:16}}>{title}</div>
@@ -692,7 +741,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(0)
   const [lastMacros, setLastMacros] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
+  const [welcomeOpen, setWelcomeOpen] = useState(false)
   const { toasts, addToast } = useToast()
+  const isMobile = useIsMobile()
 
   const openAuth = (tab = 'signin', email = '') => {
     setAuthInitialTab(tab)
@@ -715,6 +766,10 @@ export default function App() {
         if (profile?.plan === 'pro') setIsPro(true)
       }
       setSessionLoading(false)
+      if (!session?.user) {
+        const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
+        if (!dismissed) setWelcomeOpen(true)
+      }
     }
     checkSession()
 
@@ -775,10 +830,10 @@ export default function App() {
 
       {isLoggedIn ? (
         <>
-          <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto',marginTop:65}}>
+          <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto',marginTop:isMobile?56:65,WebkitOverflowScrolling:'touch',scrollbarWidth:'none'}}>
             {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i)=>(
-              <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:'15px 22px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
-                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:8,color:'#E8000D'}}>PRO</span>}
+              <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?9:10,letterSpacing:isMobile?'1px':'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:isMobile?'12px 14px':'15px 22px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
+                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:4,fontSize:8,color:'#E8000D'}}>PRO</span>}
               </button>
             ))}
           </div>
@@ -790,6 +845,14 @@ export default function App() {
           <Landing onGetStarted={()=>openAuth('signup')} onJoinWaitlist={(email)=>openAuth('signup',email)}/>
           <Footer/>
         </>
+      )}
+
+      {welcomeOpen && !isLoggedIn && (
+        <WelcomePopup
+          onSignIn={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1');openAuth('signin')}}
+          onSignUp={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1');openAuth('signup')}}
+          onClose={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1')}}
+        />
       )}
 
       <AuthModal isOpen={authOpen} onClose={()=>setAuthOpen(false)} onSuccess={()=>{setIsLoggedIn(true);setAuthOpen(false)}} addToast={addToast} initialTab={authInitialTab} initialEmail={authInitialEmail} onWaitlistJoined={()=>addToast('You\'re on the waitlist!','success')}/>
