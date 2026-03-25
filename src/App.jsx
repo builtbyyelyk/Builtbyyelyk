@@ -580,7 +580,6 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
               <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:28,fontWeight:800,textTransform:'uppercase',letterSpacing:1,marginBottom:10,color:'#F5F5F5'}}>{f.t}</div>
               <p style={{fontSize:13,color:'#aaaaaa',lineHeight:1.9,fontWeight:300}}>{f.d}</p>
             </div>
-            </div>
           ))}
         </div>
       </section>
