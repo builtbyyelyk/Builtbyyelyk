@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import './index.css'
 
-const supabase = null
+const supabase = createClient(
+  'https://mmgfljenqguddykevqkw.supabase.co',
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1tZ2ZsamVucWd1ZGR5a2V2cWt3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5Mzc1NTksImV4cCI6MjA4OTUxMzU1OX0.GEGa2mbnXxpYHWxZ3sE4fvGLwsJapBvbQDIOSVKUgns'
+)
 
 function useToast() {
   const [toasts, setToasts] = useState([])
@@ -88,18 +92,26 @@ function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTa
   )
 }
 
-function AuthModal({ isOpen, onClose, onSuccess, addToast }) {
-  const [tab, setTab] = useState('signin')
-  const [email, setEmail] = useState('')
+function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEmail, onWaitlistJoined }) {
+  const [tab, setTab] = useState(initialTab || 'signin')
+  const [email, setEmail] = useState(initialEmail || '')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [message, setMessage] = useState('')
+
+  useEffect(() => {
+    if (isOpen) {
+      if (initialTab) setTab(initialTab)
+      if (initialEmail) setEmail(initialEmail)
+      setPassword('');setConfirm('');setError('');setMessage('')
+    }
+  }, [isOpen, initialTab, initialEmail])
+
   if (!isOpen) return null
   const handleSignIn = async () => {
     if (!email||!password){setError('Please fill in all fields');return}
-    if (!supabase){setError('Auth coming soon — add Supabase keys to enable');return}
     setLoading(true);setError('')
     const {error:e} = await supabase.auth.signInWithPassword({email,password})
     setLoading(false)
@@ -110,13 +122,20 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast }) {
     if (!email||!password||!confirm){setError('Please fill in all fields');return}
     if (password.length<8){setError('Password must be at least 8 characters');return}
     if (password!==confirm){setError('Passwords do not match');return}
-    if (!supabase){setError('Auth coming soon — add Supabase keys to enable');return}
     setLoading(true);setError('')
     const {data,error:e} = await supabase.auth.signUp({email,password})
     setLoading(false)
     if(e){setError(e.message);return}
-    if(data.user) await supabase.from('user_profiles').insert({id:data.user.id,email,plan:'free'})
-    setMessage('Account created! Check your email to confirm.')
+    if(data.user && !data.user.identities?.length){
+      setError('An account with this email already exists. Try signing in.');return
+    }
+    if(data.user) {
+      await supabase.from('user_profiles').insert({id:data.user.id,email,plan:'free'}).select()
+      // Auto-add to waitlist
+      await supabase.from('waitlist').insert({ email: email.trim().toLowerCase() }).select()
+      if (onWaitlistJoined) onWaitlistJoined()
+    }
+    setMessage('Account created! You\'re on the waitlist. Check your email to confirm.')
   }
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(8px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }} onClick={onClose}>
@@ -131,9 +150,16 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast }) {
           ))}
         </div>
         {message ? (
-          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center' }}>{message}</div>
+          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center', lineHeight:1.8 }}>
+            ✓ {message}
+          </div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+            {tab==='signup'&&(
+              <div style={{background:'rgba(232,0,13,0.06)',border:'1px solid rgba(232,0,13,0.15)',padding:'10px 14px',fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#E8000D',letterSpacing:1,textAlign:'center',lineHeight:1.6}}>
+                Create an account to join the waitlist &amp; lock in founding member pricing
+              </div>
+            )}
             {[['Email','email',email,setEmail,'your@email.com'],['Password','password',password,setPassword,'••••••••']].map(([label,type,val,setter,ph]) => (
               <div key={label}>
                 <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>{label}</div>
@@ -152,7 +178,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast }) {
             {error&&<div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
             <button onClick={tab==='signin'?handleSignIn:handleSignUp} disabled={loading}
               style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, marginTop:8 }}>
-              {loading?'Loading...':tab==='signin'?'Sign In':'Create Account'}
+              {loading?'Loading...':tab==='signin'?'Sign In':'Create Account & Join Waitlist'}
             </button>
           </div>
         )}
@@ -431,23 +457,27 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
       </div>
     </div>
   )
-}function Landing({ onGetStarted }) {
+}function Landing({ onGetStarted, onJoinWaitlist }) {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
   const [wlEmail, setWlEmail] = useState('')
-  const [wlDone, setWlDone] = useState(false)
-  const [wlCount, setWlCount] = useState(312)
+  const [wlCount, setWlCount] = useState(null)
   const [annual, setAnnual] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
 
-  const handleWaitlist = () => {
+  useEffect(() => {
+    const fetchCount = async () => {
+      const { count, error } = await supabase
+        .from('waitlist')
+        .select('*', { count: 'exact', head: true })
+      if (!error && count !== null) setWlCount(count)
+      else setWlCount(0)
+    }
+    fetchCount()
+  }, [])
+
+  const handleJoinClick = () => {
     if(!wlEmail||!wlEmail.includes('@')) return
-    setWlDone(true)
-    setWlCount(c=>c+1)
-    try {
-      const list=JSON.parse(localStorage.getItem('bby_waitlist')||'[]')
-      list.push({email:wlEmail,ts:new Date().toISOString()})
-      localStorage.setItem('bby_waitlist',JSON.stringify(list))
-    } catch(e) {}
+    onJoinWaitlist(wlEmail)
   }
 
   const faqs=[
@@ -606,19 +636,15 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
           </div>
           <p style={{color:'#aaaaaa',fontSize:16,maxWidth:460,margin:'0 auto 40px',fontWeight:300,lineHeight:1.82}}>Launching soon. Founding members get locked-in pricing forever and priority access to every feature.</p>
           <div style={{maxWidth:480,margin:'0 auto'}}>
-            {!wlDone?(
               <div style={{display:'flex'}}>
                 <input type="email" value={wlEmail} onChange={e=>setWlEmail(e.target.value)} placeholder="your@email.com"
-                  onKeyDown={e=>e.key==='Enter'&&handleWaitlist()}
+                  onKeyDown={e=>e.key==='Enter'&&handleJoinClick()}
                   style={{flex:1,background:'#111111',border:'1px solid #2a2a2a',borderRight:'none',color:'#F5F5F5',fontFamily:"'Barlow',sans-serif",fontSize:15,padding:'15px 18px',outline:'none'}}/>
-                <button onClick={handleWaitlist} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now →</button>
+                <button onClick={handleJoinClick} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now →</button>
               </div>
-            ):(
-              <div style={{background:'rgba(232,0,13,0.07)',border:'1px solid rgba(232,0,13,0.25)',padding:'18px 28px',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',color:'#E8000D'}}>✓ You're in. We'll hit you when it's live.</div>
-            )}
           </div>
           <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',letterSpacing:2,marginTop:18}}>
-            <strong style={{color:'#E8000D'}}>{wlCount}</strong> athletes already on the list
+            <strong style={{color:'#E8000D'}}>{wlCount !== null ? wlCount : '—'}</strong> athletes already on the list
           </div>
         </div>
       </section>
@@ -661,11 +687,58 @@ export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isPro, setIsPro] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
+  const [authInitialTab, setAuthInitialTab] = useState('signin')
+  const [authInitialEmail, setAuthInitialEmail] = useState('')
   const [activeTab, setActiveTab] = useState(0)
   const [lastMacros, setLastMacros] = useState(null)
+  const [sessionLoading, setSessionLoading] = useState(true)
   const { toasts, addToast } = useToast()
 
-  const handleSignOut = () => {
+  const openAuth = (tab = 'signin', email = '') => {
+    setAuthInitialTab(tab)
+    setAuthInitialEmail(email)
+    setAuthOpen(true)
+  }
+
+  useEffect(() => {
+    // Check for existing session on load
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        setIsLoggedIn(true)
+        // Check if user is pro
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('plan')
+          .eq('id', session.user.id)
+          .single()
+        if (profile?.plan === 'pro') setIsPro(true)
+      }
+      setSessionLoading(false)
+    }
+    checkSession()
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'SIGNED_IN' && session?.user) {
+        setIsLoggedIn(true)
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('plan')
+          .eq('id', session.user.id)
+          .single()
+        if (profile?.plan === 'pro') setIsPro(true)
+      } else if (event === 'SIGNED_OUT') {
+        setIsLoggedIn(false)
+        setIsPro(false)
+      }
+    })
+
+    return () => subscription.unsubscribe()
+  }, [])
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut()
     setIsLoggedIn(false)
     setIsPro(false)
     addToast('Signed out','info')
@@ -698,7 +771,7 @@ export default function App() {
         ::-webkit-scrollbar-thumb{background:#2a2a2a;border-radius:3px}
       `}</style>
 
-      <Navbar isLoggedIn={isLoggedIn} isPro={isPro} onSignIn={()=>setAuthOpen(true)} onSignOut={handleSignOut} activeTab={activeTab} setActiveTab={setActiveTab}/>
+      <Navbar isLoggedIn={isLoggedIn} isPro={isPro} onSignIn={()=>openAuth('signin')} onSignOut={handleSignOut} activeTab={activeTab} setActiveTab={setActiveTab}/>
 
       {isLoggedIn ? (
         <>
@@ -714,7 +787,7 @@ export default function App() {
         </>
       ) : (
         <>
-          <Landing onGetStarted={()=>setAuthOpen(true)}/>
+          <Landing onGetStarted={()=>openAuth('signup')} onJoinWaitlist={(email)=>openAuth('signup',email)}/>
           <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto'}}>
             {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i)=>(
               <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:'15px 22px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
@@ -727,7 +800,7 @@ export default function App() {
         </>
       )}
 
-      <AuthModal isOpen={authOpen} onClose={()=>setAuthOpen(false)} onSuccess={()=>{setIsLoggedIn(true);setAuthOpen(false)}} addToast={addToast}/>
+      <AuthModal isOpen={authOpen} onClose={()=>setAuthOpen(false)} onSuccess={()=>{setIsLoggedIn(true);setAuthOpen(false)}} addToast={addToast} initialTab={authInitialTab} initialEmail={authInitialEmail} onWaitlistJoined={()=>addToast('You\'re on the waitlist!','success')}/>
       <ToastContainer toasts={toasts}/>
     </div>
   )
