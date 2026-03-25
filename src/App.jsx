@@ -630,7 +630,6 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <button onClick={onGetStarted} style={{width:'100%',padding:'14px',background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))'}}>Get Pro Access</button>
             <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',textAlign:'center',marginTop:10,lineHeight:1.6}}>Founding member price locked in forever</div>
           </div>
-          </div>
         </div>
       </section>
 
