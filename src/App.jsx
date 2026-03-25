@@ -325,13 +325,13 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
     {k:'bulk',l:'Bulk',s:'+500 cal'},
   ]
 
-  const IS={width:'100%',background:'#0d0d0d',border:'1px solid #2a2a2a',color:'#F5F5F5',fontFamily:"'Barlow',sans-serif",fontSize:15,padding:'11px 14px',outline:'none'}
-  const LS={fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,textTransform:'uppercase',color:'#aaaaaa',marginBottom:7,display:'block'}
+  const IS={width:'100%',background:'#0d0d0d',border:'1px solid #2a2a2a',color:'#F5F5F5',fontFamily:"'Barlow',sans-serif",fontSize:16,padding:'13px 16px',outline:'none'}
+  const LS={fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,letterSpacing:1,textTransform:'uppercase',color:'#cccccc',marginBottom:8,display:'block'}
 
   return (
     <div style={{padding:isMobile?'24px 16px':'40px',maxWidth:1200,margin:'0 auto'}}>
       <div style={{marginBottom:isMobile?24:36}}>
-        <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:10}}>
+        <div style={{display:'flex',alignItems:'center',gap:10,fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:10}}>
           <span style={{width:20,height:1,background:'#E8000D',opacity:0.4}}/>Macro Engine<span style={{width:32,height:1,background:'#E8000D',opacity:0.4}}/>
         </div>
         <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(32px,8vw,48px)':'clamp(36px,5vw,64px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9}}>
@@ -340,26 +340,26 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
       </div>
       {limitReached&&(
         <div style={{background:'rgba(232,0,13,0.08)',border:'1px solid rgba(232,0,13,0.3)',padding:'14px 20px',marginBottom:20,display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'}}>
-          <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#E8000D',letterSpacing:1}}>⚡ 2 free calculations used today. Upgrade for unlimited.</span>
-          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'9px 20px',cursor:'pointer',fontWeight:600}}>Upgrade →</button>
+          <span style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,color:'#E8000D',letterSpacing:0.5}}>⚡ 2 free calculations used today. Upgrade for unlimited.</span>
+          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'10px 20px',cursor:'pointer'}}>Upgrade →</button>
         </div>
       )}
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:20}}>
         <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32}}>
-          <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:24,display:'flex',alignItems:'center',gap:8}}>
+          <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,fontWeight:600,letterSpacing:3,textTransform:'uppercase',color:'#E8000D',marginBottom:24,display:'flex',alignItems:'center',gap:8}}>
             <span style={{flex:1,height:1,background:'#E8000D',opacity:0.3}}/>Your Stats<span style={{flex:1,height:1,background:'#E8000D',opacity:0.3}}/>
           </div>
           <div style={{display:'flex',flexDirection:'column',gap:18}}>
             <div>
               <label style={LS}>Age</label>
               <input type="number" value={form.age} onChange={e=>set('age',e.target.value)} placeholder="22" style={{...IS,borderColor:errors.age?'#E8000D':'#2a2a2a'}}/>
-              {errors.age&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#E8000D',marginTop:4}}>{errors.age}</div>}
+              {errors.age&&<div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#E8000D',marginTop:4}}>{errors.age}</div>}
             </div>
             <div>
               <label style={LS}>Gender</label>
               <div style={{display:'flex'}}>
                 {['male','female'].map(g=>(
-                  <button key={g} onClick={()=>set('gender',g)} style={{flex:1,padding:'10px',fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,textTransform:'uppercase',cursor:'pointer',border:'1px solid #2a2a2a',background:form.gender===g?'#E8000D':'#0d0d0d',color:form.gender===g?'#080808':'#aaaaaa',fontWeight:form.gender===g?600:400}}>{g.toUpperCase()}</button>
+                  <button key={g} onClick={()=>set('gender',g)} style={{flex:1,padding:'12px',fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,textTransform:'uppercase',cursor:'pointer',border:'1px solid #2a2a2a',background:form.gender===g?'#E8000D':'#0d0d0d',color:form.gender===g?'#080808':'#cccccc',fontWeight:form.gender===g?600:400}}>{g.toUpperCase()}</button>
                 ))}
               </div>
             </div>
@@ -377,20 +377,20 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <div>
               <label style={LS}>Weight (lbs)</label>
               <input type="number" value={form.weight} onChange={e=>set('weight',e.target.value)} placeholder="175" style={{...IS,borderColor:errors.weight?'#E8000D':'#2a2a2a'}}/>
-              {errors.weight&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#E8000D',marginTop:4}}>{errors.weight}</div>}
+              {errors.weight&&<div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#E8000D',marginTop:4}}>{errors.weight}</div>}
             </div>
             <div>
               <label style={LS}>Daily Steps</label>
               <select value={form.stepsPerDay} onChange={e=>set('stepsPerDay',e.target.value)} style={IS}>
                 {[['2500','Under 3,000 (very sedentary)'],['5000','3,000–6,000 (desk job)'],['7500','6,000–9,000 (light activity)'],['10000','9,000–12,000 (moderately active)'],['13000','12,000–15,000 (very active)'],['17500','15,000+ (extremely active)']].map(([k,l])=><option key={k} value={k}>{l}</option>)}
               </select>
-              <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',marginTop:4,letterSpacing:1}}>Fine-tunes your TDEE beyond gym sessions</div>
+              <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',marginTop:5,letterSpacing:0.5}}>Fine-tunes your TDEE beyond gym sessions</div>
             </div>
             <div>
               <label style={LS}>Workout Days Per Week</label>
               <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                 {[0,1,2,3,4,5,6,7].map(d=>(
-                  <button key={d} onClick={()=>set('workoutDays',String(d))} style={{width:40,height:40,fontFamily:"'Share Tech Mono',monospace",fontSize:12,cursor:'pointer',border:'1px solid #2a2a2a',background:form.workoutDays===String(d)?'#E8000D':'#0d0d0d',color:form.workoutDays===String(d)?'#080808':'#aaaaaa',fontWeight:form.workoutDays===String(d)?600:400}}>{d}</button>
+                  <button key={d} onClick={()=>set('workoutDays',String(d))} style={{width:42,height:42,fontFamily:"'Barlow',sans-serif",fontSize:14,fontWeight:600,cursor:'pointer',border:'1px solid #2a2a2a',background:form.workoutDays===String(d)?'#E8000D':'#0d0d0d',color:form.workoutDays===String(d)?'#080808':'#cccccc',fontWeight:form.workoutDays===String(d)?600:400}}>{d}</button>
                 ))}
               </div>
             </div>
@@ -398,7 +398,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
               <label style={LS}>Workout Duration</label>
               <div style={{display:'flex',gap:6,flexWrap:'wrap'}}>
                 {[['20','20m'],['30','30m'],['45','45m'],['60','60m'],['75','75m'],['90','90m'],['120','2hr']].map(([k,l])=>(
-                  <button key={k} onClick={()=>set('workoutDuration',k)} style={{padding:'8px 12px',fontFamily:"'Share Tech Mono',monospace",fontSize:10,cursor:'pointer',border:'1px solid #2a2a2a',background:form.workoutDuration===k?'#E8000D':'#0d0d0d',color:form.workoutDuration===k?'#080808':'#aaaaaa'}}>{l}</button>
+                  <button key={k} onClick={()=>set('workoutDuration',k)} style={{padding:'10px 14px',fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,cursor:'pointer',border:'1px solid #2a2a2a',background:form.workoutDuration===k?'#E8000D':'#0d0d0d',color:form.workoutDuration===k?'#080808':'#cccccc'}}>{l}</button>
                 ))}
               </div>
             </div>
@@ -407,8 +407,8 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
               <div style={{display:'flex',flexDirection:'column',gap:6}}>
                 {[['light','Light','Cardio, yoga, walking'],['moderate','Moderate','Standard weight training'],['hard','Hard','Heavy lifting, HIIT'],['very_hard','Very Hard','Competitive / 2-a-days']].map(([k,l,desc])=>(
                   <div key={k} onClick={()=>set('workoutIntensity',k)} style={{padding:'10px 14px',cursor:'pointer',background:form.workoutIntensity===k?'rgba(232,0,13,0.08)':'#0d0d0d',border:`1px solid ${form.workoutIntensity===k?'#E8000D':'#2a2a2a'}`,transition:'all 0.2s'}}>
-                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:16,fontWeight:800,textTransform:'uppercase',color:form.workoutIntensity===k?'#E8000D':'#F5F5F5'}}>{l}</div>
-                    <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginTop:2}}>{desc}</div>
+                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:18,fontWeight:800,textTransform:'uppercase',color:form.workoutIntensity===k?'#E8000D':'#F5F5F5'}}>{l}</div>
+                    <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',letterSpacing:0.5,marginTop:3}}>{desc}</div>
                   </div>
                 ))}
               </div>
@@ -424,40 +424,40 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
               <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
                 {goals.map(g=>(
                   <div key={g.k} onClick={()=>set('goal',g.k)} style={{padding:'11px 12px',cursor:'pointer',background:form.goal===g.k?'rgba(232,0,13,0.08)':'#0d0d0d',border:`1px solid ${form.goal===g.k?'#E8000D':'#2a2a2a'}`,gridColumn:g.k==='maintain'?'span 2':'span 1'}}>
-                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:16,fontWeight:800,textTransform:'uppercase',color:form.goal===g.k?'#E8000D':'#F5F5F5'}}>{g.l}</div>
-                    <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginTop:2}}>{g.s}</div>
+                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:18,fontWeight:800,textTransform:'uppercase',color:form.goal===g.k?'#E8000D':'#F5F5F5'}}>{g.l}</div>
+                    <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',letterSpacing:0.5,marginTop:3}}>{g.s}</div>
                   </div>
                 ))}
               </div>
             </div>
-            <button onClick={calculate} disabled={loading||limitReached} style={{width:'100%',padding:'16px',marginTop:8,background:limitReached?'#2a2a2a':'#E8000D',color:limitReached?'#6a6a6a':'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:12,letterSpacing:3,textTransform:'uppercase',border:'none',cursor:limitReached?'not-allowed':'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>
+            <button onClick={calculate} disabled={loading||limitReached} style={{width:'100%',padding:'16px',marginTop:8,background:limitReached?'#2a2a2a':'#E8000D',color:limitReached?'#6a6a6a':'#080808',fontFamily:"'Barlow',sans-serif",fontSize:14,fontWeight:700,letterSpacing:3,textTransform:'uppercase',border:'none',cursor:limitReached?'not-allowed':'pointer',clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>
               {loading?'CALCULATING...':limitReached?'UPGRADE FOR MORE':'CALCULATE MY MACROS'}
             </button>
-            {!isPro&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#6a6a6a',textAlign:'center',letterSpacing:1}}>{Math.max(0,2-getDailyCount())} free calculation{Math.max(0,2-getDailyCount())!==1?'s':''} remaining today</div>}
+            {!isPro&&<div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',textAlign:'center',letterSpacing:0.5}}>{Math.max(0,2-getDailyCount())} free calculation{Math.max(0,2-getDailyCount())!==1?'s':''} remaining today</div>}
           </div>
         </div>
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           {!results?(
             <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:400,gap:14}}>
               <div style={{fontSize:44,opacity:0.25}}>📊</div>
-              <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',textAlign:'center',letterSpacing:1.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
+              <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,color:'#888888',textAlign:'center',letterSpacing:0.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
             </div>
           ):(
             <>
               <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:'28px 24px',textAlign:'center'}}>
-                <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase',marginBottom:10}}>Daily Calories</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,letterSpacing:2,color:'#888888',textTransform:'uppercase',marginBottom:10}}>Daily Calories</div>
                 <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:80,fontWeight:900,color:'#E8000D',lineHeight:1,letterSpacing:-3,marginBottom:22}}>{results.calories.toLocaleString()}</div>
                 <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10}}>
                   {[['Protein',results.protein+'g','#E8000D'],['Carbs',results.carbs+'g','#F5F5F5'],['Fats',results.fats+'g','#aaaaaa']].map(([l,v,c])=>(
                     <div key={l} style={{background:'#0d0d0d',border:'1px solid #1e1e1e',padding:'12px 6px',textAlign:'center'}}>
                       <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:26,fontWeight:900,color:c,lineHeight:1}}>{v}</div>
-                      <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1.5,textTransform:'uppercase',marginTop:4}}>{l}</div>
+                      <div style={{fontFamily:"'Barlow',sans-serif",fontSize:11,fontWeight:500,color:'#888888',letterSpacing:1.5,textTransform:'uppercase',marginTop:4}}>{l}</div>
                     </div>
                   ))}
                 </div>
               </div>
               <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:'18px 22px'}}>
-                <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase',marginBottom:10}}>Macro Ratio</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,letterSpacing:2,color:'#888888',textTransform:'uppercase',marginBottom:10}}>Macro Ratio</div>
                 <div style={{display:'flex',height:8,borderRadius:4,overflow:'hidden',gap:2}}>
                   {[[Math.round(results.protein*4/results.calories*100),'#E8000D'],[Math.round(results.carbs*4/results.calories*100),'#F5F5F5'],[Math.round(results.fats*9/results.calories*100),'#444']].map(([p,c],i)=>(
                     <div key={i} style={{flex:p,background:c,borderRadius:2}}/>
@@ -465,29 +465,29 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
                 </div>
                 <div style={{display:'flex',justifyContent:'space-between',marginTop:8}}>
                   {[['Protein',Math.round(results.protein*4/results.calories*100),'#E8000D'],['Carbs',Math.round(results.carbs*4/results.calories*100),'#F5F5F5'],['Fats',Math.round(results.fats*9/results.calories*100),'#aaaaaa']].map(([l,p,c])=>(
-                    <div key={l} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:c,letterSpacing:1}}>{p}% {l}</div>
+                    <div key={l} style={{fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:500,color:c,letterSpacing:0.5}}>{p}% {l}</div>
                   ))}
                 </div>
               </div>
               <div style={{display:'grid',gridTemplateColumns:'repeat(2,1fr)',gap:8}}>
                 {[['BMR',results.bmr.toLocaleString()+' kcal','Base metabolic rate'],['TDEE',results.tdee.toLocaleString()+' kcal','Total daily energy'],['Workout Bonus','+'+results.dailyWorkoutBonus+' kcal','From your training'],['Water Target',results.waterOz+' oz','Adjusted for activity']].map(([l,v,sub])=>(
                   <div key={l} style={{background:'#111111',border:'1px solid #1e1e1e',padding:'14px 16px'}}>
-                    <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,textTransform:'uppercase',marginBottom:4}}>{l}</div>
-                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,fontWeight:900,color:'#F5F5F5'}}>{v}</div>
-                    <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginTop:3}}>{sub}</div>
+                    <div style={{fontFamily:"'Barlow',sans-serif",fontSize:11,fontWeight:500,color:'#888888',letterSpacing:1,textTransform:'uppercase',marginBottom:4}}>{l}</div>
+                    <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:24,fontWeight:900,color:'#F5F5F5'}}>{v}</div>
+                    <div style={{fontFamily:"'Barlow',sans-serif",fontSize:11,color:'#888888',letterSpacing:0.5,marginTop:3}}>{sub}</div>
                   </div>
                 ))}
               </div>
               <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:'14px 20px',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                 <div>
-                  <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,textTransform:'uppercase',marginBottom:3}}>Daily Fiber</div>
-                  <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:22,fontWeight:900,color:'#F5F5F5'}}>{results.fiber}</div>
+                  <div style={{fontFamily:"'Barlow',sans-serif",fontSize:11,fontWeight:500,color:'#888888',letterSpacing:1,textTransform:'uppercase',marginBottom:3}}>Daily Fiber</div>
+                  <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:24,fontWeight:900,color:'#F5F5F5'}}>{results.fiber}</div>
                 </div>
-                <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#6a6a6a',letterSpacing:1,textAlign:'right',maxWidth:180,lineHeight:1.6}}>Supports digestion,<br/>satiety &amp; absorption</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',letterSpacing:0.5,textAlign:'right',maxWidth:180,lineHeight:1.6}}>Supports digestion,<br/>satiety &amp; absorption</div>
               </div>
               <div style={{background:'#111111',border:'1px solid rgba(232,0,13,0.2)',padding:'18px 22px'}}>
-                <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>✓ Macros Ready</div>
-                <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',letterSpacing:1,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating →</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>✓ Macros Ready</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',letterSpacing:0.5,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating →</div>
               </div>
             </>
           )}
