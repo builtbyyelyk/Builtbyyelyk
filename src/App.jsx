@@ -598,7 +598,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#22c55e',background:'rgba(34,197,94,0.08)',border:'1px solid rgba(34,197,94,0.25)',padding:'3px 10px'}}>Save 20%</span>
           </div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1.08fr 1fr',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e',maxWidth:960,margin:'0 auto'}}>
+        <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e',maxWidth:720,margin:'0 auto'}}>
           <div style={{background:'#111111',padding:'36px 28px',display:'flex',flexDirection:'column'}}>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:900,textTransform:'uppercase',letterSpacing:2,marginBottom:4}}>Free</div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:52,fontWeight:900,color:'#F5F5F5',lineHeight:1,marginBottom:4}}>$0</div>
@@ -632,15 +632,6 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <button onClick={onGetStarted} style={{width:'100%',padding:'14px',background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))'}}>Get Pro Access</button>
             <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',textAlign:'center',marginTop:10,lineHeight:1.6}}>Founding member price locked in forever</div>
           </div>
-          <div style={{background:'#111111',padding:'36px 28px',opacity:0.6}}>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:900,textTransform:'uppercase',letterSpacing:2,color:'#6a6a6a',marginBottom:8}}>Coach</div>
-            <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:28,fontWeight:900,color:'#6a6a6a',marginBottom:6}}>Coming 2026</div>
-            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',marginBottom:20}}>1:1 coaching platform</div>
-            {['Everything in Pro','Up to 20 client profiles','Client dashboards','PDF exports'].map((l,i)=>(
-              <div key={i} style={{display:'flex',gap:10,padding:'8px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:'#aaaaaa'}}>
-                <span style={{color:'#22c55e'}}>✓</span>{l}
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -703,7 +694,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
           <p style={{fontSize:13,color:'#6a6a6a',lineHeight:1.85,fontWeight:300,marginTop:14,maxWidth:240}}>Precision nutrition and training intelligence built by YELYK Fitness.</p>
         </div>
         <div style={{display:'flex',gap:isMobile?32:48,flexWrap:'wrap'}}>
-          {[['Product',[['Features',()=>scrollTo('features')],['Pricing',()=>scrollTo('pricing')],['FAQ',()=>scrollTo('faq')]]],['YELYK',[['YELYK Fitness',null],['Instagram',()=>window.open('https://instagram.com/yelykfitness','_blank')],['Coaching 2026',null]]]].map(([title,links])=>(
+          {[['Product',[['Features',()=>scrollTo('features')],['Pricing',()=>scrollTo('pricing')],['FAQ',()=>scrollTo('faq')]]],['YELYK',[['YELYK Fitness',null],['Instagram',()=>window.open('https://instagram.com/yelykfitness','_blank')]]]].map(([title,links])=>(
             <div key={title}>
               <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,letterSpacing:3,textTransform:'uppercase',color:'#6a6a6a',marginBottom:16,display:'flex',alignItems:'center',gap:8}}>
                 {title==='YELYK'&&<img src="/yelyk-logo-only.png" alt="YELYK" style={{height:14,width:'auto',opacity:0.5}}/>}
