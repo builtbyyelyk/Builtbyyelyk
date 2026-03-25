@@ -72,7 +72,7 @@ function Logo({ size = 'default' }) {
   const h = size === 'large' ? 40 : 28
   return (
     <div style={{ display:'flex', alignItems:'center', gap:10, cursor:'pointer' }}>
-      <img src="/yelyk-logo.png" alt="YELYK Fitness" style={{ height:h, width:'auto', filter:'brightness(0) invert(1)' }} />
+      <img src="/yelyk-logo.png" alt="YELYK Fitness" style={{ height:h, width:'auto' }} />
       <div style={{ display:'flex', flexDirection:'column', gap:1 }}>
         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:size==='large'?26:22, fontWeight:900, letterSpacing:5, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1 }}>BUILT</div>
         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:size==='large'?13:11, fontWeight:700, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', lineHeight:1, display:'flex', alignItems:'center', gap:5 }}>
@@ -548,7 +548,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <span style={{display:'block',color:'#F5F5F5'}}>GET</span>
             <span style={{display:'block',color:'#E8000D'}}>BUILT.</span>
             <span style={{display:'block',color:'transparent',WebkitTextStroke:isMobile?'1px rgba(245,245,245,0.18)':'1.5px rgba(245,245,245,0.18)'}}>BY</span>
-            <img src="/yelyk-logo.png" alt="YELYK" style={{ height:isMobile?40:70, width:'auto', filter:'brightness(0) invert(1)', marginTop:4, opacity:0.18 }} />
+            <img src="/yelyk-logo.png" alt="YELYK" style={{ height:isMobile?40:70, width:'auto', marginTop:4, opacity:0.18 }} />
           </h1>
           <div style={{display:'flex',alignItems:'center',gap:isMobile?10:14,margin:'22px 0 0'}}>
             <span style={{flex:1,maxWidth:44,height:1,background:'#2a2a2a'}}/>
@@ -710,7 +710,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
           {[['Product',[['Features',()=>scrollTo('features')],['Pricing',()=>scrollTo('pricing')],['FAQ',()=>scrollTo('faq')]]],['YELYK',[['YELYK Fitness',null],['Instagram',()=>window.open('https://instagram.com/yelykfitness','_blank')],['Coaching 2026',null]]]].map(([title,links])=>(
             <div key={title}>
               <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,letterSpacing:3,textTransform:'uppercase',color:'#6a6a6a',marginBottom:16,display:'flex',alignItems:'center',gap:8}}>
-                {title==='YELYK'&&<img src="/yelyk-logo.png" alt="YELYK" style={{height:14,width:'auto',filter:'brightness(0) invert(0.4)'}}/>}
+                {title==='YELYK'&&<img src="/yelyk-logo.png" alt="YELYK" style={{height:14,width:'auto',opacity:0.5}}/>}
                 {title}
               </div>
               {links.map(([l,a])=>(
