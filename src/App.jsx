@@ -524,7 +524,6 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
     ['Who is YELYK?',"YELYK Fitness is a physique coaching brand built on You Earn Longevity You Keep. BUILT by YELYK is the software tool from the exact system used inside YELYK's coaching program — now accessible to everyone."],
     ['How does the AI Physique Rating work?',"Upload a front or back photo. AI analyzes your muscle development, symmetry, and proportion. Identifies your three strongest and three weakest muscle groups with specific training fixes. Your photo is immediately discarded."],
     ['What does the free tier give me?',"Two full macro calculations per day. Complete protein, carb, fat and calorie targets. Real, usable results. Training score, AI physique rating, and meal timing are Pro."],
-    ['When is the food database coming?','Food logging and barcode scanning are Phase 2, targeting ~6 months post-launch. Included in Pro at no extra cost.'],
     ['Can I cancel anytime?','Always. Cancel in under 30 seconds. No fees. You keep Pro through end of billing period then drop to free.'],
   ]
 
@@ -570,17 +569,17 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
       <section style={{padding:pad,borderTop:'1px solid #1e1e1e'}} id="features">
         <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(36px,10vw,56px)':'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:isMobile?32:48}}>Built Different.<br/>Built Precise.</h2>
         <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'repeat(3,1fr)',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e'}}>
-          {[{n:'01',t:'Macro Engine',d:'Precise daily protein, carb, fat and calorie targets. Steps, workout intensity, and duration all factored in.'},{n:'02',t:'Training Score',d:'0–100 grade on your program with volume, frequency, balance, and recovery scored.'},{n:'03',t:'Meal Timing',d:'Every meal mapped to your schedule and training windows. Timed and portioned automatically.'},{n:'04',t:'AI Physique Rating',d:'Upload a photo. AI analyzes your physique and gives exact training fixes for weak points.'},{n:'05',t:'Progress Tracking',d:'Log weight and body fat. Visual charts show whether your plan is actually working.'},{n:'06',t:'Food Database',d:'Full food logging with barcode scanning. Coming Phase 2.',soon:true}].map((f,i)=>(
-            <div key={i} style={{background:'#111111',padding:'44px 34px',position:'relative',overflow:'hidden',opacity:f.soon?0.6:1,transition:'background 0.3s'}}
-              onMouseOver={e=>!f.soon&&(e.currentTarget.style.background='#141414')}
+          {[{n:'01',t:'Macro Engine',d:'Precise daily protein, carb, fat and calorie targets. Steps, workout intensity, and duration all factored in.'},{n:'02',t:'Training Score',d:'0–100 grade on your program with volume, frequency, balance, and recovery scored.'},{n:'03',t:'Meal Timing',d:'Every meal mapped to your schedule and training windows. Timed and portioned automatically.'},{n:'04',t:'AI Physique Rating',d:'Upload a photo. AI analyzes your physique and gives exact training fixes for weak points.'},{n:'05',t:'Progress Tracking',d:'Log weight and body fat. Visual charts show whether your plan is actually working.'}].map((f,i)=>(
+            <div key={i} style={{background:'#111111',padding:'44px 34px',position:'relative',overflow:'hidden',transition:'background 0.3s'}}
+              onMouseOver={e=>e.currentTarget.style.background='#141414'}
               onMouseOut={e=>e.currentTarget.style.background='#111111'}>
               <div style={{position:'absolute',top:12,right:16,fontFamily:"'Barlow Condensed',sans-serif",fontSize:88,fontWeight:900,color:'#1e1e1e',lineHeight:1,letterSpacing:-4}}>{f.n}</div>
               <div style={{display:'flex',flexDirection:'column',gap:3,marginBottom:20}}>
-                {[36,25,15].map((w,j)=><div key={j} style={{width:w,height:4,borderRadius:1,background:f.soon?'#2a2a2a':'#E8000D',opacity:j===0?1:j===1?.6:.3}}/>)}
+                {[36,25,15].map((w,j)=><div key={j} style={{width:w,height:4,borderRadius:1,background:'#E8000D',opacity:j===0?1:j===1?.6:.3}}/>)}
               </div>
-              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:28,fontWeight:800,textTransform:'uppercase',letterSpacing:1,marginBottom:10,color:f.soon?'#6a6a6a':'#F5F5F5'}}>{f.t}</div>
+              <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:28,fontWeight:800,textTransform:'uppercase',letterSpacing:1,marginBottom:10,color:'#F5F5F5'}}>{f.t}</div>
               <p style={{fontSize:13,color:'#aaaaaa',lineHeight:1.9,fontWeight:300}}>{f.d}</p>
-              {f.soon&&<div style={{display:'inline-flex',alignItems:'center',gap:6,fontFamily:"'Share Tech Mono',monospace",fontSize:9,letterSpacing:2,textTransform:'uppercase',color:'#6a6a6a',border:'1px solid #2a2a2a',padding:'4px 10px',marginTop:12}}>⏳ Phase 2</div>}
+            </div>
             </div>
           ))}
         </div>
@@ -623,7 +622,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             {annual&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#22c55e',letterSpacing:1,marginBottom:4}}>Billed $124.99/year — save $30.89</div>}
             <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:16}}>Cancel anytime</div>
             <div style={{flex:1,marginBottom:20}}>
-              {[['✓','Unlimited calculations'],['✓','Training Score (0–100)'],['✓','AI Physique Rating'],['✓','Meal Timing Engine'],['✓','Progress Tracking'],['✓','Micronutrient breakdown'],['⏳','Food database (soon)']].map(([icon,label],i)=>(
+              {[['✓','Unlimited calculations'],['✓','Training Score (0–100)'],['✓','AI Physique Rating'],['✓','Meal Timing Engine'],['✓','Progress Tracking'],['✓','Micronutrient breakdown']].map(([icon,label],i)=>(
                 <div key={i} style={{display:'flex',gap:10,padding:'7px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:icon==='✓'?'#aaaaaa':'#6a6a6a'}}>
                   <span style={{color:icon==='✓'?'#22c55e':'#6a6a6a',flexShrink:0}}>{icon}</span><strong style={{fontWeight:icon==='✓'?500:400}}>{label}</strong>
                 </div>
@@ -667,7 +666,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:3,textTransform:'uppercase',color:'#aaaaaa'}}>Built Different. Built by YELYK.</span>
             <span style={{width:36,height:1,background:'#2a2a2a'}}/>
           </div>
-          <p style={{color:'#aaaaaa',fontSize:16,maxWidth:460,margin:'0 auto 40px',fontWeight:300,lineHeight:1.82}}>Launching soon. Founding members get locked-in pricing forever and priority access to every feature.</p>
+          <p style={{color:'#aaaaaa',fontSize:16,maxWidth:460,margin:'0 auto 40px',fontWeight:300,lineHeight:1.82}}>Founding members get locked-in pricing forever and priority access to every feature.</p>
           <div style={{maxWidth:480,margin:'0 auto'}}>
               <div style={{display:'flex'}}>
                 <input type="email" value={wlEmail} onChange={e=>setWlEmail(e.target.value)} placeholder="your@email.com"
