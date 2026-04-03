@@ -492,207 +492,157 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
    TRAINING SCORE COMPONENT (PRO ONLY)
    ============================================= */
 
-const MUSCLE_GROUPS = [
-  { key:'chest', label:'Chest', category:'push' },
-  { key:'shoulders', label:'Shoulders', category:'push' },
-  { key:'triceps', label:'Triceps', category:'push' },
-  { key:'back', label:'Back', category:'pull' },
-  { key:'biceps', label:'Biceps', category:'pull' },
-  { key:'rear_delts', label:'Rear Delts', category:'pull' },
-  { key:'quads', label:'Quads', category:'legs' },
-  { key:'hamstrings', label:'Hamstrings', category:'legs' },
-  { key:'glutes', label:'Glutes', category:'legs' },
-  { key:'calves', label:'Calves', category:'legs' },
-  { key:'core', label:'Core', category:'push' },
-]
-
-const EXERCISE_PRESETS = {
-  chest: ['Bench Press','Incline DB Press','Cable Fly','Dips','Push Ups','Pec Deck'],
-  shoulders: ['OHP','Lateral Raise','DB Shoulder Press','Arnold Press','Face Pull','Front Raise'],
-  triceps: ['Tricep Pushdown','Skull Crushers','Overhead Extension','Close Grip Bench','Dips'],
-  back: ['Pull Ups','Barbell Row','Lat Pulldown','Cable Row','T-Bar Row','DB Row'],
-  biceps: ['Barbell Curl','DB Curl','Hammer Curl','Preacher Curl','Cable Curl'],
-  rear_delts: ['Face Pull','Reverse Fly','Rear Delt Cable','Band Pull Apart'],
-  quads: ['Squat','Leg Press','Leg Extension','Lunge','Bulgarian Split Squat','Hack Squat'],
-  hamstrings: ['RDL','Leg Curl','Nordic Curl','Good Morning','Stiff Leg DL'],
-  glutes: ['Hip Thrust','Cable Kickback','Glute Bridge','Sumo Deadlift','Step Up'],
-  calves: ['Standing Calf Raise','Seated Calf Raise','Leg Press Calf Raise'],
-  core: ['Plank','Cable Crunch','Hanging Leg Raise','Ab Rollout','Pallof Press','Russian Twist'],
-}
-
 function TrainingScore({ addToast }) {
   const isMobile = useIsMobile()
-  const [exercises, setExercises] = useState([])
-  const [weeklySummary, setWeeklySummary] = useState({
+  const [step, setStep] = useState(1)
+  const [form, setForm] = useState({
     daysPerWeek: '4', avgDuration: '60', avgIntensity: 'moderate',
-    restDays: '3', sleepHours: '7', deloadFrequency: 'monthly'
+    muscleGroups: {},
+    sleepHours: '7', deloadFrequency: 'monthly'
   })
   const [results, setResults] = useState(null)
   const [loading, setLoading] = useState(false)
   const [history, setHistory] = useState([])
-  const [historyLoading, setHistoryLoading] = useState(true)
-  const [addingExercise, setAddingExercise] = useState(false)
-  const [selectedMuscle, setSelectedMuscle] = useState('chest')
-  const [newExercise, setNewExercise] = useState({ name:'', sets:'3', reps:'10', weight:'', muscleGroup:'chest' })
 
-  // Load score history from Supabase
+  const MUSCLES = [
+    { key:'chest', label:'Chest', cat:'push' },
+    { key:'back', label:'Back', cat:'pull' },
+    { key:'shoulders', label:'Shoulders', cat:'push' },
+    { key:'arms', label:'Arms', cat:'push' },
+    { key:'quads', label:'Quads', cat:'legs' },
+    { key:'hamstrings_glutes', label:'Hamstrings / Glutes', cat:'legs' },
+    { key:'core', label:'Core', cat:'push' },
+  ]
+  const SET_RANGES = [
+    { key:'low', label:'1–6', desc:'Light volume', value:4 },
+    { key:'mid', label:'7–12', desc:'Moderate', value:10 },
+    { key:'high', label:'13–18', desc:'High volume', value:16 },
+    { key:'very_high', label:'19+', desc:'Very high', value:22 },
+  ]
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+  const toggleMuscle = (key) => {
+    setForm(f => {
+      const mg = { ...f.muscleGroups }
+      if (mg[key]) { delete mg[key] } else { mg[key] = 'mid' }
+      return { ...f, muscleGroups: mg }
+    })
+  }
+  const setMuscleVolume = (key, vol) => {
+    setForm(f => ({ ...f, muscleGroups: { ...f.muscleGroups, [key]: vol } }))
+  }
+
+  // Load history
   useEffect(() => {
-    const loadHistory = async () => {
+    const load = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) { setHistoryLoading(false); return }
-      const { data, error } = await supabase
-        .from('training_scores')
-        .select('*')
-        .eq('user_id', session.user.id)
-        .order('created_at', { ascending: false })
-        .limit(10)
-      if (!error && data) setHistory(data)
-      setHistoryLoading(false)
+      if (!session?.user) return
+      const { data } = await supabase.from('training_scores')
+        .select('*').eq('user_id', session.user.id)
+        .order('created_at', { ascending: false }).limit(10)
+      if (data) setHistory(data)
     }
-    loadHistory()
+    load()
   }, [])
 
-  const addExercise = () => {
-    if (!newExercise.name) return
-    setExercises(prev => [...prev, {
-      ...newExercise,
-      id: Date.now(),
-      sets: parseInt(newExercise.sets) || 3,
-      reps: parseInt(newExercise.reps) || 10,
-      weight: parseFloat(newExercise.weight) || 0,
-    }])
-    setNewExercise({ name:'', sets:'3', reps:'10', weight:'', muscleGroup: selectedMuscle })
-    addToast('Exercise added','success')
-  }
-
-  const removeExercise = (id) => {
-    setExercises(prev => prev.filter(e => e.id !== id))
-  }
-
-  const setWS = (k, v) => setWeeklySummary(prev => ({ ...prev, [k]: v }))
+  const restDays = 7 - (parseInt(form.daysPerWeek) || 0)
+  const trainedMuscleCount = Object.keys(form.muscleGroups).length
 
   const calculateScore = async () => {
-    if (exercises.length === 0) {
-      addToast('Add at least one exercise first','error')
-      return
-    }
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1000))
+    await new Promise(r => setTimeout(r, 900))
 
-    // --- VOLUME SCORE (25 pts) ---
-    // Count total weekly sets per muscle group
+    const daysPerWeek = parseInt(form.daysPerWeek) || 0
+    const dur = parseInt(form.avgDuration) || 45
+    const sleepH = parseFloat(form.sleepHours) || 6
+
+    // Map muscle volumes to set counts
     const muscleSetMap = {}
-    MUSCLE_GROUPS.forEach(mg => { muscleSetMap[mg.key] = 0 })
-    exercises.forEach(ex => {
-      const freq = parseInt(weeklySummary.daysPerWeek) || 1
-      // If they listed exercises for one session, multiply by how many days they hit that muscle
-      // Simplified: assume exercises listed = one full week of training
-      muscleSetMap[ex.muscleGroup] = (muscleSetMap[ex.muscleGroup] || 0) + ex.sets
+    Object.entries(form.muscleGroups).forEach(([key, vol]) => {
+      const range = SET_RANGES.find(r => r.key === vol)
+      muscleSetMap[key] = range ? range.value : 10
     })
     const totalSets = Object.values(muscleSetMap).reduce((a, b) => a + b, 0)
-    const trainedMuscles = Object.entries(muscleSetMap).filter(([_, s]) => s > 0)
-    // Optimal weekly sets per muscle: 10-20. Penalize under 6 or over 25
+
+    // --- VOLUME (25 pts) ---
     let volumeScore = 0
-    trainedMuscles.forEach(([muscle, sets]) => {
-      if (sets >= 10 && sets <= 20) volumeScore += 25 / Math.max(trainedMuscles.length, 5)
-      else if (sets >= 6 && sets < 10) volumeScore += (25 / Math.max(trainedMuscles.length, 5)) * 0.7
-      else if (sets > 20 && sets <= 25) volumeScore += (25 / Math.max(trainedMuscles.length, 5)) * 0.8
-      else if (sets > 0 && sets < 6) volumeScore += (25 / Math.max(trainedMuscles.length, 5)) * 0.4
-      else if (sets > 25) volumeScore += (25 / Math.max(trainedMuscles.length, 5)) * 0.5
+    const trained = Object.entries(muscleSetMap)
+    trained.forEach(([_, sets]) => {
+      if (sets >= 10 && sets <= 18) volumeScore += 25 / Math.max(trained.length, 5)
+      else if (sets >= 6 && sets < 10) volumeScore += (25 / Math.max(trained.length, 5)) * 0.7
+      else if (sets > 18 && sets <= 22) volumeScore += (25 / Math.max(trained.length, 5)) * 0.8
+      else if (sets < 6) volumeScore += (25 / Math.max(trained.length, 5)) * 0.4
+      else volumeScore += (25 / Math.max(trained.length, 5)) * 0.5
     })
+    if (trained.length === 0) volumeScore = 0
     volumeScore = Math.min(25, Math.round(volumeScore))
 
-    // --- FREQUENCY SCORE (20 pts) ---
-    const daysPerWeek = parseInt(weeklySummary.daysPerWeek) || 0
+    // --- FREQUENCY (20 pts) ---
     let frequencyScore = 0
-    if (daysPerWeek >= 3 && daysPerWeek <= 6) frequencyScore = 20
+    if (daysPerWeek >= 3 && daysPerWeek <= 5) frequencyScore = 20
+    else if (daysPerWeek === 6) frequencyScore = 18
     else if (daysPerWeek === 2) frequencyScore = 14
-    else if (daysPerWeek === 7) frequencyScore = 15 // overtraining risk
+    else if (daysPerWeek === 7) frequencyScore = 14
     else if (daysPerWeek === 1) frequencyScore = 8
-    else frequencyScore = 0
-    // Bonus for hitting muscles >1 group (proxy: more exercises = more frequency)
-    if (trainedMuscles.length >= 6) frequencyScore = Math.min(20, frequencyScore + 2)
+    if (trained.length >= 5) frequencyScore = Math.min(20, frequencyScore + 2)
 
-    // --- BALANCE SCORE (20 pts) ---
-    const pushSets = exercises.filter(e => ['chest','shoulders','triceps','core'].includes(e.muscleGroup)).reduce((a, e) => a + e.sets, 0)
-    const pullSets = exercises.filter(e => ['back','biceps','rear_delts'].includes(e.muscleGroup)).reduce((a, e) => a + e.sets, 0)
-    const legSets = exercises.filter(e => ['quads','hamstrings','glutes','calves'].includes(e.muscleGroup)).reduce((a, e) => a + e.sets, 0)
-    const totalCategorySets = pushSets + pullSets + legSets
+    // --- BALANCE (20 pts) ---
+    const pushSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'push').reduce((a, [_, s]) => a + s, 0)
+    const pullSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'pull').reduce((a, [_, s]) => a + s, 0)
+    const legSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'legs').reduce((a, [_, s]) => a + s, 0)
+    const totalCat = pushSets + pullSets + legSets
     let balanceScore = 0
-    if (totalCategorySets > 0) {
-      const pushPct = pushSets / totalCategorySets
-      const pullPct = pullSets / totalCategorySets
-      const legPct = legSets / totalCategorySets
-      // Ideal ratio: ~33/33/33. Acceptable: 25-40% each
-      const deviation = Math.abs(pushPct - 0.33) + Math.abs(pullPct - 0.33) + Math.abs(legPct - 0.33)
-      if (deviation < 0.15) balanceScore = 20
-      else if (deviation < 0.3) balanceScore = 16
-      else if (deviation < 0.5) balanceScore = 12
-      else if (deviation < 0.7) balanceScore = 8
+    if (totalCat > 0) {
+      const dev = Math.abs(pushSets/totalCat - 0.33) + Math.abs(pullSets/totalCat - 0.33) + Math.abs(legSets/totalCat - 0.33)
+      if (dev < 0.15) balanceScore = 20
+      else if (dev < 0.3) balanceScore = 16
+      else if (dev < 0.5) balanceScore = 12
+      else if (dev < 0.7) balanceScore = 8
       else balanceScore = 4
-      // Penalize if any category is 0
       if (pushSets === 0 || pullSets === 0 || legSets === 0) balanceScore = Math.min(balanceScore, 8)
     }
 
-    // --- INTENSITY SCORE (15 pts) ---
-    const intensityMap = { light: 6, moderate: 12, hard: 14, very_hard: 15 }
-    let intensityScore = intensityMap[weeklySummary.avgIntensity] || 10
-    // Adjust for duration
-    const dur = parseInt(weeklySummary.avgDuration) || 45
+    // --- INTENSITY (15 pts) ---
+    const intMap = { light: 6, moderate: 12, hard: 14, very_hard: 15 }
+    let intensityScore = intMap[form.avgIntensity] || 10
     if (dur < 30) intensityScore = Math.round(intensityScore * 0.7)
-    else if (dur > 90) intensityScore = Math.round(intensityScore * 0.9) // diminishing returns
+    else if (dur > 90) intensityScore = Math.round(intensityScore * 0.9)
 
-    // --- RECOVERY SCORE (20 pts) ---
+    // --- RECOVERY (20 pts) ---
     let recoveryScore = 0
-    const restDays = parseInt(weeklySummary.restDays) || 0
-    const sleepH = parseFloat(weeklySummary.sleepHours) || 6
-    // Rest days: 2-3 optimal
     if (restDays >= 2 && restDays <= 3) recoveryScore += 8
     else if (restDays === 1 || restDays === 4) recoveryScore += 6
     else if (restDays === 0) recoveryScore += 2
     else recoveryScore += 4
-    // Sleep: 7-9 optimal
     if (sleepH >= 7 && sleepH <= 9) recoveryScore += 8
     else if (sleepH >= 6 && sleepH < 7) recoveryScore += 5
     else if (sleepH > 9) recoveryScore += 6
     else recoveryScore += 3
-    // Deload
-    const deloadMap = { never: 0, quarterly: 2, monthly: 4, biweekly: 3 }
-    recoveryScore += deloadMap[weeklySummary.deloadFrequency] || 0
+    const deloadMap = { never: 0, sometimes: 2, regular: 4 }
+    recoveryScore += deloadMap[form.deloadFrequency] || 0
 
     const totalScore = Math.min(100, volumeScore + frequencyScore + balanceScore + intensityScore + recoveryScore)
-
     const breakdown = {
-      volume: { score: volumeScore, max: 25, totalSets, muscleSetMap },
+      volume: { score: volumeScore, max: 25, totalSets },
       frequency: { score: frequencyScore, max: 20, daysPerWeek },
       balance: { score: balanceScore, max: 20, pushSets, pullSets, legSets },
       intensity: { score: intensityScore, max: 15 },
       recovery: { score: recoveryScore, max: 20, restDays, sleepH },
     }
-
     setResults({ score: totalScore, breakdown })
 
     // Save to Supabase
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user) {
       const { error } = await supabase.from('training_scores').insert({
-        user_id: session.user.id,
-        score: totalScore,
-        breakdown,
-        exercises: exercises.map(e => ({ name: e.name, muscleGroup: e.muscleGroup, sets: e.sets, reps: e.reps, weight: e.weight })),
-        weekly_summary: weeklySummary,
+        user_id: session.user.id, score: totalScore, breakdown,
+        exercises: form.muscleGroups, weekly_summary: form,
       })
-      if (error) {
-        console.error('Save error:', error)
-        addToast('Score calculated but failed to save','error')
-      } else {
-        // Refresh history
-        const { data: hData } = await supabase
-          .from('training_scores')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .order('created_at', { ascending: false })
-          .limit(10)
+      if (error) { addToast('Score calculated but failed to save','error') }
+      else {
+        const { data: hData } = await supabase.from('training_scores')
+          .select('*').eq('user_id', session.user.id)
+          .order('created_at', { ascending: false }).limit(10)
         if (hData) setHistory(hData)
         addToast('Training Score saved!','success')
       }
@@ -700,25 +650,27 @@ function TrainingScore({ addToast }) {
     setLoading(false)
   }
 
-  const getScoreLabel = (s) => {
-    if (s >= 90) return 'ELITE'
-    if (s >= 75) return 'ADVANCED'
-    if (s >= 60) return 'SOLID'
-    if (s >= 40) return 'DEVELOPING'
-    return 'NEEDS WORK'
-  }
-
-  const getScoreColor = (s) => {
-    if (s >= 75) return '#22c55e'
-    if (s >= 50) return '#eab308'
-    return '#E8000D'
-  }
+  const getScoreLabel = (s) => s >= 90 ? 'ELITE' : s >= 75 ? 'ADVANCED' : s >= 60 ? 'SOLID' : s >= 40 ? 'DEVELOPING' : 'NEEDS WORK'
+  const getScoreColor = (s) => s >= 75 ? '#22c55e' : s >= 50 ? '#eab308' : '#E8000D'
 
   const IS = { width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }
   const LS = { fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8, display:'block' }
 
+  // Step indicator
+  const StepDots = () => (
+    <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:28 }}>
+      {[1,2,3].map(s => (
+        <div key={s} onClick={() => { if (s < step || (s === 2 && form.daysPerWeek) || (s === 3 && trainedMuscleCount > 0)) setStep(s) }}
+          style={{ width: step===s ? 28 : 10, height:10, borderRadius:5,
+            background: s < step ? '#22c55e' : s === step ? '#E8000D' : '#2a2a2a',
+            cursor: s <= step ? 'pointer' : 'default', transition:'all 0.3s' }} />
+      ))}
+    </div>
+  )
+
+
   return (
-    <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:1200, margin:'0 auto' }}>
+    <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:700, margin:'0 auto' }}>
       {/* Header */}
       <div style={{ marginBottom: isMobile ? 24 : 36 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
@@ -729,290 +681,273 @@ function TrainingScore({ addToast }) {
         </h2>
       </div>
 
-      <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap: isMobile ? 16 : 20 }}>
-        {/* LEFT COLUMN — Input */}
-        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-          {/* Exercise Log */}
-          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:isMobile?24:32 }}>
-            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:600, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:24, display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>Exercise Log<span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>
-            </div>
-            <p style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.7, marginBottom:20, letterSpacing:0.3 }}>
-              Add every exercise from your <strong style={{color:'#cccccc'}}>full training week</strong>. Include all sessions — the score evaluates your entire program.
-            </p>
+      {!results ? (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 36 }}>
+          <StepDots />
 
-            {/* Muscle group selector */}
-            <div style={{ marginBottom:16 }}>
-              <label style={LS}>Muscle Group</label>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                {MUSCLE_GROUPS.map(mg => (
-                  <button key={mg.key} onClick={() => { setSelectedMuscle(mg.key); setNewExercise(prev => ({ ...prev, muscleGroup: mg.key, name:'' })) }}
-                    style={{ padding:'8px 12px', fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:500, cursor:'pointer',
-                      border:`1px solid ${selectedMuscle === mg.key ? '#E8000D' : '#2a2a2a'}`,
-                      background: selectedMuscle === mg.key ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
-                      color: selectedMuscle === mg.key ? '#E8000D' : '#888888',
-                      transition:'all 0.2s' }}>
-                    {mg.label}
-                    {exercises.filter(e => e.muscleGroup === mg.key).length > 0 && (
-                      <span style={{ marginLeft:5, fontSize:10, color:'#22c55e' }}>✓</span>
-                    )}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quick-pick presets */}
-            <div style={{ marginBottom:16 }}>
-              <label style={{ ...LS, fontSize:11, color:'#6a6a6a' }}>Quick Pick</label>
-              <div style={{ display:'flex', flexWrap:'wrap', gap:6 }}>
-                {(EXERCISE_PRESETS[selectedMuscle] || []).map(name => (
-                  <button key={name} onClick={() => setNewExercise(prev => ({ ...prev, name, muscleGroup: selectedMuscle }))}
-                    style={{ padding:'6px 12px', fontFamily:"'Barlow',sans-serif", fontSize:12, cursor:'pointer',
-                      border:`1px solid ${newExercise.name === name ? '#E8000D' : '#2a2a2a'}`,
-                      background: newExercise.name === name ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
-                      color: newExercise.name === name ? '#E8000D' : '#aaaaaa' }}>
-                    {name}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Or type custom */}
-            <div style={{ marginBottom:14 }}>
-              <label style={{ ...LS, fontSize:11, color:'#6a6a6a' }}>Or Type Custom</label>
-              <input type="text" value={newExercise.name} onChange={e => setNewExercise(prev => ({ ...prev, name: e.target.value }))} placeholder="e.g. Landmine Press"
-                style={IS} onFocus={e => e.target.style.borderColor='#E8000D'} onBlur={e => e.target.style.borderColor='#2a2a2a'} />
-            </div>
-
-            {/* Sets / Reps / Weight row */}
-            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr', gap:8, marginBottom:14 }}>
-              <div>
-                <label style={{ ...LS, fontSize:11 }}>Sets</label>
-                <input type="number" value={newExercise.sets} onChange={e => setNewExercise(prev => ({ ...prev, sets: e.target.value }))} style={IS} />
+          {/* STEP 1: Training Week */}
+          {step === 1 && (
+            <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
+              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
+                Your Training Week
               </div>
               <div>
-                <label style={{ ...LS, fontSize:11 }}>Reps</label>
-                <input type="number" value={newExercise.reps} onChange={e => setNewExercise(prev => ({ ...prev, reps: e.target.value }))} style={IS} />
-              </div>
-              <div>
-                <label style={{ ...LS, fontSize:11 }}>Weight (lbs)</label>
-                <input type="number" value={newExercise.weight} onChange={e => setNewExercise(prev => ({ ...prev, weight: e.target.value }))} placeholder="135" style={IS} />
-              </div>
-            </div>
-
-            <button onClick={addExercise} disabled={!newExercise.name}
-              style={{ width:'100%', padding:'13px', background: newExercise.name ? '#E8000D' : '#2a2a2a', color: newExercise.name ? '#080808' : '#6a6a6a',
-                fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: newExercise.name ? 'pointer' : 'not-allowed', fontWeight:600 }}>
-              + Add Exercise
-            </button>
-          </div>
-
-          {/* Exercise list */}
-          {exercises.length > 0 && (
-            <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:isMobile?20:24 }}>
-              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:600, letterSpacing:2, textTransform:'uppercase', color:'#888888', marginBottom:14 }}>
-                Your Week — {exercises.length} exercise{exercises.length !== 1 ? 's' : ''} · {exercises.reduce((a, e) => a + e.sets, 0)} total sets
-              </div>
-              <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                {exercises.map(ex => {
-                  const mg = MUSCLE_GROUPS.find(m => m.key === ex.muscleGroup)
-                  return (
-                    <div key={ex.id} style={{ display:'flex', alignItems:'center', justifyContent:'space-between', padding:'10px 14px', background:'#0d0d0d', border:'1px solid #1e1e1e', gap:10 }}>
-                      <div style={{ flex:1 }}>
-                        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:700, textTransform:'uppercase', color:'#F5F5F5' }}>{ex.name}</div>
-                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, marginTop:2 }}>
-                          {mg?.label} · {ex.sets}×{ex.reps}{ex.weight > 0 ? ` @ ${ex.weight}lbs` : ''}
-                        </div>
-                      </div>
-                      <button onClick={() => removeExercise(ex.id)} style={{ background:'none', border:'none', color:'#6a6a6a', fontSize:16, cursor:'pointer', padding:'4px 8px' }}
-                        onMouseOver={e => e.target.style.color='#E8000D'} onMouseOut={e => e.target.style.color='#6a6a6a'}>✕</button>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* Weekly Summary */}
-          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:isMobile?24:32 }}>
-            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:600, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:24, display:'flex', alignItems:'center', gap:8 }}>
-              <span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>Weekly Overview<span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>
-            </div>
-            <div style={{ display:'flex', flexDirection:'column', gap:18 }}>
-              <div>
-                <label style={LS}>Training Days Per Week</label>
+                <label style={LS}>Days Per Week</label>
                 <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                   {[1,2,3,4,5,6,7].map(d => (
-                    <button key={d} onClick={() => { setWS('daysPerWeek', String(d)); setWS('restDays', String(7-d)) }}
-                      style={{ width:42, height:42, fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:600, cursor:'pointer', border:'1px solid #2a2a2a',
-                        background: weeklySummary.daysPerWeek === String(d) ? '#E8000D' : '#0d0d0d',
-                        color: weeklySummary.daysPerWeek === String(d) ? '#080808' : '#cccccc' }}>{d}</button>
+                    <button key={d} onClick={() => set('daysPerWeek', String(d))}
+                      style={{ flex:1, minWidth:40, height:46, fontFamily:"'Barlow',sans-serif", fontSize:16, fontWeight:700, cursor:'pointer', border:'1px solid #2a2a2a',
+                        background: form.daysPerWeek === String(d) ? '#E8000D' : '#0d0d0d',
+                        color: form.daysPerWeek === String(d) ? '#080808' : '#cccccc' }}>{d}</button>
                   ))}
+                </div>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#6a6a6a', marginTop:6, textAlign:'center' }}>
+                  {restDays} rest day{restDays !== 1 ? 's' : ''} per week
                 </div>
               </div>
               <div>
-                <label style={LS}>Avg Session Duration</label>
+                <label style={LS}>Avg Session Length</label>
                 <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
-                  {[['30','30m'],['45','45m'],['60','60m'],['75','75m'],['90','90m'],['120','2hr']].map(([k,l]) => (
-                    <button key={k} onClick={() => setWS('avgDuration', k)}
-                      style={{ padding:'10px 14px', fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, cursor:'pointer', border:'1px solid #2a2a2a',
-                        background: weeklySummary.avgDuration === k ? '#E8000D' : '#0d0d0d',
-                        color: weeklySummary.avgDuration === k ? '#080808' : '#cccccc' }}>{l}</button>
+                  {[['30','30 min'],['45','45 min'],['60','60 min'],['75','75 min'],['90','90+ min']].map(([k,l]) => (
+                    <button key={k} onClick={() => set('avgDuration', k)}
+                      style={{ flex:1, padding:'12px 8px', fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, cursor:'pointer', border:'1px solid #2a2a2a',
+                        background: form.avgDuration === k ? '#E8000D' : '#0d0d0d',
+                        color: form.avgDuration === k ? '#080808' : '#cccccc', whiteSpace:'nowrap' }}>{l}</button>
                   ))}
                 </div>
               </div>
               <div>
                 <label style={LS}>Average Intensity</label>
                 <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                  {[['light','Light','Mostly cardio, low effort'],['moderate','Moderate','Standard lifting, 2-3 RIR'],['hard','Hard','Heavy sets, 0-1 RIR, HIIT'],['very_hard','Very Hard','Max effort, failure sets']].map(([k,l,desc]) => (
-                    <div key={k} onClick={() => setWS('avgIntensity', k)} style={{ padding:'10px 14px', cursor:'pointer', background: weeklySummary.avgIntensity === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d', border:`1px solid ${weeklySummary.avgIntensity === k ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
-                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: weeklySummary.avgIntensity === k ? '#E8000D' : '#F5F5F5' }}>{l}</div>
-                      <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#888888', letterSpacing:0.5, marginTop:3 }}>{desc}</div>
+                  {[['light','Light','Cardio, yoga, easy effort'],['moderate','Moderate','Standard lifting, 2-3 RIR'],['hard','Hard','Heavy compounds, 0-1 RIR'],['very_hard','Very Hard','Failure sets, max effort']].map(([k,l,desc]) => (
+                    <div key={k} onClick={() => set('avgIntensity', k)}
+                      style={{ padding:'12px 16px', cursor:'pointer', background: form.avgIntensity === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
+                        border:`1px solid ${form.avgIntensity === k ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
+                      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: form.avgIntensity === k ? '#E8000D' : '#F5F5F5' }}>{l}</div>
+                        <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#6a6a6a' }}>{desc}</div>
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
+              <button onClick={() => setStep(2)}
+                style={{ width:'100%', padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer',
+                  clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+                Next — Muscle Groups →
+              </button>
+            </div>
+          )}
+
+          {/* STEP 2: Muscle Groups + Volume */}
+          {step === 2 && (
+            <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
+              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
+                What Do You Train?
+              </div>
+              <p style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', textAlign:'center', lineHeight:1.7 }}>
+                Tap to select each muscle group you hit per week, then pick your weekly set volume.
+              </p>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {MUSCLES.map(mg => {
+                  const isActive = form.muscleGroups[mg.key] !== undefined
+                  return (
+                    <div key={mg.key} style={{ background: isActive ? 'rgba(232,0,13,0.06)' : '#0d0d0d', border:`1px solid ${isActive ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
+                      <div onClick={() => toggleMuscle(mg.key)}
+                        style={{ padding:'14px 16px', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: isActive ? '#E8000D' : '#F5F5F5' }}>
+                          {mg.label}
+                        </div>
+                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: isActive ? '#22c55e' : '#2a2a2a' }}>
+                          {isActive ? '✓' : '—'}
+                        </div>
+                      </div>
+                      {isActive && (
+                        <div style={{ padding:'0 16px 14px', display:'flex', gap:6 }}>
+                          {SET_RANGES.map(sr => (
+                            <button key={sr.key} onClick={() => setMuscleVolume(mg.key, sr.key)}
+                              style={{ flex:1, padding:'8px 4px', fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:600, cursor:'pointer',
+                                border:'1px solid #2a2a2a', textAlign:'center',
+                                background: form.muscleGroups[mg.key] === sr.key ? '#E8000D' : '#111111',
+                                color: form.muscleGroups[mg.key] === sr.key ? '#080808' : '#aaaaaa' }}>
+                              <div>{sr.label}</div>
+                              <div style={{ fontSize:9, fontWeight:400, color: form.muscleGroups[mg.key] === sr.key ? '#080808' : '#6a6a6a', marginTop:2 }}>{sr.desc}</div>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+              {trainedMuscleCount === 0 && (
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#E8000D', textAlign:'center' }}>Select at least one muscle group</div>
+              )}
+              <div style={{ display:'flex', gap:10 }}>
+                <button onClick={() => setStep(1)}
+                  style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+                  ← Back
+                </button>
+                <button onClick={() => { if (trainedMuscleCount > 0) setStep(3) }}
+                  style={{ flex:2, padding:'14px', background: trainedMuscleCount > 0 ? '#E8000D' : '#2a2a2a', color: trainedMuscleCount > 0 ? '#080808' : '#6a6a6a',
+                    fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none',
+                    cursor: trainedMuscleCount > 0 ? 'pointer' : 'not-allowed',
+                    clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+                  Next — Recovery →
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: Recovery */}
+          {step === 3 && (
+            <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
+              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
+                Recovery
+              </div>
               <div>
-                <label style={LS}>Avg Sleep (hours/night)</label>
+                <label style={LS}>Average Sleep (hours/night)</label>
                 <div style={{ display:'flex', gap:6, flexWrap:'wrap' }}>
                   {['5','6','7','8','9','10'].map(h => (
-                    <button key={h} onClick={() => setWS('sleepHours', h)}
-                      style={{ width:48, height:42, fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:600, cursor:'pointer', border:'1px solid #2a2a2a',
-                        background: weeklySummary.sleepHours === h ? '#E8000D' : '#0d0d0d',
-                        color: weeklySummary.sleepHours === h ? '#080808' : '#cccccc' }}>{h}h</button>
+                    <button key={h} onClick={() => set('sleepHours', h)}
+                      style={{ flex:1, height:46, fontFamily:"'Barlow',sans-serif", fontSize:15, fontWeight:700, cursor:'pointer', border:'1px solid #2a2a2a',
+                        background: form.sleepHours === h ? '#E8000D' : '#0d0d0d',
+                        color: form.sleepHours === h ? '#080808' : '#cccccc' }}>{h}h</button>
                   ))}
                 </div>
               </div>
               <div>
-                <label style={LS}>Deload Frequency</label>
-                <select value={weeklySummary.deloadFrequency} onChange={e => setWS('deloadFrequency', e.target.value)} style={IS}>
-                  <option value="never">Never deload</option>
-                  <option value="quarterly">Every 3 months</option>
-                  <option value="monthly">Every 4-6 weeks</option>
-                  <option value="biweekly">Every 2 weeks</option>
-                </select>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#888888', marginTop:5, letterSpacing:0.5 }}>
-                  Planned deloads prevent overtraining and boost long-term gains
+                <label style={LS}>Do You Deload?</label>
+                <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
+                  {[['never','Never','No planned deloads'],['sometimes','Sometimes','When I feel beat up'],['regular','Every 4–6 Weeks','Planned deload weeks']].map(([k,l,desc]) => (
+                    <div key={k} onClick={() => set('deloadFrequency', k)}
+                      style={{ padding:'12px 16px', cursor:'pointer', background: form.deloadFrequency === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
+                        border:`1px solid ${form.deloadFrequency === k ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
+                      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: form.deloadFrequency === k ? '#E8000D' : '#F5F5F5' }}>{l}</div>
+                        <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#6a6a6a' }}>{desc}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
+              <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'14px 18px' }}>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, textTransform:'uppercase', marginBottom:6 }}>Summary</div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.8 }}>
+                  {form.daysPerWeek} days/week · {form.avgDuration} min sessions · {Object.keys(form.muscleGroups).length} muscle groups · {form.sleepHours}h sleep
+                </div>
+              </div>
+              <div style={{ display:'flex', gap:10 }}>
+                <button onClick={() => setStep(2)}
+                  style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+                  ← Back
+                </button>
+                <button onClick={calculateScore} disabled={loading}
+                  style={{ flex:2, padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer',
+                    clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+                  {loading ? 'ANALYZING...' : 'GET MY SCORE'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        /* RESULTS */
+        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          {/* Big Score */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'36px 24px', textAlign:'center' }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:8 }}>Training Score</div>
+            <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:110, fontWeight:900, color: getScoreColor(results.score), lineHeight:1, letterSpacing:-4 }}>
+              {results.score}
+            </div>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:13, letterSpacing:3, textTransform:'uppercase', color: getScoreColor(results.score), marginTop:4 }}>
+              {getScoreLabel(results.score)}
+            </div>
+            <div style={{ width:60, height:3, background: getScoreColor(results.score), margin:'14px auto 0', opacity:0.5 }} />
+          </div>
+
+          {/* Breakdown */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:24 }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:16 }}>Breakdown</div>
+            {[
+              ['Volume', results.breakdown.volume.score, 25, `${results.breakdown.volume.totalSets} total weekly sets`],
+              ['Frequency', results.breakdown.frequency.score, 20, `${results.breakdown.frequency.daysPerWeek} days/week`],
+              ['Balance', results.breakdown.balance.score, 20, `Push ${results.breakdown.balance.pushSets} / Pull ${results.breakdown.balance.pullSets} / Legs ${results.breakdown.balance.legSets}`],
+              ['Intensity', results.breakdown.intensity.score, 15, form.avgIntensity],
+              ['Recovery', results.breakdown.recovery.score, 20, `${results.breakdown.recovery.restDays} rest days · ${results.breakdown.recovery.sleepH}h sleep`],
+            ].map(([label, score, max, detail]) => (
+              <div key={label} style={{ marginBottom:14 }}>
+                <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
+                  <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:700, textTransform:'uppercase', color:'#F5F5F5' }}>{label}</span>
+                  <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, color: score >= max * 0.75 ? '#22c55e' : score >= max * 0.5 ? '#eab308' : '#E8000D' }}>
+                    {score}/{max}
+                  </span>
+                </div>
+                <div style={{ height:6, background:'#1e1e1e', borderRadius:3, overflow:'hidden' }}>
+                  <div style={{ width:`${(score / max) * 100}%`, height:'100%', background: score >= max * 0.75 ? '#22c55e' : score >= max * 0.5 ? '#eab308' : '#E8000D', borderRadius:3, transition:'width 0.6s ease' }} />
+                </div>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:4, letterSpacing:0.5 }}>{detail}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Push/Pull/Legs */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:10 }}>Push / Pull / Legs</div>
+            <div style={{ display:'flex', height:8, borderRadius:4, overflow:'hidden', gap:2 }}>
+              {(() => {
+                const t = results.breakdown.balance.pushSets + results.breakdown.balance.pullSets + results.breakdown.balance.legSets
+                if (t === 0) return <div style={{ flex:1, background:'#1e1e1e', borderRadius:2 }} />
+                return [[results.breakdown.balance.pushSets,'#E8000D'],[results.breakdown.balance.pullSets,'#F5F5F5'],[results.breakdown.balance.legSets,'#444']].map(([s,c],i) => (
+                  <div key={i} style={{ flex: Math.max(s, 1), background:c, borderRadius:2 }} />
+                ))
+              })()}
+            </div>
+            <div style={{ display:'flex', justifyContent:'space-between', marginTop:8 }}>
+              {[['Push', results.breakdown.balance.pushSets, '#E8000D'],['Pull', results.breakdown.balance.pullSets, '#F5F5F5'],['Legs', results.breakdown.balance.legSets, '#aaaaaa']].map(([l,s,c]) => (
+                <div key={l} style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:500, color:c }}>{s} sets {l}</div>
+              ))}
             </div>
           </div>
 
-          {/* Calculate Button */}
-          <button onClick={calculateScore} disabled={loading || exercises.length === 0}
-            style={{ width:'100%', padding:'18px', background: exercises.length > 0 ? '#E8000D' : '#2a2a2a', color: exercises.length > 0 ? '#080808' : '#6a6a6a',
-              fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none',
-              cursor: exercises.length > 0 ? 'pointer' : 'not-allowed',
-              clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-            {loading ? 'ANALYZING PROGRAM...' : 'CALCULATE TRAINING SCORE'}
-          </button>
-        </div>
-
-        {/* RIGHT COLUMN — Results */}
-        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-          {!results ? (
-            <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:32, display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', minHeight:400, gap:14 }}>
-              <div style={{ fontSize:44, opacity:0.25 }}>🏋️</div>
-              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, color:'#888888', textAlign:'center', letterSpacing:0.5, lineHeight:1.8 }}>
-                Add your exercises and weekly<br/>overview, then hit Calculate.
-              </div>
-            </div>
-          ) : (
-            <>
-              {/* Big Score Display */}
-              <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'32px 24px', textAlign:'center' }}>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:8 }}>Training Score</div>
-                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:100, fontWeight:900, color: getScoreColor(results.score), lineHeight:1, letterSpacing:-4 }}>
-                  {results.score}
-                </div>
-                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, letterSpacing:3, textTransform:'uppercase', color: getScoreColor(results.score), marginTop:4 }}>
-                  {getScoreLabel(results.score)}
-                </div>
-                <div style={{ width:60, height:3, background: getScoreColor(results.score), margin:'14px auto 0', opacity:0.5 }} />
-              </div>
-
-              {/* Breakdown Bars */}
-              <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'24px' }}>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:16 }}>Score Breakdown</div>
-                {[
-                  ['Volume', results.breakdown.volume.score, results.breakdown.volume.max, `${results.breakdown.volume.totalSets} total weekly sets`],
-                  ['Frequency', results.breakdown.frequency.score, results.breakdown.frequency.max, `${results.breakdown.frequency.daysPerWeek} days/week`],
-                  ['Balance', results.breakdown.balance.score, results.breakdown.balance.max, `Push ${results.breakdown.balance.pushSets} / Pull ${results.breakdown.balance.pullSets} / Legs ${results.breakdown.balance.legSets}`],
-                  ['Intensity', results.breakdown.intensity.score, results.breakdown.intensity.max, weeklySummary.avgIntensity],
-                  ['Recovery', results.breakdown.recovery.score, results.breakdown.recovery.max, `${results.breakdown.recovery.restDays} rest days · ${results.breakdown.recovery.sleepH}h sleep`],
-                ].map(([label, score, max, detail]) => (
-                  <div key={label} style={{ marginBottom:14 }}>
-                    <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
-                      <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:700, textTransform:'uppercase', color:'#F5F5F5' }}>{label}</span>
-                      <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, color: score >= max * 0.75 ? '#22c55e' : score >= max * 0.5 ? '#eab308' : '#E8000D' }}>
-                        {score}/{max}
-                      </span>
-                    </div>
-                    <div style={{ height:6, background:'#1e1e1e', borderRadius:3, overflow:'hidden' }}>
-                      <div style={{ width:`${(score / max) * 100}%`, height:'100%', background: score >= max * 0.75 ? '#22c55e' : score >= max * 0.5 ? '#eab308' : '#E8000D', borderRadius:3, transition:'width 0.6s ease' }} />
-                    </div>
-                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:4, letterSpacing:0.5 }}>{detail}</div>
+          {/* Quick Fixes */}
+          <div style={{ background:'#111111', border:'1px solid rgba(232,0,13,0.2)', padding:'18px 22px' }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:10 }}>⚡ Quick Fixes</div>
+            <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+              {(() => {
+                const fixes = []
+                const b = results.breakdown
+                if (b.volume.score < 18) fixes.push('Increase weekly volume — aim for 10-20 sets per muscle group.')
+                if (b.balance.pushSets === 0) fixes.push('No push work. Add chest, shoulder, or tricep training.')
+                if (b.balance.pullSets === 0) fixes.push('No pull work. Add back or bicep training.')
+                if (b.balance.legSets === 0) fixes.push('Don\'t skip legs. Add squats, RDLs, or leg press.')
+                if (b.balance.score < 14) fixes.push('Push/pull/legs ratio is off — aim for roughly equal thirds.')
+                if (b.recovery.sleepH < 7) fixes.push('Sleep under 7 hours tanks recovery. Target 7-9 hours.')
+                if (b.recovery.restDays < 2) fixes.push('More rest days needed. Muscles grow during recovery.')
+                if (b.frequency.daysPerWeek < 3) fixes.push('Under 3 days/week limits progress. Try adding another day.')
+                if (b.frequency.daysPerWeek > 6) fixes.push('7 days/week risks overtraining. Take at least 1 rest day.')
+                if (fixes.length === 0) fixes.push('Your program looks solid. Stay consistent and track your progress.')
+                return fixes.map((fix, i) => (
+                  <div key={i} style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.7, paddingLeft:14, borderLeft:'2px solid #2a2a2a' }}>
+                    {fix}
                   </div>
-                ))}
-              </div>
+                ))
+              })()}
+            </div>
+          </div>
 
-              {/* Push/Pull/Legs Visual */}
-              <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:10 }}>Push / Pull / Legs Ratio</div>
-                <div style={{ display:'flex', height:8, borderRadius:4, overflow:'hidden', gap:2 }}>
-                  {(() => {
-                    const total = results.breakdown.balance.pushSets + results.breakdown.balance.pullSets + results.breakdown.balance.legSets
-                    if (total === 0) return <div style={{ flex:1, background:'#1e1e1e', borderRadius:2 }} />
-                    return [
-                      [results.breakdown.balance.pushSets, '#E8000D'],
-                      [results.breakdown.balance.pullSets, '#F5F5F5'],
-                      [results.breakdown.balance.legSets, '#444'],
-                    ].map(([sets, color], i) => (
-                      <div key={i} style={{ flex: Math.max(sets, 1), background: color, borderRadius:2 }} />
-                    ))
-                  })()}
-                </div>
-                <div style={{ display:'flex', justifyContent:'space-between', marginTop:8 }}>
-                  {[['Push', results.breakdown.balance.pushSets, '#E8000D'], ['Pull', results.breakdown.balance.pullSets, '#F5F5F5'], ['Legs', results.breakdown.balance.legSets, '#aaaaaa']].map(([l, s, c]) => (
-                    <div key={l} style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:500, color: c, letterSpacing:0.5 }}>{s} sets {l}</div>
-                  ))}
-                </div>
-              </div>
+          {/* Score Again button */}
+          <button onClick={() => { setResults(null); setStep(1) }}
+            style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+            ← Score Another Program
+          </button>
 
-              {/* Coaching Insights */}
-              <div style={{ background:'#111111', border:'1px solid rgba(232,0,13,0.2)', padding:'18px 22px' }}>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:10 }}>⚡ Quick Fixes</div>
-                <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
-                  {(() => {
-                    const fixes = []
-                    const b = results.breakdown
-                    if (b.volume.score < 18) fixes.push('Add more weekly sets — aim for 10-20 per muscle group for hypertrophy.')
-                    if (b.balance.pushSets === 0) fixes.push('No push work detected. Add chest, shoulder, or tricep exercises.')
-                    if (b.balance.pullSets === 0) fixes.push('No pull work detected. Add back, bicep, or rear delt exercises.')
-                    if (b.balance.legSets === 0) fixes.push('No leg work detected. Don\'t skip legs — add squats, RDLs, or leg press.')
-                    if (b.balance.score < 14) fixes.push('Your push/pull/legs ratio is off. Balance your program closer to equal thirds.')
-                    if (b.recovery.sleepH < 7) fixes.push('Sleep under 7 hours tanks recovery. Aim for 7-9 hours.')
-                    if (b.recovery.restDays < 2) fixes.push('You need more rest days. Muscles grow during recovery, not in the gym.')
-                    if (b.frequency.daysPerWeek < 3) fixes.push('Training less than 3x/week limits progress. Try to add another day.')
-                    if (b.frequency.daysPerWeek > 6) fixes.push('7 days/week risks overtraining. Schedule at least 1 full rest day.')
-                    if (fixes.length === 0) fixes.push('Your program looks solid. Keep pushing and track your progress over time.')
-                    return fixes.map((fix, i) => (
-                      <div key={i} style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.7, letterSpacing:0.3, paddingLeft:14, borderLeft:'2px solid #2a2a2a' }}>
-                        {fix}
-                      </div>
-                    ))
-                  })()}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Score History */}
+          {/* History */}
           {history.length > 0 && (
             <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
               <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:14 }}>Score History</div>
               <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                {history.map((h, i) => (
+                {history.map(h => (
                   <div key={h.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'8px 12px', background:'#0d0d0d', border:'1px solid #1e1e1e' }}>
                     <div>
                       <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, color: getScoreColor(h.score) }}>{h.score}</div>
@@ -1027,7 +962,7 @@ function TrainingScore({ addToast }) {
             </div>
           )}
         </div>
-      </div>
+      )}
     </div>
   )
 }
