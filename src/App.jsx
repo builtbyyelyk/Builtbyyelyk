@@ -936,6 +936,184 @@ function TrainingScore({ addToast }) {
             </div>
           </div>
 
+          {/* Recommended Program */}
+          {(() => {
+            const days = parseInt(form.daysPerWeek) || 4
+            const trained = Object.keys(form.muscleGroups)
+            const missing = []
+            const hasPush = trained.some(k => ['chest','shoulders','arms','core'].includes(k))
+            const hasPull = trained.some(k => ['back'].includes(k))
+            const hasLegs = trained.some(k => ['quads','hamstrings_glutes'].includes(k))
+            if (!hasPush) missing.push('chest','shoulders')
+            if (!hasPull) missing.push('back')
+            if (!hasLegs) missing.push('quads','hamstrings_glutes')
+            const allMuscles = [...trained, ...missing]
+
+            // Exercise database
+            const exerciseDB = {
+              chest: [
+                { name:'Bench Press', sets:4, reps:'6-8', note:'Primary compound — go heavy' },
+                { name:'Incline DB Press', sets:3, reps:'8-10', note:'Upper chest focus' },
+                { name:'Cable Fly', sets:3, reps:'12-15', note:'Squeeze at peak contraction' },
+              ],
+              back: [
+                { name:'Barbell Row', sets:4, reps:'6-8', note:'Primary pull compound' },
+                { name:'Lat Pulldown', sets:3, reps:'8-10', note:'Full stretch at top' },
+                { name:'Cable Row', sets:3, reps:'10-12', note:'Squeeze shoulder blades' },
+                { name:'Face Pull', sets:3, reps:'15-20', note:'Rear delt & posture health' },
+              ],
+              shoulders: [
+                { name:'Overhead Press', sets:4, reps:'6-8', note:'Standing or seated — core tight' },
+                { name:'Lateral Raise', sets:4, reps:'12-15', note:'Slow eccentrics, light weight' },
+                { name:'Rear Delt Fly', sets:3, reps:'15-20', note:'Often neglected — don\'t skip' },
+              ],
+              arms: [
+                { name:'Barbell Curl', sets:3, reps:'8-10', note:'Strict form, no swinging' },
+                { name:'Tricep Pushdown', sets:3, reps:'10-12', note:'Lock out at bottom' },
+                { name:'Hammer Curl', sets:3, reps:'10-12', note:'Brachialis & forearm' },
+                { name:'Overhead Tricep Extension', sets:3, reps:'10-12', note:'Long head stretch' },
+              ],
+              quads: [
+                { name:'Squat', sets:4, reps:'6-8', note:'King of leg exercises' },
+                { name:'Leg Press', sets:3, reps:'10-12', note:'Feet high = more glute' },
+                { name:'Leg Extension', sets:3, reps:'12-15', note:'Isolation finisher' },
+                { name:'Bulgarian Split Squat', sets:3, reps:'8-10/leg', note:'Single-leg stability' },
+              ],
+              hamstrings_glutes: [
+                { name:'Romanian Deadlift', sets:4, reps:'8-10', note:'Feel the hamstring stretch' },
+                { name:'Hip Thrust', sets:3, reps:'10-12', note:'Peak squeeze at top' },
+                { name:'Leg Curl', sets:3, reps:'12-15', note:'Slow negatives' },
+                { name:'Glute Bridge', sets:3, reps:'12-15', note:'Pause at top 2 seconds' },
+              ],
+              core: [
+                { name:'Cable Crunch', sets:3, reps:'12-15', note:'Weighted — progressive overload' },
+                { name:'Hanging Leg Raise', sets:3, reps:'10-15', note:'Control the swing' },
+                { name:'Pallof Press', sets:3, reps:'10/side', note:'Anti-rotation stability' },
+              ],
+            }
+
+            // Build weekly split based on days
+            const buildSplit = () => {
+              if (days <= 2) {
+                return [
+                  { day:'Day 1', label:'Full Body A', muscles:['chest','back','quads','shoulders'] },
+                  { day:'Day 2', label:'Full Body B', muscles:['back','hamstrings_glutes','arms','core'] },
+                ].slice(0, days)
+              } else if (days === 3) {
+                return [
+                  { day:'Day 1', label:'Push', muscles:['chest','shoulders','arms'] },
+                  { day:'Day 2', label:'Pull', muscles:['back','arms'] },
+                  { day:'Day 3', label:'Legs', muscles:['quads','hamstrings_glutes','core'] },
+                ]
+              } else if (days === 4) {
+                return [
+                  { day:'Day 1', label:'Upper', muscles:['chest','back','shoulders'] },
+                  { day:'Day 2', label:'Lower', muscles:['quads','hamstrings_glutes','core'] },
+                  { day:'Day 3', label:'Push', muscles:['chest','shoulders','arms'] },
+                  { day:'Day 4', label:'Pull + Legs', muscles:['back','hamstrings_glutes','arms'] },
+                ]
+              } else if (days === 5) {
+                return [
+                  { day:'Day 1', label:'Chest & Triceps', muscles:['chest','arms'] },
+                  { day:'Day 2', label:'Back & Biceps', muscles:['back','arms'] },
+                  { day:'Day 3', label:'Legs', muscles:['quads','hamstrings_glutes'] },
+                  { day:'Day 4', label:'Shoulders & Arms', muscles:['shoulders','arms'] },
+                  { day:'Day 5', label:'Full Body / Weak Points', muscles:['core','hamstrings_glutes','back'] },
+                ]
+              } else {
+                return [
+                  { day:'Day 1', label:'Push', muscles:['chest','shoulders','arms'] },
+                  { day:'Day 2', label:'Pull', muscles:['back','arms'] },
+                  { day:'Day 3', label:'Legs', muscles:['quads','hamstrings_glutes'] },
+                  { day:'Day 4', label:'Chest & Shoulders', muscles:['chest','shoulders'] },
+                  { day:'Day 5', label:'Back & Arms', muscles:['back','arms'] },
+                  { day:'Day 6', label:'Legs & Core', muscles:['hamstrings_glutes','quads','core'] },
+                ].slice(0, days)
+              }
+            }
+
+            const split = buildSplit()
+
+            // Pick exercises for each day (limit per muscle to avoid too many)
+            const getExercisesForDay = (muscles, isPrimary) => {
+              const exs = []
+              muscles.forEach(m => {
+                const db = exerciseDB[m]
+                if (!db) return
+                // If arms, pick only 2 for split days
+                const limit = m === 'arms' ? 2 : m === 'core' ? 2 : isPrimary ? 3 : 2
+                exs.push(...db.slice(0, limit))
+              })
+              return exs
+            }
+
+            return (
+              <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 20 : 24 }}>
+                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#E8000D', marginBottom:6 }}>
+                  Recommended Program
+                </div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.7, marginBottom:20 }}>
+                  Based on your {days}-day split. Adjust weights to match your level — focus on progressive overload each week.
+                </div>
+
+                {missing.length > 0 && (
+                  <div style={{ background:'rgba(234,179,8,0.06)', border:'1px solid rgba(234,179,8,0.2)', padding:'10px 14px', marginBottom:16, fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#eab308', lineHeight:1.7 }}>
+                    ⚠ You're missing {missing.map(m => MUSCLES.find(mg => mg.key === m)?.label || m).join(', ')} — we've added them to your recommended split.
+                  </div>
+                )}
+
+                <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+                  {split.map((s, si) => (
+                    <div key={si} style={{ background:'#0d0d0d', border:'1px solid #1e1e1e' }}>
+                      {/* Day header */}
+                      <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', borderBottom:'1px solid #1e1e1e' }}>
+                        <div>
+                          <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase' }}>{s.day}</span>
+                          <span style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginLeft:12 }}>{s.label}</span>
+                        </div>
+                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a' }}>
+                          {getExercisesForDay(s.muscles, true).length} exercises
+                        </div>
+                      </div>
+                      {/* Exercises */}
+                      <div style={{ padding:'8px 0' }}>
+                        {getExercisesForDay(s.muscles, true).map((ex, ei) => (
+                          <div key={ei} style={{ display:'flex', alignItems:'center', padding:'8px 16px', gap:12, borderBottom: ei < getExercisesForDay(s.muscles, true).length - 1 ? '1px solid #1a1a1a' : 'none' }}>
+                            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#2a2a2a', width:20, flexShrink:0 }}>{String(ei+1).padStart(2,'0')}</div>
+                            <div style={{ flex:1 }}>
+                              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:600, color:'#F5F5F5' }}>{ex.name}</div>
+                              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:11, color:'#6a6a6a', marginTop:2 }}>{ex.note}</div>
+                            </div>
+                            <div style={{ textAlign:'right', flexShrink:0 }}>
+                              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, color:'#E8000D' }}>{ex.sets}×{ex.reps}</div>
+                              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a' }}>sets × reps</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* General tips */}
+                <div style={{ marginTop:16, padding:'14px 16px', background:'#0d0d0d', border:'1px solid #1e1e1e' }}>
+                  <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:600, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:10 }}>Training Tips</div>
+                  {[
+                    'Rest 2-3 min between heavy compounds, 60-90 sec between isolations.',
+                    'Track your weights. Add 2.5-5 lbs when you hit the top of a rep range.',
+                    `Warm up with 2-3 light sets before your first compound lift.`,
+                    form.deloadFrequency === 'never' ? 'Consider a deload week every 4-6 weeks — cut volume in half, keep intensity.' : null,
+                    parseInt(form.sleepHours) < 7 ? 'Prioritize sleep — it\'s your #1 recovery tool. Aim for 7-9 hours.' : null,
+                  ].filter(Boolean).map((tip, i) => (
+                    <div key={i} style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#6a6a6a', lineHeight:1.7, paddingLeft:12, borderLeft:'2px solid #1e1e1e', marginBottom:8 }}>
+                      {tip}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )
+          })()}
+
           {/* Score Again button */}
           <button onClick={() => { setResults(null); setStep(1) }}
             style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
