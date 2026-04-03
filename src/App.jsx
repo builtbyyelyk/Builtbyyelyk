@@ -1314,9 +1314,12 @@ export default function App() {
   }, [])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
+    try { await supabase.auth.signOut() } catch(e) { console.error('Sign out error:', e) }
     setIsLoggedIn(false)
     setIsPro(false)
+    setActiveTab(0)
+    localStorage.clear()
+    sessionStorage.clear()
     addToast('Signed out','info')
   }
 
