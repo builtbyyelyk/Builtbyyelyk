@@ -109,7 +109,7 @@ function Navbar({ isLoggedIn, isPro, onSignIn, onSignOut, activeTab, setActiveTa
       )}
       <div style={{ display:'flex', gap:isMobile?6:10, alignItems:'center' }}>
         {isLoggedIn ? (
-          <button onClick={onSignOut} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:500, letterSpacing:'1.5px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 14px':'10px 20px', cursor:'pointer' }}>Sign Out</button>
+          <button onClick={onSignOut} onPointerDown={onSignOut} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:500, letterSpacing:'1.5px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 14px':'10px 20px', cursor:'pointer', WebkitTapHighlightColor:'transparent', touchAction:'manipulation' }}>Sign Out</button>
         ) : (
           <>
             <button onClick={onSignIn} style={{ fontFamily:"'Barlow',sans-serif", fontSize:isMobile?11:13, fontWeight:500, letterSpacing:isMobile?'1px':'1.5px', textTransform:'uppercase', color:'#aaaaaa', background:'none', border:'1px solid #2a2a2a', padding:isMobile?'8px 14px':'10px 20px', cursor:'pointer' }}>Sign In</button>
@@ -1248,14 +1248,17 @@ export default function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const handleSignOut = async () => {
-    try { await supabase.auth.signOut() } catch(e) { console.error('Sign out error:', e) }
+  const handleSignOut = async (e) => {
+    if (e) { e.preventDefault(); e.stopPropagation() }
+    console.log('SIGN OUT CLICKED')
+    try { await supabase.auth.signOut() } catch(err) { console.error('Sign out error:', err) }
     setIsLoggedIn(false)
     setIsPro(false)
     setActiveTab(0)
-    localStorage.clear()
-    sessionStorage.clear()
+    try { localStorage.clear() } catch(err) {}
+    try { sessionStorage.clear() } catch(err) {}
     addToast('Signed out','info')
+    window.scrollTo({ top: 0 })
   }
 
   const handleUpgrade = () => {
