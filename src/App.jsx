@@ -2396,22 +2396,37 @@ export default function App() {
   }
 
   useEffect(() => {
-    const checkSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session?.user) {
-        setIsLoggedIn(true)
-        const { data: profile } = await supabase
-          .from('user_profiles')
-          .select('plan')
-          .eq('id', session.user.id)
-          .single()
-        if (profile?.plan === 'pro') setIsPro(true)
+   const checkSession = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session?.user) {
+          const { data: profile, error } = await supabase
+            .from('user_profiles')
+            .select('plan')
+            .eq('id', session.user.id)
+            .single()
+          if (error || !profile) {
+            // Profile fetch failed — sign out completely to avoid stale state
+            await supabase.auth.signOut()
+            setIsLoggedIn(false)
+            setIsPro(false)
+            localStorage.clear()
+            sessionStorage.clear()
+          } else {
+            setIsLoggedIn(true)
+            setIsPro(profile.plan === 'pro')
+          }
+        } else {
+          setIsLoggedIn(false)
+          setIsPro(false)
+          const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
+          if (!dismissed) setWelcomeOpen(true)
+        }
+      } catch(err) {
+        setIsLoggedIn(false)
+        setIsPro(false)
       }
       setSessionLoading(false)
-      if (!session?.user) {
-        const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
-        if (!dismissed) setWelcomeOpen(true)
-      }
     }
     checkSession()
 
