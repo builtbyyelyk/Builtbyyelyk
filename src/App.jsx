@@ -1131,8 +1131,26 @@ function TrainingScore({ addToast }) {
    MEAL TIMING ENGINE COMPONENT (PRO ONLY)
    ============================================= */
 
-function MealTimingEngine({ addToast }) {
-  const isMobile = useIsMobile()
+const { error: macroError } = await supabase.from('macro_results').upsert({
+        user_id: session.user.id,
+        calories: Math.round(calories),
+        protein, carbs, fats,
+        tdee: Math.round(tdee),
+        bmr: Math.round(bmr),
+        goal: form.goal
+      }, { onConflict: 'user_id' })
+      if (macroError) {
+        // Fallback: try delete then insert
+        await supabase.from('macro_results').delete().eq('user_id', session.user.id)
+        await supabase.from('macro_results').insert({
+          user_id: session.user.id,
+          calories: Math.round(calories),
+          protein, carbs, fats,
+          tdee: Math.round(tdee),
+          bmr: Math.round(bmr),
+          goal: form.goal
+        })
+      }  const isMobile = useIsMobile()
   const [macros, setMacros] = useState(null)
   const [macrosLoading, setMacrosLoading] = useState(true)
   const [form, setForm] = useState({
