@@ -304,6 +304,18 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
     setResults(res)
     if(onMacrosCalculated) onMacrosCalculated(res)
     localStorage.setItem('bby_calc_count',String(getDailyCount()+1))
+    // Save to Supabase
+    const { data: { session } } = await supabase.auth.getSession()
+    if(session?.user) {
+      await supabase.from('macro_results').upsert({
+        user_id: session.user.id,
+        calories: Math.round(calories),
+        protein, carbs, fats,
+        tdee: Math.round(tdee),
+        bmr: Math.round(bmr),
+        goal: form.goal
+      }, { onConflict: 'user_id' })
+    }
     addToast('Macros calculated!','success')
     setLoading(false)
   }
