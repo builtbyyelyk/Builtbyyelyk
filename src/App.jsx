@@ -307,26 +307,14 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
     // Save to Supabase
     const { data: { session } } = await supabase.auth.getSession()
     if(session?.user) {
-     const { error: macroError } = await supabase.from('macro_results').upsert({
+     await supabase.from('macro_results').insert({
         user_id: session.user.id,
         calories: Math.round(calories),
         protein, carbs, fats,
         tdee: Math.round(tdee),
         bmr: Math.round(bmr),
         goal: form.goal
-      }, { onConflict: 'user_id' })
-      if (macroError) {
-        // Fallback: try delete then insert
-        await supabase.from('macro_results').delete().eq('user_id', session.user.id)
-        await supabase.from('macro_results').insert({
-          user_id: session.user.id,
-          calories: Math.round(calories),
-          protein, carbs, fats,
-          tdee: Math.round(tdee),
-          bmr: Math.round(bmr),
-          goal: form.goal
-        })
-      }
+      })
     }
     addToast('Macros calculated!','success')
     setLoading(false)
