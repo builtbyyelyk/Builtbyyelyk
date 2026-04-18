@@ -1863,17 +1863,15 @@ export default function App() {
     return () => subscription.unsubscribe()
   }, [])
 
-  const handleSignOut = async (e) => {
+  const handleSignOut = (e) => {
     if (e) { e.preventDefault(); e.stopPropagation() }
-    console.log('SIGN OUT CLICKED')
-    try { await supabase.auth.signOut() } catch(err) { console.error('Sign out error:', err) }
+    supabase.auth.signOut().catch(() => {})
     setIsLoggedIn(false)
     setIsPro(false)
     setActiveTab(0)
-    try { localStorage.clear() } catch(err) {}
-    try { sessionStorage.clear() } catch(err) {}
-    addToast('Signed out','info')
-    window.scrollTo({ top: 0 })
+    localStorage.clear()
+    sessionStorage.clear()
+    window.location.href = window.location.origin
   }
 
   const handleUpgrade = () => {
