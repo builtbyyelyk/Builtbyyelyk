@@ -532,7 +532,6 @@ function TrainingScore({ addToast }) {
     setForm(f => ({ ...f, muscleGroups: { ...f.muscleGroups, [key]: vol } }))
   }
 
-  // Load history
   useEffect(() => {
     const load = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -556,7 +555,6 @@ function TrainingScore({ addToast }) {
     const dur = parseInt(form.avgDuration) || 45
     const sleepH = parseFloat(form.sleepHours) || 6
 
-    // Map muscle volumes to set counts
     const muscleSetMap = {}
     Object.entries(form.muscleGroups).forEach(([key, vol]) => {
       const range = SET_RANGES.find(r => r.key === vol)
@@ -564,7 +562,6 @@ function TrainingScore({ addToast }) {
     })
     const totalSets = Object.values(muscleSetMap).reduce((a, b) => a + b, 0)
 
-    // --- VOLUME (25 pts) ---
     let volumeScore = 0
     const trained = Object.entries(muscleSetMap)
     trained.forEach(([_, sets]) => {
@@ -577,7 +574,6 @@ function TrainingScore({ addToast }) {
     if (trained.length === 0) volumeScore = 0
     volumeScore = Math.min(25, Math.round(volumeScore))
 
-    // --- FREQUENCY (20 pts) ---
     let frequencyScore = 0
     if (daysPerWeek >= 3 && daysPerWeek <= 5) frequencyScore = 20
     else if (daysPerWeek === 6) frequencyScore = 18
@@ -586,7 +582,6 @@ function TrainingScore({ addToast }) {
     else if (daysPerWeek === 1) frequencyScore = 8
     if (trained.length >= 5) frequencyScore = Math.min(20, frequencyScore + 2)
 
-    // --- BALANCE (20 pts) ---
     const pushSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'push').reduce((a, [_, s]) => a + s, 0)
     const pullSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'pull').reduce((a, [_, s]) => a + s, 0)
     const legSets = Object.entries(muscleSetMap).filter(([k]) => MUSCLES.find(m => m.key === k)?.cat === 'legs').reduce((a, [_, s]) => a + s, 0)
@@ -602,13 +597,11 @@ function TrainingScore({ addToast }) {
       if (pushSets === 0 || pullSets === 0 || legSets === 0) balanceScore = Math.min(balanceScore, 8)
     }
 
-    // --- INTENSITY (15 pts) ---
     const intMap = { light: 6, moderate: 12, hard: 14, very_hard: 15 }
     let intensityScore = intMap[form.avgIntensity] || 10
     if (dur < 30) intensityScore = Math.round(intensityScore * 0.7)
     else if (dur > 90) intensityScore = Math.round(intensityScore * 0.9)
 
-    // --- RECOVERY (20 pts) ---
     let recoveryScore = 0
     if (restDays >= 2 && restDays <= 3) recoveryScore += 8
     else if (restDays === 1 || restDays === 4) recoveryScore += 6
@@ -631,7 +624,6 @@ function TrainingScore({ addToast }) {
     }
     setResults({ score: totalScore, breakdown })
 
-    // Save to Supabase
     const { data: { session } } = await supabase.auth.getSession()
     if (session?.user) {
       const { error } = await supabase.from('training_scores').insert({
@@ -656,7 +648,6 @@ function TrainingScore({ addToast }) {
   const IS = { width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }
   const LS = { fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8, display:'block' }
 
-  // Step indicator
   const StepDots = () => (
     <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:8, marginBottom:28 }}>
       {[1,2,3].map(s => (
@@ -668,10 +659,8 @@ function TrainingScore({ addToast }) {
     </div>
   )
 
-
   return (
     <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:700, margin:'0 auto' }}>
-      {/* Header */}
       <div style={{ marginBottom: isMobile ? 24 : 36 }}>
         <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
           <span style={{ width:20, height:1, background:'#E8000D', opacity:0.4 }}/>Training Score<span style={{ width:32, height:1, background:'#E8000D', opacity:0.4 }}/>
@@ -685,7 +674,6 @@ function TrainingScore({ addToast }) {
         <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 36 }}>
           <StepDots />
 
-          {/* STEP 1: Training Week */}
           {step === 1 && (
             <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
               <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
@@ -739,7 +727,6 @@ function TrainingScore({ addToast }) {
             </div>
           )}
 
-          {/* STEP 2: Muscle Groups + Volume */}
           {step === 2 && (
             <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
               <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
@@ -799,7 +786,6 @@ function TrainingScore({ addToast }) {
             </div>
           )}
 
-          {/* STEP 3: Recovery */}
           {step === 3 && (
             <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
               <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', textAlign:'center' }}>
@@ -852,9 +838,7 @@ function TrainingScore({ addToast }) {
           )}
         </div>
       ) : (
-        /* RESULTS */
         <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
-          {/* Big Score */}
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'36px 24px', textAlign:'center' }}>
             <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:8 }}>Training Score</div>
             <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:110, fontWeight:900, color: getScoreColor(results.score), lineHeight:1, letterSpacing:-4 }}>
@@ -866,7 +850,6 @@ function TrainingScore({ addToast }) {
             <div style={{ width:60, height:3, background: getScoreColor(results.score), margin:'14px auto 0', opacity:0.5 }} />
           </div>
 
-          {/* Breakdown */}
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:24 }}>
             <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:16 }}>Breakdown</div>
             {[
@@ -891,7 +874,6 @@ function TrainingScore({ addToast }) {
             ))}
           </div>
 
-          {/* Push/Pull/Legs */}
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
             <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:10 }}>Push / Pull / Legs</div>
             <div style={{ display:'flex', height:8, borderRadius:4, overflow:'hidden', gap:2 }}>
@@ -910,7 +892,6 @@ function TrainingScore({ addToast }) {
             </div>
           </div>
 
-          {/* Quick Fixes */}
           <div style={{ background:'#111111', border:'1px solid rgba(232,0,13,0.2)', padding:'18px 22px' }}>
             <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:10 }}>⚡ Quick Fixes</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -936,7 +917,6 @@ function TrainingScore({ addToast }) {
             </div>
           </div>
 
-          {/* Recommended Program */}
           {(() => {
             const days = parseInt(form.daysPerWeek) || 4
             const trained = Object.keys(form.muscleGroups)
@@ -949,7 +929,6 @@ function TrainingScore({ addToast }) {
             if (!hasLegs) missing.push('quads','hamstrings_glutes')
             const allMuscles = [...trained, ...missing]
 
-            // Exercise database
             const exerciseDB = {
               chest: [
                 { name:'Bench Press', sets:4, reps:'6-8', note:'Primary compound — go heavy' },
@@ -992,7 +971,6 @@ function TrainingScore({ addToast }) {
               ],
             }
 
-            // Build weekly split based on days
             const buildSplit = () => {
               if (days <= 2) {
                 return [
@@ -1033,14 +1011,11 @@ function TrainingScore({ addToast }) {
             }
 
             const split = buildSplit()
-
-            // Pick exercises for each day (limit per muscle to avoid too many)
             const getExercisesForDay = (muscles, isPrimary) => {
               const exs = []
               muscles.forEach(m => {
                 const db = exerciseDB[m]
                 if (!db) return
-                // If arms, pick only 2 for split days
                 const limit = m === 'arms' ? 2 : m === 'core' ? 2 : isPrimary ? 3 : 2
                 exs.push(...db.slice(0, limit))
               })
@@ -1065,7 +1040,6 @@ function TrainingScore({ addToast }) {
                 <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
                   {split.map((s, si) => (
                     <div key={si} style={{ background:'#0d0d0d', border:'1px solid #1e1e1e' }}>
-                      {/* Day header */}
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'12px 16px', borderBottom:'1px solid #1e1e1e' }}>
                         <div>
                           <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase' }}>{s.day}</span>
@@ -1075,7 +1049,6 @@ function TrainingScore({ addToast }) {
                           {getExercisesForDay(s.muscles, true).length} exercises
                         </div>
                       </div>
-                      {/* Exercises */}
                       <div style={{ padding:'8px 0' }}>
                         {getExercisesForDay(s.muscles, true).map((ex, ei) => (
                           <div key={ei} style={{ display:'flex', alignItems:'center', padding:'8px 16px', gap:12, borderBottom: ei < getExercisesForDay(s.muscles, true).length - 1 ? '1px solid #1a1a1a' : 'none' }}>
@@ -1095,13 +1068,12 @@ function TrainingScore({ addToast }) {
                   ))}
                 </div>
 
-                {/* General tips */}
                 <div style={{ marginTop:16, padding:'14px 16px', background:'#0d0d0d', border:'1px solid #1e1e1e' }}>
                   <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:600, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:10 }}>Training Tips</div>
                   {[
                     'Rest 2-3 min between heavy compounds, 60-90 sec between isolations.',
                     'Track your weights. Add 2.5-5 lbs when you hit the top of a rep range.',
-                    `Warm up with 2-3 light sets before your first compound lift.`,
+                    'Warm up with 2-3 light sets before your first compound lift.',
                     form.deloadFrequency === 'never' ? 'Consider a deload week every 4-6 weeks — cut volume in half, keep intensity.' : null,
                     parseInt(form.sleepHours) < 7 ? 'Prioritize sleep — it\'s your #1 recovery tool. Aim for 7-9 hours.' : null,
                   ].filter(Boolean).map((tip, i) => (
@@ -1114,13 +1086,11 @@ function TrainingScore({ addToast }) {
             )
           })()}
 
-          {/* Score Again button */}
           <button onClick={() => { setResults(null); setStep(1) }}
             style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
             ← Score Another Program
           </button>
 
-          {/* History */}
           {history.length > 0 && (
             <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
               <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:14 }}>Score History</div>
@@ -1139,6 +1109,473 @@ function TrainingScore({ addToast }) {
               </div>
             </div>
           )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* =============================================
+   MEAL TIMING ENGINE COMPONENT (PRO ONLY)
+   ============================================= */
+
+function MealTimingEngine({ addToast }) {
+  const isMobile = useIsMobile()
+  const [form, setForm] = useState({
+    wakeTime: '06:00',
+    sleepTime: '22:00',
+    trainingTime: '17:00',
+    trainingDay: true,
+    mealCount: '4',
+    goal: 'maintain'
+  })
+  const [schedule, setSchedule] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }))
+
+  // Convert "HH:MM" to minutes since midnight
+  const toMins = (t) => {
+    const [h, m] = t.split(':').map(Number)
+    return h * 60 + m
+  }
+
+  // Convert minutes since midnight to 12h format
+  const toLabel = (mins) => {
+    const h = Math.floor(mins / 60) % 24
+    const m = mins % 60
+    const ampm = h >= 12 ? 'PM' : 'AM'
+    const h12 = h % 12 === 0 ? 12 : h % 12
+    return `${h12}:${String(m).padStart(2, '0')} ${ampm}`
+  }
+
+  const buildSchedule = async () => {
+    setLoading(true)
+    await new Promise(r => setTimeout(r, 700))
+
+    const wakeMins = toMins(form.wakeTime)
+    const sleepMins = toMins(form.sleepTime)
+    const trainMins = toMins(form.trainingTime)
+    const count = parseInt(form.mealCount)
+    const goal = form.goal
+    const isTrainingDay = form.trainingDay
+
+    // Waking window in minutes
+    const wakingWindow = sleepMins > wakeMins ? sleepMins - wakeMins : (24 * 60 - wakeMins) + sleepMins
+
+    // Meal timing data by goal
+    const goalData = {
+      aggressive_cut: {
+        label: 'Aggressive Cut',
+        strategy: 'Keep meals evenly spaced to control hunger. Protein at every meal is non-negotiable.',
+        proteinSplit: [35, 30, 25, 10], // % of daily protein per meal slot (4-meal base)
+        carbTiming: 'carbs around training only — minimal at other meals',
+        fatTiming: 'healthy fats at breakfast and last meal'
+      },
+      moderate_cut: {
+        label: 'Moderate Cut',
+        strategy: 'Even meal spacing with carb focus around training. Keep fat moderate at every meal.',
+        proteinSplit: [30, 25, 30, 15],
+        carbTiming: 'moderate carbs all day, higher around training',
+        fatTiming: 'distribute fats evenly, reduce post-workout'
+      },
+      maintain: {
+        label: 'Maintenance',
+        strategy: 'Balanced intake across the day. Use training window to maximise performance and recovery.',
+        proteinSplit: [25, 25, 25, 25],
+        carbTiming: 'carbs evenly spread with a bump around training',
+        fatTiming: 'healthy fats at all meals except directly post-workout'
+      },
+      lean_bulk: {
+        label: 'Lean Bulk',
+        strategy: 'Prioritise peri-workout nutrition. More calories around training, controlled at other meals.',
+        proteinSplit: [20, 30, 30, 20],
+        carbTiming: 'higher carbs pre and post workout, moderate elsewhere',
+        fatTiming: 'fats at breakfast and dinner, low around training'
+      },
+      bulk: {
+        label: 'Bulk',
+        strategy: 'Maximise caloric density around training. Don\'t skip meals — every window counts.',
+        proteinSplit: [20, 25, 35, 20],
+        carbTiming: 'high carbs all day, highest pre and post workout',
+        fatTiming: 'fats at all meals, increase at breakfast and dinner'
+      }
+    }
+
+    const gd = goalData[goal] || goalData.maintain
+
+    // Build raw meal time slots
+    // Spread meals across waking window with equal spacing
+    const spacing = Math.floor(wakingWindow / (count + 1))
+    const rawSlots = Array.from({ length: count }, (_, i) => wakeMins + spacing * (i + 1))
+
+    // Define pre/post workout windows (if training day)
+    const preWorkoutWindow = trainMins - 60  // 60 min pre
+    const postWorkoutWindow = trainMins + 45 // 45 min post
+
+    // Label each meal based on proximity to training and position in day
+    const meals = rawSlots.map((slotMins, idx) => {
+      const isFirst = idx === 0
+      const isLast = idx === count - 1
+      const isPreWorkout = isTrainingDay && Math.abs(slotMins - preWorkoutWindow) < 75
+      const isPostWorkout = isTrainingDay && Math.abs(slotMins - postWorkoutWindow) < 75
+      const isMidDay = !isFirst && !isLast && !isPreWorkout && !isPostWorkout
+
+      // Determine meal name
+      let name = ''
+      let role = ''
+      let macroFocus = ''
+      let foods = []
+      let notes = ''
+
+      if (isFirst) {
+        name = 'Breakfast'
+        role = 'Kickstart metabolism. Break the overnight fast with protein and stable energy.'
+        if (goal === 'aggressive_cut' || goal === 'moderate_cut') {
+          macroFocus = 'High protein · Low-moderate carbs · Healthy fats'
+          foods = ['Eggs (3-4 whole)', 'Greek yogurt or cottage cheese', 'Oats (½ cup) or whole grain toast', 'Berries', 'Black coffee (optional)']
+          notes = 'Avoid high-sugar options. Protein here reduces cravings all day.'
+        } else if (goal === 'lean_bulk' || goal === 'bulk') {
+          macroFocus = 'High protein · High carbs · Moderate fats'
+          foods = ['Eggs + egg whites', 'Oats (1 cup) with banana', 'Whole grain bread', 'Peanut butter', 'Milk or protein shake']
+          notes = 'Big breakfast sets the caloric tone for the day. Don\'t skip it.'
+        } else {
+          macroFocus = 'High protein · Moderate carbs · Moderate fats'
+          foods = ['3-4 eggs or Greek yogurt', 'Oats or whole grain toast', 'Fruit (banana or berries)', 'Coffee or green tea']
+          notes = 'Front-load protein to hit targets earlier in the day.'
+        }
+      } else if (isPreWorkout && isTrainingDay) {
+        name = 'Pre-Workout'
+        role = 'Fuel performance. Carbs for energy, protein to prime muscle protein synthesis.'
+        macroFocus = 'High carbs · Moderate protein · Low fat · Low fiber'
+        foods = ['White rice or pasta (1-1.5 cups cooked)', 'Chicken breast or lean protein (4-6 oz)', 'Banana or rice cakes', 'Sports drink or water']
+        notes = 'Eat 60-90 min before training. Low fat and fiber = faster digestion = better performance.'
+      } else if (isPostWorkout && isTrainingDay) {
+        name = 'Post-Workout'
+        role = 'Maximize recovery. Protein to rebuild muscle. Carbs to replenish glycogen.'
+        macroFocus = 'High protein · High carbs · Very low fat'
+        foods = ['Protein shake (30-40g protein)', 'White rice or potato (1-2 cups)', 'Banana or gummy candy (fast carbs)', 'Low fat Greek yogurt']
+        notes = 'Eat within 30-60 min after training. This is the most important meal on a training day.'
+      } else if (isLast) {
+        name = 'Last Meal'
+        role = 'Sustain overnight recovery. Slow-digesting protein to prevent muscle breakdown during sleep.'
+        if (goal === 'aggressive_cut') {
+          macroFocus = 'High protein · Low carbs · Low-moderate fats'
+          foods = ['Cottage cheese (1 cup)', 'Casein protein shake', 'Vegetables (unlimited)', 'Handful of almonds']
+          notes = 'Casein or cottage cheese digest slowly — ideal before sleep to prevent overnight catabolism.'
+        } else {
+          macroFocus = 'High protein · Moderate carbs · Moderate fats'
+          foods = ['Cottage cheese or Greek yogurt', 'Salmon or lean beef', 'Sweet potato or rice', 'Leafy greens + olive oil dressing']
+          notes = 'Don\'t skip this meal. Overnight is the longest fasting window — protect your muscle with slow protein.'
+        }
+      } else {
+        // Mid-day meal
+        const midIdx = rawSlots.filter((_, i) => !([0, count-1].includes(i))).indexOf(slotMins) + 1
+        name = count <= 3 ? 'Lunch' : `Meal ${idx + 1}`
+        role = 'Sustain energy and hit macro targets. Keep it consistent and easy to prep.'
+        if (goal === 'aggressive_cut') {
+          macroFocus = 'High protein · Low carbs · Moderate fats'
+          foods = ['Grilled chicken, turkey, or tuna (6-8 oz)', 'Large salad or mixed vegetables', 'Avocado (¼-½)', 'Olive oil dressing']
+          notes = 'Keep carbs low at non-training meals. Volume from vegetables kills hunger.'
+        } else if (goal === 'lean_bulk' || goal === 'bulk') {
+          macroFocus = 'High protein · High carbs · Moderate fats'
+          foods = ['Chicken, beef or salmon (6-8 oz)', 'Rice, pasta or potatoes (1.5-2 cups)', 'Mixed vegetables', 'Olive oil or cheese']
+          notes = 'This meal fills caloric gaps. Don\'t under-eat here — it\'ll force excess calories at dinner.'
+        } else {
+          macroFocus = 'Balanced protein · Moderate carbs · Moderate fats'
+          foods = ['Lean protein (chicken, fish, turkey, 6 oz)', 'Brown rice or sweet potato (1 cup)', 'Vegetables (broccoli, peppers, spinach)', 'Olive oil or light dressing']
+          notes = 'Consistency here is the highest-leverage habit in your nutrition.'
+        }
+      }
+
+      return {
+        index: idx + 1,
+        time: slotMins,
+        timeLabel: toLabel(slotMins),
+        name,
+        role,
+        macroFocus,
+        foods,
+        notes,
+        isPreWorkout: isPreWorkout && isTrainingDay,
+        isPostWorkout: isPostWorkout && isTrainingDay,
+        isFirst,
+        isLast
+      }
+    })
+
+    // Peri-workout insight
+    const perimsg = isTrainingDay
+      ? `Training window: ${toLabel(preWorkoutWindow)} pre → ${toLabel(postWorkoutWindow)} post. Your schedule anchors meals to this window.`
+      : 'Rest day: meals are spaced evenly. Slight calorie reduction is fine — keep protein identical to training days.'
+
+    setSchedule({ meals, goal: gd.label, strategy: gd.strategy, carbTiming: gd.carbTiming, fatTiming: gd.fatTiming, periMsg: perimsg, trainingTime: isTrainingDay ? toLabel(trainMins) : null })
+    addToast('Meal schedule generated!', 'success')
+    setLoading(false)
+  }
+
+  const IS = { width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 14px', outline:'none' }
+  const LS = { fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8, display:'block' }
+
+  const mealTagColor = (meal) => {
+    if (meal.isPreWorkout) return '#eab308'
+    if (meal.isPostWorkout) return '#22c55e'
+    if (meal.isFirst) return '#E8000D'
+    if (meal.isLast) return '#aaaaaa'
+    return '#6a6a6a'
+  }
+  const mealTag = (meal) => {
+    if (meal.isPreWorkout) return '⚡ PRE-WORKOUT'
+    if (meal.isPostWorkout) return '✓ POST-WORKOUT'
+    if (meal.isFirst) return '◈ FIRST MEAL'
+    if (meal.isLast) return '◉ LAST MEAL'
+    return `● MEAL ${meal.index}`
+  }
+
+  return (
+    <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth: 800, margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{ marginBottom: isMobile ? 24 : 36 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
+          <span style={{ width:20, height:1, background:'#E8000D', opacity:0.4 }}/>Meal Timing Engine<span style={{ width:32, height:1, background:'#E8000D', opacity:0.4 }}/>
+        </div>
+        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize: isMobile ? 'clamp(32px,8vw,48px)' : 'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>
+          Eat At The<br/><span style={{ color:'#E8000D' }}>Right Time.</span>
+        </h2>
+      </div>
+
+      {!schedule ? (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 36 }}>
+          <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
+
+            {/* Wake / Sleep */}
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+              <div>
+                <label style={LS}>Wake Time</label>
+                <input type="time" value={form.wakeTime} onChange={e => set('wakeTime', e.target.value)}
+                  style={{ ...IS, colorScheme:'dark' }} />
+              </div>
+              <div>
+                <label style={LS}>Sleep Time</label>
+                <input type="time" value={form.sleepTime} onChange={e => set('sleepTime', e.target.value)}
+                  style={{ ...IS, colorScheme:'dark' }} />
+              </div>
+            </div>
+
+            {/* Training Day toggle + time */}
+            <div>
+              <label style={LS}>Is This a Training Day?</label>
+              <div style={{ display:'flex', gap:8, marginBottom: form.trainingDay ? 12 : 0 }}>
+                {[['yes', true, 'Training Day'], ['no', false, 'Rest Day']].map(([k, val, label]) => (
+                  <button key={k} onClick={() => set('trainingDay', val)}
+                    style={{ flex:1, padding:'12px', fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', cursor:'pointer',
+                      border:`1px solid ${form.trainingDay === val ? '#E8000D' : '#2a2a2a'}`,
+                      background: form.trainingDay === val ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
+                      color: form.trainingDay === val ? '#E8000D' : '#aaaaaa' }}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {form.trainingDay && (
+                <div>
+                  <label style={{ ...LS, marginTop: 12 }}>Training Start Time</label>
+                  <input type="time" value={form.trainingTime} onChange={e => set('trainingTime', e.target.value)}
+                    style={{ ...IS, colorScheme:'dark' }} />
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>
+                    Pre-workout meal: ~60 min before · Post-workout: ~45 min after
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Number of meals */}
+            <div>
+              <label style={LS}>Meals Per Day</label>
+              <div style={{ display:'flex', gap:6 }}>
+                {['3','4','5','6'].map(n => (
+                  <button key={n} onClick={() => set('mealCount', n)}
+                    style={{ flex:1, height:50, fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, cursor:'pointer',
+                      border:'1px solid #2a2a2a',
+                      background: form.mealCount === n ? '#E8000D' : '#0d0d0d',
+                      color: form.mealCount === n ? '#080808' : '#cccccc' }}>{n}</button>
+                ))}
+              </div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>
+                3–4 meals = easier to execute · 5–6 = more frequent protein doses
+              </div>
+            </div>
+
+            {/* Goal */}
+            <div>
+              <label style={LS}>Goal</label>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                {[
+                  ['aggressive_cut','Aggressive Cut','-500 cal deficit'],
+                  ['moderate_cut','Moderate Cut','-250 cal deficit'],
+                  ['maintain','Maintain','±0 cal'],
+                  ['lean_bulk','Lean Bulk','+300 cal surplus'],
+                  ['bulk','Bulk','+500 cal surplus'],
+                ].map(([k, l, sub]) => (
+                  <div key={k} onClick={() => set('goal', k)}
+                    style={{ padding:'11px 12px', cursor:'pointer',
+                      background: form.goal === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d',
+                      border:`1px solid ${form.goal === k ? '#E8000D' : '#2a2a2a'}`,
+                      gridColumn: k === 'maintain' ? 'span 2' : 'span 1' }}>
+                    <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: form.goal === k ? '#E8000D' : '#F5F5F5' }}>{l}</div>
+                    <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#888888', letterSpacing:0.5, marginTop:3 }}>{sub}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={buildSchedule} disabled={loading}
+              style={{ width:'100%', padding:'17px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer',
+                clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+              {loading ? 'BUILDING SCHEDULE...' : 'BUILD MY MEAL SCHEDULE →'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+
+          {/* Strategy Header */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'24px' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10, marginBottom:14 }}>
+              <div>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:4 }}>
+                  {schedule.goal} · {form.mealCount} Meals/Day
+                </div>
+                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1 }}>
+                  Your Timing Plan
+                </div>
+              </div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', textAlign:'right', lineHeight:1.8 }}>
+                Wake: {form.wakeTime}<br/>Sleep: {form.sleepTime}
+                {schedule.trainingTime && <><br/>Train: {schedule.trainingTime}</>}
+              </div>
+            </div>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.8, paddingTop:14, borderTop:'1px solid #1e1e1e' }}>
+              {schedule.strategy}
+            </div>
+          </div>
+
+          {/* Peri-workout note */}
+          <div style={{ background: form.trainingDay ? 'rgba(232,0,13,0.06)' : 'rgba(255,255,255,0.03)', border:`1px solid ${form.trainingDay ? 'rgba(232,0,13,0.2)' : '#1e1e1e'}`, padding:'12px 18px' }}>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color: form.trainingDay ? '#E8000D' : '#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
+              {schedule.periMsg}
+            </div>
+          </div>
+
+          {/* Macro distribution notes */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'16px 20px', display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr', gap:12 }}>
+            <div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:5 }}>Carb Strategy</div>
+              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.7 }}>{schedule.carbTiming.charAt(0).toUpperCase() + schedule.carbTiming.slice(1)}.</div>
+            </div>
+            <div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:5 }}>Fat Strategy</div>
+              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.7 }}>{schedule.fatTiming.charAt(0).toUpperCase() + schedule.fatTiming.slice(1)}.</div>
+            </div>
+          </div>
+
+          {/* Meal Cards */}
+          {schedule.meals.map((meal, i) => (
+            <div key={i} style={{ background:'#111111', border:'1px solid #1e1e1e', overflow:'hidden' }}>
+              {/* Meal header */}
+              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'14px 20px', borderBottom:'1px solid #1e1e1e',
+                background: meal.isPreWorkout ? 'rgba(234,179,8,0.05)' : meal.isPostWorkout ? 'rgba(34,197,94,0.05)' : 'transparent' }}>
+                <div>
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, letterSpacing:2, color: mealTagColor(meal), textTransform:'uppercase', marginBottom:3 }}>
+                    {mealTag(meal)}
+                  </div>
+                  <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5' }}>
+                    {meal.name}
+                  </div>
+                </div>
+                <div style={{ textAlign:'right' }}>
+                  <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:900, color: mealTagColor(meal), lineHeight:1 }}>
+                    {meal.timeLabel}
+                  </div>
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', marginTop:2 }}>TARGET TIME</div>
+                </div>
+              </div>
+
+              {/* Role */}
+              <div style={{ padding:'12px 20px 0', fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.7 }}>
+                {meal.role}
+              </div>
+
+              {/* Macro focus badge */}
+              <div style={{ padding:'10px 20px' }}>
+                <div style={{ display:'inline-block', background:'rgba(232,0,13,0.08)', border:'1px solid rgba(232,0,13,0.15)', padding:'5px 12px',
+                  fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>
+                  {meal.macroFocus}
+                </div>
+              </div>
+
+              {/* Food list */}
+              <div style={{ padding:'0 20px 14px', display:'flex', flexDirection:'column', gap:5 }}>
+                {meal.foods.map((food, fi) => (
+                  <div key={fi} style={{ display:'flex', alignItems:'center', gap:10 }}>
+                    <div style={{ width:4, height:4, borderRadius:'50%', background:'#E8000D', flexShrink:0, opacity:0.6 }} />
+                    <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#cccccc' }}>{food}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Coaching note */}
+              <div style={{ margin:'0 20px 16px', padding:'10px 14px', background:'#0d0d0d', border:'1px solid #1e1e1e', borderLeft:`2px solid ${mealTagColor(meal)}` }}>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, color:'#888888', lineHeight:1.7 }}>
+                  {meal.notes}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Daily summary timeline */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 20px' }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:14 }}>
+              Day Timeline
+            </div>
+            <div style={{ position:'relative' }}>
+              {/* Line */}
+              <div style={{ position:'absolute', left:16, top:8, bottom:8, width:1, background:'#1e1e1e' }} />
+              <div style={{ display:'flex', flexDirection:'column', gap:0 }}>
+                {[
+                  { label: 'Wake', time: form.wakeTime, color: '#F5F5F5', dot: '#2a2a2a' },
+                  ...schedule.meals.map(m => ({ label: m.name, time: m.timeLabel, color: mealTagColor(m), dot: mealTagColor(m) })),
+                  ...(form.trainingDay ? [{ label: 'Training', time: toLabel(toMins(form.trainingTime)), color: '#E8000D', dot: '#E8000D' }] : []),
+                  { label: 'Sleep', time: form.sleepTime, color: '#6a6a6a', dot: '#2a2a2a' }
+                ]
+                .sort((a, b) => {
+                  const getM = (t) => {
+                    if (t.includes(':') && (t.includes('AM') || t.includes('PM'))) {
+                      const [time, ampm] = t.split(' ')
+                      const [h, m] = time.split(':').map(Number)
+                      return (ampm === 'PM' && h !== 12 ? h + 12 : ampm === 'AM' && h === 12 ? 0 : h) * 60 + m
+                    }
+                    return toMins(t)
+                  }
+                  return getM(a.time) - getM(b.time)
+                })
+                .map((item, i) => (
+                  <div key={i} style={{ display:'flex', alignItems:'center', gap:14, paddingLeft:4, paddingBottom:16 }}>
+                    <div style={{ width:24, height:24, borderRadius:'50%', background: item.dot, border:`2px solid ${item.color}`, flexShrink:0, zIndex:1 }} />
+                    <div style={{ display:'flex', justifyContent:'space-between', flex:1, alignItems:'center' }}>
+                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:700, textTransform:'uppercase', color: item.color }}>{item.label}</div>
+                      <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#6a6a6a' }}>{item.time}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Rebuild button */}
+          <button onClick={() => setSchedule(null)}
+            style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+            ← Rebuild Schedule
+          </button>
         </div>
       )}
     </div>
@@ -1448,7 +1885,7 @@ export default function App() {
     switch(activeTab) {
       case 0: return <MacroCalculator isPro={isPro} onUpgrade={handleUpgrade} addToast={addToast} onMacrosCalculated={setLastMacros}/>
       case 1: return isPro ? <TrainingScore addToast={addToast} /> : <Paywall feature="Training Score" onUpgrade={handleUpgrade}/>
-      case 2: return isPro?<div style={{padding:40,color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace"}}>Meal Timing — Coming soon</div>:<Paywall feature="Meal Timing" onUpgrade={handleUpgrade}/>
+      case 2: return isPro ? <MealTimingEngine addToast={addToast} /> : <Paywall feature="Meal Timing" onUpgrade={handleUpgrade}/>
       case 3: return isPro?<div style={{padding:40,color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace"}}>AI Physique Rating — Coming soon</div>:<Paywall feature="AI Physique Rating" onUpgrade={handleUpgrade}/>
       case 4: return isPro?<div style={{padding:40,color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace"}}>Progress Tracking — Coming soon</div>:<Paywall feature="Progress Tracking" onUpgrade={handleUpgrade}/>
       default: return null
