@@ -126,7 +126,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
- const [message, setMessage] = useState('')
+  const [message, setMessage] = useState('')
   const [showForgot, setShowForgot] = useState(false)
   const [forgotEmail, setForgotEmail] = useState('')
   const [forgotSent, setForgotSent] = useState(false)
@@ -137,6 +137,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
       if (initialTab) setTab(initialTab)
       if (initialEmail) setEmail(initialEmail)
       setPassword('');setConfirm('');setError('');setMessage('')
+      setShowForgot(false);setForgotEmail('');setForgotSent(false)
     }
   }, [isOpen, initialTab, initialEmail])
 
@@ -146,27 +147,15 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
     try {
       const {data, error:e} = await supabase.auth.signInWithPassword({email,password})
       setLoading(false)
-      console.log('SIGN IN RESULT:', data?.user?.email, e?.message)
       if(e){setError(e.message);return}
       addToast('Signed in!','success');onSuccess();onClose()
     } catch(err) {
       setLoading(false)
       setError('Sign in failed: ' + err.message)
-      console.error('SIGN IN ERROR:', err)
     }
   }
 
   const handleSignUp = async () => {
-    const handleForgotPassword = async () => {
-    if (!forgotEmail || !forgotEmail.includes('@')) { setError('Enter a valid email'); return }
-    setForgotLoading(true); setError('')
-    const { error: e } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
-      redirectTo: 'https://builtbyyelyk.com'
-    })
-    setForgotLoading(false)
-    if (e) { setError(e.message); return }
-    setForgotSent(true)
-  }
     if (!email||!password||!confirm){setError('Please fill in all fields');return}
     if (password.length<8){setError('Password must be at least 8 characters');return}
     if (password!==confirm){setError('Passwords do not match');return}
@@ -183,6 +172,19 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
     setMessage('Account created! You\'re on the waitlist.')
   }
 
+  const handleForgotPassword = async () => {
+    if (!forgotEmail || !forgotEmail.includes('@')) { setError('Enter a valid email'); return }
+    setForgotLoading(true); setError('')
+    const { error: e } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: 'https://builtbyyelyk.com'
+    })
+    setForgotLoading(false)
+    if (e) { setError(e.message); return }
+    setForgotSent(true)
+  }
+
+  if (!isOpen) return null
+
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(8px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:40, width:'100%', maxWidth:420, position:'relative' }} onClick={e=>e.stopPropagation()}>
@@ -190,7 +192,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
         <div style={{ textAlign:'center', marginBottom:28 }}><Logo /></div>
         <div style={{ display:'flex', marginBottom:24, borderBottom:'1px solid #1e1e1e' }}>
           {['signin','signup'].map(t => (
-            <button key={t} onClick={() => {setTab(t);setError('');setMessage('')}} style={{ flex:1, padding:'12px', background:'none', border:'none', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', cursor:'pointer', color:tab===t?'#F5F5F5':'#6a6a6a', borderBottom:tab===t?'2px solid #E8000D':'2px solid transparent' }}>
+            <button key={t} onClick={() => {setTab(t);setError('');setMessage('');setShowForgot(false)}} style={{ flex:1, padding:'12px', background:'none', border:'none', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', cursor:'pointer', color:tab===t?'#F5F5F5':'#6a6a6a', borderBottom:tab===t?'2px solid #E8000D':'2px solid transparent' }}>
               {t==='signin'?'Sign In':'Sign Up'}
             </button>
           ))}
@@ -219,15 +221,12 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
                   style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }} />
               </div>
             )}
-          {error&&<div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
-        {tab === 'signin' && !showForgot && (
+            {error&&<div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
+            {tab === 'signin' && !showForgot && (
               <button onClick={() => { setShowForgot(true); setError('') }}
-                style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, cursor:'pointer', textAlign:'right', marginTop:-8, background:'none', border:'none', width:'100%' }}
-                onMouseOver={e=>e.target.style.color='#E8000D'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
+                style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, cursor:'pointer', textAlign:'right', background:'none', border:'none', width:'100%' }}>
                 Forgot password?
               </button>
-            )}                Forgot password?
-              </div>
             )}
             {showForgot && (
               <div style={{ display:'flex', flexDirection:'column', gap:12, padding:'16px', background:'#0d0d0d', border:'1px solid #2a2a2a' }}>
@@ -238,8 +237,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
                 ) : (
                   <>
                     <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#aaaaaa', letterSpacing:1 }}>RESET PASSWORD</div>
-                    <input type="email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)}
-                      placeholder="your@email.com"
+                    <input type="email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)} placeholder="your@email.com"
                       style={{ width:'100%', background:'#111111', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:14, padding:'11px 14px', outline:'none' }}
                       onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
                     <div style={{ display:'flex', gap:8 }}>
@@ -265,9 +263,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
       </div>
     </div>
   )
-}
-
-function Paywall({ feature, onUpgrade }) {
+}function Paywall({ feature, onUpgrade }) {
   return (
     <div style={{ padding:'80px 40px', textAlign:'center', minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ maxWidth:440 }}>
