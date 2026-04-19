@@ -221,7 +221,41 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
                   style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }} />
               </div>
             )}
-            {error&&<div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
+          {error&&<div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
+            {tab === 'signin' && !showForgot && (
+              <div onClick={() => { setShowForgot(true); setError('') }}
+                style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, cursor:'pointer', textAlign:'right', marginTop:-8 }}
+                onMouseOver={e=>e.target.style.color='#E8000D'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
+                Forgot password?
+              </div>
+            )}
+            {showForgot && (
+              <div style={{ display:'flex', flexDirection:'column', gap:12, padding:'16px', background:'#0d0d0d', border:'1px solid #2a2a2a' }}>
+                {forgotSent ? (
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#22c55e', letterSpacing:1, lineHeight:1.8, textAlign:'center' }}>
+                    ✓ Reset link sent. Check your email.
+                  </div>
+                ) : (
+                  <>
+                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#aaaaaa', letterSpacing:1 }}>RESET PASSWORD</div>
+                    <input type="email" value={forgotEmail} onChange={e => setForgotEmail(e.target.value)}
+                      placeholder="your@email.com"
+                      style={{ width:'100%', background:'#111111', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:14, padding:'11px 14px', outline:'none' }}
+                      onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+                    <div style={{ display:'flex', gap:8 }}>
+                      <button onClick={() => { setShowForgot(false); setForgotEmail(''); setError('') }}
+                        style={{ flex:1, padding:'10px', background:'transparent', color:'#6a6a6a', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+                        Cancel
+                      </button>
+                      <button onClick={handleForgotPassword} disabled={forgotLoading}
+                        style={{ flex:2, padding:'10px', background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, textTransform:'uppercase', border:'none', cursor:'pointer', fontWeight:600 }}>
+                        {forgotLoading ? 'Sending...' : 'Send Reset Link'}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
             <button onClick={tab==='signin'?handleSignIn:handleSignUp} disabled={loading}
               style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, marginTop:8 }}>
               {loading?'Loading...':tab==='signin'?'Sign In':'Create Account & Join Waitlist'}
