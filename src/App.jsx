@@ -1573,8 +1573,19 @@ useEffect(() => {
     window.location.href = window.location.origin
   }
 
-  const handleUpgrade = () => {
-    window.open('https://builtbyyelyk.com/pricing','_blank')
+const handleResetSubmit = async () => {
+    if (!resetPassword || resetPassword.length < 8) { setResetError('Password must be at least 8 characters'); return }
+    if (resetPassword !== resetConfirm) { setResetError('Passwords do not match'); return }
+    setResetLoading(true); setResetError('')
+    const { error } = await supabase.auth.updateUser({ password: resetPassword })
+    setResetLoading(false)
+    if (error) { setResetError(error.message); return }
+    setResetDone(true)
+    setTimeout(() => {
+      setResetMode(false)
+      window.location.href = window.location.origin
+    }, 2000)
+  }    window.open('https://builtbyyelyk.com/pricing','_blank')
     addToast('Opening pricing...','info')
   }
 
@@ -1623,6 +1634,14 @@ useEffect(() => {
           onSignIn={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1');openAuth('signin')}}
           onSignUp={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1');openAuth('signup')}}
           onClose={()=>{setWelcomeOpen(false);sessionStorage.setItem('bby_welcome_dismissed','1')}}
+        />
+      )}
+      {resetMode && (
+        <ResetPasswordModal
+          password={resetPassword} setPassword={setResetPassword}
+          confirm={resetConfirm} setConfirm={setResetConfirm}
+          loading={resetLoading} done={resetDone} error={resetError}
+          onSubmit={handleResetSubmit}
         />
       )}
       <AuthModal isOpen={authOpen} onClose={()=>setAuthOpen(false)} onSuccess={()=>{setIsLoggedIn(true);setAuthOpen(false)}} addToast={addToast} initialTab={authInitialTab} initialEmail={authInitialEmail} onWaitlistJoined={()=>addToast('You\'re on the waitlist!','success')}/>
