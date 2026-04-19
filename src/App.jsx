@@ -226,15 +226,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
                 onMouseOver={e=>e.target.style.color='#E8000D'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
                 Forgot password?
               </button>
-            )}
-                style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, cursor:'pointer', textAlign:'right', marginTop:-8, background:'none', border:'none', width:'100%' }}
-                onMouseOver={e=>e.target.style.color='#E8000D'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
-                Forgot password?
-              </button>
-            )}
-                style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, cursor:'pointer', textAlign:'right', marginTop:-8 }}
-                onMouseOver={e=>e.target.style.color='#E8000D'} onMouseOut={e=>e.target.style.color='#6a6a6a'}>
-                Forgot password?
+            )}                Forgot password?
               </div>
             )}
             {showForgot && (
