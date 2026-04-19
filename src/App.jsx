@@ -141,10 +141,17 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   const handleSignIn = async () => {
     if (!email||!password){setError('Please fill in all fields');return}
     setLoading(true);setError('')
-    const {error:e} = await supabase.auth.signInWithPassword({email,password})
-    setLoading(false)
-    if(e){setError(e.message);return}
-    addToast('Signed in!','success');onSuccess();onClose()
+    try {
+      const {data, error:e} = await supabase.auth.signInWithPassword({email,password})
+      setLoading(false)
+      console.log('SIGN IN RESULT:', data?.user?.email, e?.message)
+      if(e){setError(e.message);return}
+      addToast('Signed in!','success');onSuccess();onClose()
+    } catch(err) {
+      setLoading(false)
+      setError('Sign in failed: ' + err.message)
+      console.error('SIGN IN ERROR:', err)
+    }
   }
 
   const handleSignUp = async () => {
