@@ -1491,8 +1491,13 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(0)
   const [lastMacros, setLastMacros] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
-  const [welcomeOpen, setWelcomeOpen] = useState(false)
-  const { toasts, addToast } = useToast()
+const [welcomeOpen, setWelcomeOpen] = useState(false)
+  const [resetMode, setResetMode] = useState(false)
+  const [resetPassword, setResetPassword] = useState('')
+  const [resetConfirm, setResetConfirm] = useState('')
+  const [resetLoading, setResetLoading] = useState(false)
+  const [resetDone, setResetDone] = useState(false)
+  const [resetError, setResetError] = useState('')  const { toasts, addToast } = useToast()
   const isMobile = useIsMobile()
 
   const openAuth = (tab = 'signin', email = '') => {
@@ -1515,6 +1520,11 @@ useEffect(() => {
         if (!dismissed) setWelcomeOpen(true)
       }
       setSessionLoading(false)
+      // Check for password reset token in URL
+      const hash = window.location.hash
+      if (hash.includes('type=recovery')) {
+        setResetMode(true)
+      }
     }
     init()
   }, [])
