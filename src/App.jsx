@@ -1543,8 +1543,8 @@ const [welcomeOpen, setWelcomeOpen] = useState(false)
   const [resetConfirm, setResetConfirm] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
   const [resetDone, setResetDone] = useState(false)
-  const [resetError, setResetError] = useState('')  const { toasts, addToast } = useToast()
-  const isMobile = useIsMobile()
+const [resetError, setResetError] = useState('')
+  const { toasts, addToast } = useToast()  const isMobile = useIsMobile()
 
   const openAuth = (tab = 'signin', email = '') => {
     setAuthInitialTab(tab); setAuthInitialEmail(email); setAuthOpen(true)
@@ -1594,8 +1594,11 @@ const handleResetSubmit = async () => {
     setTimeout(() => {
       setResetMode(false)
       window.location.href = window.location.origin
-    }, 2000)
-  }    window.open('https://builtbyyelyk.com/pricing','_blank')
+   }, 2000)
+  }
+
+  const handleUpgrade = () => {
+    window.open('https://builtbyyelyk.com/pricing','_blank')
     addToast('Opening pricing...','info')
   }
 
