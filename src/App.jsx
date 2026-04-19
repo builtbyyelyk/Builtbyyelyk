@@ -1446,7 +1446,43 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
     </div>
   )
 }
-
+function ResetPasswordModal({ password, setPassword, confirm, setConfirm, loading, done, error, onSubmit }) {
+  return (
+    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
+      <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:40, width:'100%', maxWidth:420 }}>
+        <div style={{ textAlign:'center', marginBottom:28 }}><Logo /></div>
+        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:20, textAlign:'center' }}>
+          Set New <span style={{color:'#E8000D'}}>Password</span>
+        </div>
+        {done ? (
+          <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, color:'#22c55e', textAlign:'center', lineHeight:1.8 }}>
+            ✓ Password updated. You can now sign in.
+          </div>
+        ) : (
+          <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+            <div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>New Password</div>
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
+                style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }}
+                onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+            </div>
+            <div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>Confirm Password</div>
+              <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="••••••••"
+                style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }}
+                onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+            </div>
+            {error && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
+            <button onClick={onSubmit} disabled={loading}
+              style={{ width:'100%', padding:'15px', background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', cursor:'pointer', fontWeight:600, marginTop:8 }}>
+              {loading ? 'Updating...' : 'Update Password'}
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 function Footer() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
   const isMobile = useIsMobile()
