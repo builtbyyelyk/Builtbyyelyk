@@ -126,7 +126,11 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [message, setMessage] = useState('')
+ const [message, setMessage] = useState('')
+  const [showForgot, setShowForgot] = useState(false)
+  const [forgotEmail, setForgotEmail] = useState('')
+  const [forgotSent, setForgotSent] = useState(false)
+  const [forgotLoading, setForgotLoading] = useState(false)
 
   useEffect(() => {
     if (isOpen) {
@@ -155,6 +159,16 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   }
 
   const handleSignUp = async () => {
+    const handleForgotPassword = async () => {
+    if (!forgotEmail || !forgotEmail.includes('@')) { setError('Enter a valid email'); return }
+    setForgotLoading(true); setError('')
+    const { error: e } = await supabase.auth.resetPasswordForEmail(forgotEmail, {
+      redirectTo: 'https://builtbyyelyk.com'
+    })
+    setForgotLoading(false)
+    if (e) { setError(e.message); return }
+    setForgotSent(true)
+  }
     if (!email||!password||!confirm){setError('Please fill in all fields');return}
     if (password.length<8){setError('Password must be at least 8 characters');return}
     if (password!==confirm){setError('Passwords do not match');return}
