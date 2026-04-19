@@ -1452,9 +1452,7 @@ export default function App() {
           const { data: profile, error } = await supabase
             .from('user_profiles').select('plan').eq('id', session.user.id).single()
           if (error || !profile) {
-            await supabase.auth.signOut()
             setIsLoggedIn(false); setIsPro(false)
-            localStorage.clear(); sessionStorage.clear()
           } else {
             setIsLoggedIn(true)
             setIsPro(profile.plan === 'pro')
