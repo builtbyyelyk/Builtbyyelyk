@@ -140,8 +140,6 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
     }
   }, [isOpen, initialTab, initialEmail])
 
-  if (!isOpen) return null
-
   const handleSignIn = async () => {
     if (!email||!password){setError('Please fill in all fields');return}
     setLoading(true);setError('')
