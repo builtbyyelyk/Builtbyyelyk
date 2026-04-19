@@ -1566,11 +1566,6 @@ useEffect(() => {
         if (!dismissed) setWelcomeOpen(true)
       }
       setSessionLoading(false)
-      // Check for password reset token in URL
-      const hash = window.location.hash
-      if (hash.includes('type=recovery')) {
-        setResetMode(true)
-      }
     }
     init()
   }, [])
