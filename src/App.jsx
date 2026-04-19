@@ -1452,24 +1452,23 @@ export default function App() {
   }
 
 useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log('AUTH EVENT:', event, session?.user?.email)
+    const init = async () => {
+      await new Promise(r => setTimeout(r, 200))
+      const { data: { session } } = await supabase.auth.getSession()
       if (session?.user) {
         const { data: profile } = await supabase
           .from('user_profiles').select('plan').eq('id', session.user.id).single()
         setIsLoggedIn(true)
         setIsPro(profile?.plan === 'pro')
-        if (event === 'SIGNED_OUT') {
-          setIsLoggedIn(false); setIsPro(false)
-        }
       } else {
-        setIsLoggedIn(false); setIsPro(false)
+        setIsLoggedIn(false)
+        setIsPro(false)
         const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
         if (!dismissed) setWelcomeOpen(true)
       }
       setSessionLoading(false)
-    })
-    return () => subscription.unsubscribe()
+    }
+    init()
   }, [])
 
   const handleSignOut = (e) => {
