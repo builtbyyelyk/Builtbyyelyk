@@ -1451,43 +1451,23 @@ export default function App() {
     setAuthInitialTab(tab); setAuthInitialEmail(email); setAuthOpen(true)
   }
 
-  useEffect(() => {
-    const checkSession = async () => {
-      await new Promise(r => setTimeout(r, 100))
-      try {
-        const { data: { session } } = await supabase.auth.getSession()
-        if (session?.user) {
-          const { data: profile, error } = await supabase
-            .from('user_profiles').select('plan').eq('id', session.user.id).single()
-          if (error || !profile) {
-            setIsLoggedIn(false); setIsPro(false)
-          } else {
-            setIsLoggedIn(true)
-            setIsPro(profile.plan === 'pro')
-          }
-        } else {
-          setIsLoggedIn(false); setIsPro(false)
-          const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
-          if (!dismissed) setWelcomeOpen(true)
-        }
-      } catch(err) {
-        setIsLoggedIn(false); setIsPro(false)
-      }
-      setSessionLoading(false)
-    }
-    checkSession()
-
+useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        const { data: profile } = await supabase.from('user_profiles').select('plan').eq('id', session.user.id).single()
+      console.log('AUTH EVENT:', event, session?.user?.email)
+      if (session?.user) {
+        const { data: profile } = await supabase
+          .from('user_profiles').select('plan').eq('id', session.user.id).single()
         setIsLoggedIn(true)
         setIsPro(profile?.plan === 'pro')
-      } else if (event === 'SIGNED_OUT') {
+        if (event === 'SIGNED_OUT') {
+          setIsLoggedIn(false); setIsPro(false)
+        }
+      } else {
         setIsLoggedIn(false); setIsPro(false)
-      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-        const { data: profile } = await supabase.from('user_profiles').select('plan').eq('id', session.user.id).single()
-        setIsPro(profile?.plan === 'pro')
+        const dismissed = sessionStorage.getItem('bby_welcome_dismissed')
+        if (!dismissed) setWelcomeOpen(true)
       }
+      setSessionLoading(false)
     })
     return () => subscription.unsubscribe()
   }, [])
