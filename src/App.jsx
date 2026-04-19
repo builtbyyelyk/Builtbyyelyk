@@ -1530,7 +1530,6 @@ const [welcomeOpen, setWelcomeOpen] = useState(false)
   const [resetLoading, setResetLoading] = useState(false)
   const [resetDone, setResetDone] = useState(false)
 const [resetError, setResetError] = useState('')
-const [resetError, setResetError] = useState('')
   const { toasts, addToast } = useToast()
   const isMobile = useIsMobile()
   const openAuth = (tab = 'signin', email = '') => {
