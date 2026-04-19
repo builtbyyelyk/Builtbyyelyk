@@ -1453,6 +1453,7 @@ export default function App() {
 
   useEffect(() => {
     const checkSession = async () => {
+      await new Promise(r => setTimeout(r, 100))
       try {
         const { data: { session } } = await supabase.auth.getSession()
         if (session?.user) {
