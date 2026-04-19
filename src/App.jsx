@@ -2399,6 +2399,8 @@ export default function App() {
    const checkSession = async () => {
       try {
         const { data: { session } } = await supabase.auth.getSession()
+        console.log('SESSION EMAIL:', session?.user?.email)
+        console.log('SESSION USER ID:', session?.user?.id)
         if (session?.user) {
           const { data: profile, error } = await supabase
             .from('user_profiles')
