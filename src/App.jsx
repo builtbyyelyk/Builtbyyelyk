@@ -2432,16 +2432,23 @@ export default function App() {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_IN' && session?.user) {
-        setIsLoggedIn(true)
         const { data: profile } = await supabase
           .from('user_profiles')
           .select('plan')
           .eq('id', session.user.id)
           .single()
-        if (profile?.plan === 'pro') setIsPro(true)
+        setIsLoggedIn(true)
+        setIsPro(profile?.plan === 'pro')
       } else if (event === 'SIGNED_OUT') {
         setIsLoggedIn(false)
         setIsPro(false)
+      } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        const { data: profile } = await supabase
+          .from('user_profiles')
+          .select('plan')
+          .eq('id', session.user.id)
+          .single()
+        setIsPro(profile?.plan === 'pro')
       }
     })
 
