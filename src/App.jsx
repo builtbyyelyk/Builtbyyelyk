@@ -1,4 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  import React, { useState, useEffect } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import './index.css'
 
