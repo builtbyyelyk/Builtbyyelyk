@@ -12,9 +12,6 @@ export default async function handler(req, res) {
 
   const { paymentMethodId, priceType, userId, email } = req.body;
 
-  const amount = priceType === 'annual' ? 12499 : 1299;
-  const interval = priceType === 'annual' ? 'year' : 'month';
-
   try {
     const customers = await stripe.customers.list({ email, limit: 1 });
     let customer;
@@ -29,16 +26,13 @@ export default async function handler(req, res) {
       invoice_settings: { default_payment_method: paymentMethodId }
     });
 
-    const price = await stripe.prices.create({
-      unit_amount: amount,
-      currency: 'usd',
-      recurring: { interval },
-      product_data: { name: 'BUILT by YELYK Pro' }
-    });
+   const priceId = priceType === 'annual'
+      ? 'price_1TCk98IiCMt6oiqgTLdx5MTz'
+      : 'price_1TCk7sIiCMt6oiqg5qyK8eHm'
 
     const subscription = await stripe.subscriptions.create({
       customer: customer.id,
-      items: [{ price: price.id }],
+      items: [{ price: priceId }],
       payment_settings: { payment_method_types: ['card'], save_default_payment_method: 'on_subscription' },
       expand: ['latest_invoice.payment_intent']
     });
