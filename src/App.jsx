@@ -1754,6 +1754,7 @@ const handleUpgradeSuccess = async () => {
           onSubmit={handleResetSubmit}
         />
       )}
+      <ProUpgradeModal isOpen={upgradeOpen} onClose={()=>setUpgradeOpen(false)} addToast={addToast} onUpgradeSuccess={handleUpgradeSuccess} />
       <AuthModal isOpen={authOpen} onClose={()=>setAuthOpen(false)} onSuccess={()=>{setIsLoggedIn(true);setAuthOpen(false)}} addToast={addToast} initialTab={authInitialTab} initialEmail={authInitialEmail} onWaitlistJoined={()=>addToast('You\'re on the waitlist!','success')}/>
       <ToastContainer toasts={toasts}/>
     </div>
