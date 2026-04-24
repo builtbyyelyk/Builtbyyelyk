@@ -261,13 +261,15 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
             <button onClick={tab==='signin'?handleSignIn:handleSignUp} disabled={loading}
               style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, marginTop:8 }}>
               {loading?'Loading...':tab==='signin'?'Sign In':'Create Account & Join Waitlist'}
-            </button>
+           </button>
           </div>
         )}
       </div>
     </div>
   )
-  function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
+}
+
+function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
