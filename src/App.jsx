@@ -328,10 +328,6 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
     </div>
   )
 }
-
-function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
-  const [priceType, setPriceType] = useState('monthly')
-  const isMobile = useIsMobile()
   if (!isOpen) return null
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
