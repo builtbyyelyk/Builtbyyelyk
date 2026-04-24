@@ -1730,7 +1730,8 @@ function Footer() {
   )
 }
 
-export default function App()const { toasts, addToast } = useToast() {
+export default function App() {
+  const { toasts, addToast } = useToast()
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isPro, setIsPro] = useState(false)
   const [authOpen, setAuthOpen] = useState(false)
