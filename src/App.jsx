@@ -480,6 +480,7 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
 }
 
 function Paywall({ feature, onUpgrade }) {
+  return (
     <div style={{ padding:'80px 40px', textAlign:'center', minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ maxWidth:440 }}>
         <div style={{ fontSize:52, marginBottom:20 }}>🔒</div>
