@@ -261,7 +261,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
             <button onClick={tab==='signin'?handleSignIn:handleSignUp} disabled={loading}
               style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, marginTop:8 }}>
               {loading?'Loading...':tab==='signin'?'Sign In':'Create Account & Join Waitlist'}
-           </button>
+            </button>
           </div>
         )}
       </div>
@@ -269,102 +269,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   )
 }
 
-  const handleSubmit = async () => {
-    if (!stripe || !elements) return
-    setLoading(true); setError('')
-    const card = elements.getElement(CardElement)
-    const { error: pmError, paymentMethod } = await stripe.createPaymentMethod({ type: 'card', card })
-    if (pmError) { setError(pmError.message); setLoading(false); return }
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session?.user) { setError('Not signed in.'); setLoading(false); return }
-    try {
-      const res = await fetch('/api/create-subscription', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          paymentMethodId: paymentMethod.id,
-          priceType,
-          userId: session.user.id,
-          email: session.user.email
-        })
-      })
-      const data = await res.json()
-      if (data.error) { setError(data.error); setLoading(false); return }
-      if (data.requiresAction) {
-        const { error: actionError } = await stripe.confirmCardPayment(data.clientSecret)
-        if (actionError) { setError(actionError.message); setLoading(false); return }
-      }
-      addToast('Welcome to Pro! 🔥', 'success')
-      onSuccess()
-    } catch (err) {
-      setError('Payment failed. Try again.')
-      setLoading(false)
-    }
-  }
-
-  return (
-    <div style={{ display:'flex', flexDirection:'column', gap:20 }}>
-      <div>
-        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:10 }}>Card Details</div>
-        <div style={{ background:'#0d0d0d', border:'1px solid #2a2a2a', padding:'14px 16px' }}
-          onFocus={e=>e.currentTarget.style.borderColor='#E8000D'}
-          onBlur={e=>e.currentTarget.style.borderColor='#2a2a2a'}>
-          <CardElement options={{
-            style: {
-              base: { color:'#F5F5F5', fontFamily:"'Barlow', sans-serif", fontSize:'15px', '::placeholder':{ color:'#6a6a6a' } },
-              invalid: { color:'#E8000D' }
-            }
-          }} />
-        </div>
-      </div>
-      {error && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
-      <button onClick={handleSubmit} disabled={loading || !stripe}
-        style={{ width:'100%', padding:'16px', background: loading ? '#2a2a2a' : '#E8000D', color: loading ? '#6a6a6a' : '#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: loading ? 'not-allowed' : 'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-        {loading ? 'Processing...' : `Pay ${priceType === 'annual' ? '$124.99/year' : '$12.99/month'} →`}
-      </button>
-      <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', textAlign:'center', letterSpacing:1, lineHeight:1.8 }}>
-        Secured by Stripe · Cancel anytime · No hidden fees
-      </div>
-    </div>
- )
-
-  if (!isOpen) return null
-  return (
-    <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
-      <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 20px':40, width:'100%', maxWidth:460, position:'relative', maxHeight:'90vh', overflowY:'auto' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>✕</button>
-        <div style={{ textAlign:'center', marginBottom:24 }}>
-          <Logo />
-          <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:36, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginTop:16, lineHeight:0.9 }}>
-            Upgrade to <span style={{color:'#E8000D'}}>Pro</span>
-          </h2>
-          <p style={{ color:'#aaaaaa', fontSize:13, lineHeight:1.8, marginTop:10 }}>Unlock Training Score, Meal Timing, AI Physique Rating & more.</p>
-        </div>
-        <div style={{ display:'flex', marginBottom:20, border:'1px solid #2a2a2a' }}>
-          {[['monthly','Monthly','$12.99/mo'],['annual','Annual','$124.99/yr']].map(([key, label, price]) => (
-            <button key={key} onClick={() => setPriceType(key)}
-              style={{ flex:1, padding:'12px 8px', background: priceType===key ? 'rgba(232,0,13,0.1)' : 'transparent', border:'none', borderBottom: priceType===key ? '2px solid #E8000D' : '2px solid transparent', cursor:'pointer', textAlign:'center' }}>
-              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, textTransform:'uppercase', color: priceType===key ? '#E8000D' : '#aaaaaa' }}>{label}</div>
-              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color: priceType===key ? '#F5F5F5' : '#6a6a6a', marginTop:2 }}>{price}</div>
-              {key==='annual' && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#22c55e', marginTop:2 }}>Save 20%</div>}
-            </button>
-          ))}
-        </div>
-        <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'12px 16px', marginBottom:20, display:'flex', flexDirection:'column', gap:6 }}>
-          {['Unlimited macro calculations','Training Score (0–100)','Meal Timing Engine','AI Physique Rating','Progress Tracking'].map(f => (
-            <div key={f} style={{ display:'flex', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', alignItems:'center' }}>
-              <span style={{ color:'#22c55e', flexShrink:0 }}>✓</span>{f}
-            </div>
-          ))}
-        </div>
-        <Elements stripe={stripePromise}>
-          <CheckoutForm priceType={priceType} onSuccess={onUpgradeSuccess} addToast={addToast} onClose={onClose} />
-        </Elements>
-      </div>
-  </div>
-    )
-}
-
+function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
 function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
   const stripe = useStripe()
   const elements = useElements()
