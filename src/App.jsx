@@ -270,7 +270,6 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
 }
 
 function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
-function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
   const stripe = useStripe()
   const elements = useElements()
   const [loading, setLoading] = useState(false)
