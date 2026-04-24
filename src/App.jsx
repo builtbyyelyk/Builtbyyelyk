@@ -361,8 +361,8 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
           <CheckoutForm priceType={priceType} onSuccess={onUpgradeSuccess} addToast={addToast} onClose={onClose} />
         </Elements>
       </div>
-    </div>
-  )
+  </div>
+    )
 }
 
 function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
