@@ -1689,9 +1689,15 @@ const handleResetSubmit = async () => {
   }
 
   const handleUpgrade = () => {
-    window.open('https://builtbyyelyk.com/pricing','_blank')
-    addToast('Opening pricing...','info')
-  }
+  if (!isLoggedIn) { openAuth('signup'); return }
+  setUpgradeOpen(true)
+}
+
+const handleUpgradeSuccess = async () => {
+  setUpgradeOpen(false)
+  setIsPro(true)
+  addToast('You\'re now Pro! Welcome. 🔥', 'success')
+}
 
   const renderTab = () => {
     switch(activeTab) {
