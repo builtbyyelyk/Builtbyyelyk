@@ -374,7 +374,6 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
     </div>
   )
 }
-}
 
 function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
   const stripe = useStripe()
