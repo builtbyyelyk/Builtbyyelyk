@@ -1,0 +1,3 @@
+[submodule "skills/heygen-skills"]
+	path = skills/heygen-skills
+	url = https://github.com/heygen-com/skills.git
