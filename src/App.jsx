@@ -2,7 +2,7 @@ import { loadStripe } from '@stripe/stripe-js'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
-  import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import './index.css'
 
@@ -26,7 +26,7 @@ function ToastContainer({ toasts }) {
     <div style={{ position:'fixed', bottom:24, right:24, zIndex:10000, display:'flex', flexDirection:'column', gap:10 }}>
       {toasts.map(t => (
         <div key={t.id} style={{ background:'#111111', border:'1px solid #2a2a2a', borderLeft:`3px solid ${t.type==='success'?'#22c55e':t.type==='error'?'#E8000D':'#F5F5F5'}`, padding:'14px 20px', fontSize:13, color:'#F5F5F5', display:'flex', alignItems:'center', gap:10, minWidth:260 }}>
-          <span>{t.type==='success'?'✓':'✕'}</span>{t.message}
+          <span>{t.type==='success'?'‚úì':'‚úï'}</span>{t.message}
         </div>
       ))}
     </div>
@@ -48,24 +48,24 @@ function WelcomePopup({ onSignIn, onSignUp, onClose }) {
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.88)', backdropFilter:'blur(12px)', zIndex:900, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 24px':48, width:'100%', maxWidth:460, position:'relative', textAlign:'center' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer', fontFamily:"'Share Tech Mono',monospace" }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer', fontFamily:"'Share Tech Mono',monospace" }}>‚úï</button>
         <div style={{ display:'flex', justifyContent:'center', marginBottom:24 }}><Logo /></div>
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:isMobile?32:42, fontWeight:900, textTransform:'uppercase', lineHeight:0.9, marginBottom:12, color:'#F5F5F5' }}>
           GET <span style={{color:'#E8000D'}}>BUILT.</span>
         </h2>
         <p style={{ color:'#aaaaaa', fontSize:isMobile?13:15, lineHeight:1.8, fontWeight:300, marginBottom:28, maxWidth:340, margin:'0 auto 28px' }}>
-          Precision macro targets, training intelligence, and AI physique rating — built by a real coach.
+          Precision macro targets, training intelligence, and AI physique rating ‚Äî built by a real coach.
         </p>
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           <button onClick={onSignUp} style={{ width:'100%', background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-            Create Account →
+            Create Account ‚Üí
           </button>
           <button onClick={onSignIn} style={{ width:'100%', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', padding:'14px', cursor:'pointer' }}>
             I Already Have An Account
           </button>
         </div>
         <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', letterSpacing:1.5, marginTop:18, lineHeight:1.6 }}>
-          Join the waitlist · Lock in founding member pricing
+          Join the waitlist ¬∑ Lock in founding member pricing
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(8px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:40, width:'100%', maxWidth:420, position:'relative' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>‚úï</button>
         <div style={{ textAlign:'center', marginBottom:28 }}><Logo /></div>
         <div style={{ display:'flex', marginBottom:24, borderBottom:'1px solid #1e1e1e' }}>
           {['signin','signup'].map(t => (
@@ -202,7 +202,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
           ))}
         </div>
         {message ? (
-          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center', lineHeight:1.8 }}>✓ {message}</div>
+          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center', lineHeight:1.8 }}>‚úì {message}</div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
             {tab==='signup'&&(
@@ -210,7 +210,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
                 Create an account to join the waitlist &amp; lock in founding member pricing
               </div>
             )}
-            {[['Email','email',email,setEmail,'your@email.com'],['Password','password',password,setPassword,'••••••••']].map(([label,type,val,setter,ph]) => (
+            {[['Email','email',email,setEmail,'your@email.com'],['Password','password',password,setPassword,'‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢']].map(([label,type,val,setter,ph]) => (
               <div key={label}>
                 <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>{label}</div>
                 <input type={type} value={val} onChange={e=>setter(e.target.value)} placeholder={ph}
@@ -221,7 +221,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
             {tab==='signup'&&(
               <div>
                 <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>Confirm Password</div>
-                <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="••••••••"
+                <input type="password" value={confirm} onChange={e=>setConfirm(e.target.value)} placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢"
                   style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }} />
               </div>
             )}
@@ -236,7 +236,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
               <div style={{ display:'flex', flexDirection:'column', gap:12, padding:'16px', background:'#0d0d0d', border:'1px solid #2a2a2a' }}>
                 {forgotSent ? (
                   <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#22c55e', letterSpacing:1, lineHeight:1.8, textAlign:'center' }}>
-                    ✓ Reset link sent. Check your email.
+                    ‚úì Reset link sent. Check your email.
                   </div>
                 ) : (
                   <>
@@ -300,7 +300,7 @@ function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
         const { error: actionError } = await stripe.confirmCardPayment(data.clientSecret)
         if (actionError) { setError(actionError.message); setLoading(false); return }
       }
-      addToast('Welcome to Pro! 🔥', 'success')
+      addToast('Welcome to Pro! üî•', 'success')
       onSuccess()
     } catch (err) {
       setError('Payment failed. Try again.')
@@ -324,10 +324,10 @@ function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
       {error && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
       <button onClick={handleSubmit} disabled={loading || !stripe}
         style={{ width:'100%', padding:'16px', background: loading ? '#2a2a2a' : '#E8000D', color: loading ? '#6a6a6a' : '#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: loading ? 'not-allowed' : 'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-        {loading ? 'Processing...' : `Pay ${priceType === 'annual' ? '$124.99/year' : '$12.99/month'} →`}
+        {loading ? 'Processing...' : `Pay ${priceType === 'annual' ? '$124.99/year' : '$12.99/month'} ‚Üí`}
       </button>
       <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', textAlign:'center', letterSpacing:1, lineHeight:1.8 }}>
-        Secured by Stripe · Cancel anytime · No hidden fees
+        Secured by Stripe ¬∑ Cancel anytime ¬∑ No hidden fees
       </div>
     </div>
   )
@@ -340,7 +340,7 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 20px':40, width:'100%', maxWidth:460, position:'relative', maxHeight:'90vh', overflowY:'auto' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>✕</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>‚úï</button>
         <div style={{ textAlign:'center', marginBottom:24 }}>
           <Logo />
           <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:36, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginTop:16, lineHeight:0.9 }}>
@@ -359,9 +359,9 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
           ))}
         </div>
         <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'12px 16px', marginBottom:20, display:'flex', flexDirection:'column', gap:6 }}>
-          {['Unlimited macro calculations','Training Score (0–100)','Meal Timing Engine','AI Physique Rating','Progress Tracking'].map(f => (
+          {['Unlimited macro calculations','Training Score (0‚Äì100)','Meal Timing Engine','AI Physique Rating','Progress Tracking'].map(f => (
             <div key={f} style={{ display:'flex', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', alignItems:'center' }}>
-              <span style={{ color:'#22c55e', flexShrink:0 }}>✓</span>{f}
+              <span style={{ color:'#22c55e', flexShrink:0 }}>‚úì</span>{f}
             </div>
           ))}
         </div>
@@ -377,13 +377,13 @@ function Paywall({ feature, onUpgrade }) {
   return (
     <div style={{ padding:'80px 40px', textAlign:'center', minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ maxWidth:440 }}>
-        <div style={{ fontSize:52, marginBottom:20 }}>🔒</div>
+        <div style={{ fontSize:52, marginBottom:20 }}>üîí</div>
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:52, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:14, lineHeight:0.9 }}>
           {feature}<br/><span style={{color:'#E8000D'}}>is Pro</span>
         </h2>
         <p style={{ color:'#aaaaaa', fontSize:15, lineHeight:1.8, fontWeight:300, marginBottom:32 }}>Upgrade to Pro to unlock {feature} plus unlimited macro calculations, meal timing, and AI physique rating.</p>
         <button onClick={onUpgrade} style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:12, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'16px 40px', cursor:'pointer', fontWeight:600 }}>
-          Upgrade to Pro — $12.99/mo →
+          Upgrade to Pro ‚Äî $12.99/mo ‚Üí
         </button>
       </div>
     </div>
@@ -480,7 +480,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
   const goals=[
     {k:'aggressive_cut',l:'Aggressive Cut',s:'-500 cal'},
     {k:'moderate_cut',l:'Moderate Cut',s:'-250 cal'},
-    {k:'maintain',l:'Maintain',s:'±0 cal'},
+    {k:'maintain',l:'Maintain',s:'¬±0 cal'},
     {k:'lean_bulk',l:'Lean Bulk',s:'+300 cal'},
     {k:'bulk',l:'Bulk',s:'+500 cal'},
   ]
@@ -499,8 +499,8 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
       </div>
       {limitReached&&(
         <div style={{background:'rgba(232,0,13,0.08)',border:'1px solid rgba(232,0,13,0.3)',padding:'14px 20px',marginBottom:20,display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'}}>
-          <span style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,color:'#E8000D',letterSpacing:0.5}}>⚡ 2 free calculations used today. Upgrade for unlimited.</span>
-          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'10px 20px',cursor:'pointer'}}>Upgrade →</button>
+          <span style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,color:'#E8000D',letterSpacing:0.5}}>‚ö° 2 free calculations used today. Upgrade for unlimited.</span>
+          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'10px 20px',cursor:'pointer'}}>Upgrade ‚Üí</button>
         </div>
       )}
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:20}}>
@@ -541,7 +541,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <div>
               <label style={LS}>Daily Steps</label>
               <select value={form.stepsPerDay} onChange={e=>set('stepsPerDay',e.target.value)} style={IS}>
-                {[['2500','Under 3,000 (very sedentary)'],['5000','3,000–6,000 (desk job)'],['7500','6,000–9,000 (light activity)'],['10000','9,000–12,000 (moderately active)'],['13000','12,000–15,000 (very active)'],['17500','15,000+ (extremely active)']].map(([k,l])=><option key={k} value={k}>{l}</option>)}
+                {[['2500','Under 3,000 (very sedentary)'],['5000','3,000‚Äì6,000 (desk job)'],['7500','6,000‚Äì9,000 (light activity)'],['10000','9,000‚Äì12,000 (moderately active)'],['13000','12,000‚Äì15,000 (very active)'],['17500','15,000+ (extremely active)']].map(([k,l])=><option key={k} value={k}>{l}</option>)}
               </select>
               <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',marginTop:5,letterSpacing:0.5}}>Fine-tunes your TDEE beyond gym sessions</div>
             </div>
@@ -598,7 +598,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           {!results?(
             <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:400,gap:14}}>
-              <div style={{fontSize:44,opacity:0.25}}>📊</div>
+              <div style={{fontSize:44,opacity:0.25}}>üìä</div>
               <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,color:'#888888',textAlign:'center',letterSpacing:0.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
             </div>
           ):(
@@ -645,8 +645,8 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
                 <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',letterSpacing:0.5,textAlign:'right',maxWidth:180,lineHeight:1.6}}>Supports digestion,<br/>satiety &amp; absorption</div>
               </div>
               <div style={{background:'#111111',border:'1px solid rgba(232,0,13,0.2)',padding:'18px 22px'}}>
-                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>✓ Macros Ready</div>
-                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',letterSpacing:0.5,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating →</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>‚úì Macros Ready</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',letterSpacing:0.5,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating ‚Üí</div>
               </div>
             </>
           )}
@@ -677,9 +677,9 @@ function TrainingScore({ addToast }) {
     { key:'core', label:'Core', cat:'push' },
   ]
   const SET_RANGES = [
-    { key:'low', label:'1–6', desc:'Light volume', value:4 },
-    { key:'mid', label:'7–12', desc:'Moderate', value:10 },
-    { key:'high', label:'13–18', desc:'High volume', value:16 },
+    { key:'low', label:'1‚Äì6', desc:'Light volume', value:4 },
+    { key:'mid', label:'7‚Äì12', desc:'Moderate', value:10 },
+    { key:'high', label:'13‚Äì18', desc:'High volume', value:16 },
     { key:'very_high', label:'19+', desc:'Very high', value:22 },
   ]
 
@@ -857,7 +857,7 @@ function TrainingScore({ addToast }) {
                 </div>
               </div>
               <button onClick={() => setStep(2)} style={{ width:'100%', padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-                Next — Muscle Groups →
+                Next ‚Äî Muscle Groups ‚Üí
               </button>
             </div>
           )}
@@ -872,7 +872,7 @@ function TrainingScore({ addToast }) {
                     <div key={mg.key} style={{ background: isActive ? 'rgba(232,0,13,0.06)' : '#0d0d0d', border:`1px solid ${isActive ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
                       <div onClick={() => toggleMuscle(mg.key)} style={{ padding:'14px 16px', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: isActive ? '#E8000D' : '#F5F5F5' }}>{mg.label}</div>
-                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: isActive ? '#22c55e' : '#2a2a2a' }}>{isActive ? '✓' : '—'}</div>
+                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: isActive ? '#22c55e' : '#2a2a2a' }}>{isActive ? '‚úì' : '‚Äî'}</div>
                       </div>
                       {isActive && (
                         <div style={{ padding:'0 16px 14px', display:'flex', gap:6 }}>
@@ -891,10 +891,10 @@ function TrainingScore({ addToast }) {
               </div>
               {trainedMuscleCount === 0 && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#E8000D', textAlign:'center' }}>Select at least one muscle group</div>}
               <div style={{ display:'flex', gap:10 }}>
-                <button onClick={() => setStep(1)} style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>← Back</button>
+                <button onClick={() => setStep(1)} style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>‚Üê Back</button>
                 <button onClick={() => { if (trainedMuscleCount > 0) setStep(3) }}
                   style={{ flex:2, padding:'14px', background: trainedMuscleCount > 0 ? '#E8000D' : '#2a2a2a', color: trainedMuscleCount > 0 ? '#080808' : '#6a6a6a', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor: trainedMuscleCount > 0 ? 'pointer' : 'not-allowed', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-                  Next — Recovery →
+                  Next ‚Äî Recovery ‚Üí
                 </button>
               </div>
             </div>
@@ -914,7 +914,7 @@ function TrainingScore({ addToast }) {
               <div>
                 <label style={LS}>Do You Deload?</label>
                 <div style={{ display:'flex', flexDirection:'column', gap:6 }}>
-                  {[['never','Never','No planned deloads'],['sometimes','Sometimes','When I feel beat up'],['regular','Every 4–6 Weeks','Planned deload weeks']].map(([k,l,desc]) => (
+                  {[['never','Never','No planned deloads'],['sometimes','Sometimes','When I feel beat up'],['regular','Every 4‚Äì6 Weeks','Planned deload weeks']].map(([k,l,desc]) => (
                     <div key={k} onClick={() => set('deloadFrequency', k)}
                       style={{ padding:'12px 16px', cursor:'pointer', background: form.deloadFrequency === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d', border:`1px solid ${form.deloadFrequency === k ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
                       <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -928,11 +928,11 @@ function TrainingScore({ addToast }) {
               <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'14px 18px' }}>
                 <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, textTransform:'uppercase', marginBottom:6 }}>Summary</div>
                 <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.8 }}>
-                  {form.daysPerWeek} days/week · {form.avgDuration} min sessions · {Object.keys(form.muscleGroups).length} muscle groups · {form.sleepHours}h sleep
+                  {form.daysPerWeek} days/week ¬∑ {form.avgDuration} min sessions ¬∑ {Object.keys(form.muscleGroups).length} muscle groups ¬∑ {form.sleepHours}h sleep
                 </div>
               </div>
               <div style={{ display:'flex', gap:10 }}>
-                <button onClick={() => setStep(2)} style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>← Back</button>
+                <button onClick={() => setStep(2)} style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>‚Üê Back</button>
                 <button onClick={calculateScore} disabled={loading}
                   style={{ flex:2, padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
                   {loading ? 'ANALYZING...' : 'GET MY SCORE'}
@@ -956,7 +956,7 @@ function TrainingScore({ addToast }) {
               ['Frequency', results.breakdown.frequency.score, 20, `${results.breakdown.frequency.daysPerWeek} days/week`],
               ['Balance', results.breakdown.balance.score, 20, `Push ${results.breakdown.balance.pushSets} / Pull ${results.breakdown.balance.pullSets} / Legs ${results.breakdown.balance.legSets}`],
               ['Intensity', results.breakdown.intensity.score, 15, form.avgIntensity],
-              ['Recovery', results.breakdown.recovery.score, 20, `${results.breakdown.recovery.restDays} rest days · ${results.breakdown.recovery.sleepH}h sleep`],
+              ['Recovery', results.breakdown.recovery.score, 20, `${results.breakdown.recovery.restDays} rest days ¬∑ ${results.breakdown.recovery.sleepH}h sleep`],
             ].map(([label, score, max, detail]) => (
               <div key={label} style={{ marginBottom:14 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
@@ -988,16 +988,16 @@ function TrainingScore({ addToast }) {
             </div>
           </div>
           <div style={{ background:'#111111', border:'1px solid rgba(232,0,13,0.2)', padding:'18px 22px' }}>
-            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:10 }}>⚡ Quick Fixes</div>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:10 }}>‚ö° Quick Fixes</div>
             <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
               {(() => {
                 const fixes = []
                 const b = results.breakdown
-                if (b.volume.score < 18) fixes.push('Increase weekly volume — aim for 10-20 sets per muscle group.')
+                if (b.volume.score < 18) fixes.push('Increase weekly volume ‚Äî aim for 10-20 sets per muscle group.')
                 if (b.balance.pushSets === 0) fixes.push('No push work. Add chest, shoulder, or tricep training.')
                 if (b.balance.pullSets === 0) fixes.push('No pull work. Add back or bicep training.')
                 if (b.balance.legSets === 0) fixes.push('Don\'t skip legs. Add squats, RDLs, or leg press.')
-                if (b.balance.score < 14) fixes.push('Push/pull/legs ratio is off — aim for roughly equal thirds.')
+                if (b.balance.score < 14) fixes.push('Push/pull/legs ratio is off ‚Äî aim for roughly equal thirds.')
                 if (b.recovery.sleepH < 7) fixes.push('Sleep under 7 hours tanks recovery. Target 7-9 hours.')
                 if (b.recovery.restDays < 2) fixes.push('More rest days needed. Muscles grow during recovery.')
                 if (b.frequency.daysPerWeek < 3) fixes.push('Under 3 days/week limits progress. Try adding another day.')
@@ -1011,7 +1011,7 @@ function TrainingScore({ addToast }) {
           </div>
           <button onClick={() => { setResults(null); setStep(1) }}
             style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
-            ← Score Another Program
+            ‚Üê Score Another Program
           </button>
           {history.length > 0 && (
             <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
@@ -1130,20 +1130,20 @@ function MealTimingEngine({ addToast }) {
     slots = slots.slice(0, count).sort((a, b) => a.time - b.time)
 
     const goalData = {
-      aggressive_cut: { label:'Aggressive Cut', strategy:'Keep meals evenly spaced to control hunger. Protein at every meal is non-negotiable.', carbTiming:'carbs around training only — minimal at other meals', fatTiming:'healthy fats at breakfast and last meal' },
+      aggressive_cut: { label:'Aggressive Cut', strategy:'Keep meals evenly spaced to control hunger. Protein at every meal is non-negotiable.', carbTiming:'carbs around training only ‚Äî minimal at other meals', fatTiming:'healthy fats at breakfast and last meal' },
       moderate_cut:   { label:'Moderate Cut', strategy:'Even meal spacing with carb focus around training. Keep fat moderate at every meal.', carbTiming:'moderate carbs all day, higher around training', fatTiming:'distribute fats evenly, reduce post-workout' },
       maintain:       { label:'Maintenance', strategy:'Balanced intake across the day. Use training window to maximise performance and recovery.', carbTiming:'carbs evenly spread with a bump around training', fatTiming:'healthy fats at all meals except directly post-workout' },
       lean_bulk:      { label:'Lean Bulk', strategy:'Prioritise peri-workout nutrition. More calories around training, controlled at other meals.', carbTiming:'higher carbs pre and post workout, moderate elsewhere', fatTiming:'fats at breakfast and dinner, low around training' },
-      bulk:           { label:'Bulk', strategy:'Maximise caloric density around training. Don\'t skip meals — every window counts.', carbTiming:'high carbs all day, highest pre and post workout', fatTiming:'fats at all meals, increase at breakfast and dinner' },
+      bulk:           { label:'Bulk', strategy:'Maximise caloric density around training. Don\'t skip meals ‚Äî every window counts.', carbTiming:'high carbs all day, highest pre and post workout', fatTiming:'fats at all meals, increase at breakfast and dinner' },
     }
     const gd = goalData[goal] || goalData.maintain
 
     const mealDefs = {
-      breakfast:    { name:'Breakfast', role:'Kickstart metabolism. Break the overnight fast with protein and stable energy.', macroFocus: goal.includes('cut')?'High protein · Low-moderate carbs · Healthy fats':'High protein · Moderate carbs · Moderate fats', foods: goal.includes('cut')?['Eggs (3-4 whole)','Greek yogurt or cottage cheese','Oats (½ cup) or whole grain toast','Berries']:['3-4 eggs or Greek yogurt','Oats or whole grain toast','Fruit (banana or berries)','Coffee or green tea'], notes: goal.includes('cut')?'Avoid high-sugar options. Protein here reduces cravings all day.':'Front-load protein to hit targets earlier in the day.' },
-      pre_workout:  { name:'Pre-Workout', role:'Fuel performance. Carbs for energy, protein to prime muscle protein synthesis.', macroFocus:'High carbs · Moderate protein · Low fat · Low fiber', foods:['White rice or pasta (1-1.5 cups cooked)','Chicken breast or lean protein (4-6 oz)','Banana or rice cakes','Sports drink or water'], notes:'Eat 60-90 min before training. Low fat and fiber = faster digestion = better performance.' },
-      post_workout: { name:'Post-Workout', role:'Maximize recovery. Protein to rebuild muscle. Carbs to replenish glycogen.', macroFocus:'High protein · High carbs · Very low fat', foods:['Protein shake (30-40g protein)','White rice or potato (1-2 cups)','Banana or gummy candy (fast carbs)','Low fat Greek yogurt'], notes:'Eat within 30-60 min after training. This is the most important meal on a training day.' },
-      last_meal:    { name:'Last Meal', role:'Sustain overnight recovery. Slow-digesting protein to prevent muscle breakdown during sleep.', macroFocus: goal==='aggressive_cut'?'High protein · Low carbs · Low-moderate fats':'High protein · Moderate carbs · Moderate fats', foods: goal==='aggressive_cut'?['Cottage cheese (1 cup)','Casein protein shake','Vegetables (unlimited)','Handful of almonds']:['Cottage cheese or Greek yogurt','Salmon or lean beef','Sweet potato or rice','Leafy greens + olive oil dressing'], notes:'Casein or cottage cheese digest slowly — ideal before sleep to prevent overnight catabolism.' },
-      middle:       { name:'Lunch', role:'Sustain energy and hit macro targets. Keep it consistent and easy to prep.', macroFocus: goal.includes('cut')?'High protein · Low carbs · Moderate fats':goal.includes('bulk')?'High protein · High carbs · Moderate fats':'Balanced protein · Moderate carbs · Moderate fats', foods: goal.includes('cut')?['Grilled chicken, turkey, or tuna (6-8 oz)','Large salad or mixed vegetables','Avocado (¼-½)','Olive oil dressing']:goal.includes('bulk')?['Chicken, beef or salmon (6-8 oz)','Rice, pasta or potatoes (1.5-2 cups)','Mixed vegetables','Olive oil or cheese']:['Lean protein (chicken, fish, turkey, 6 oz)','Brown rice or sweet potato (1 cup)','Vegetables (broccoli, peppers, spinach)','Olive oil or light dressing'], notes: goal.includes('cut')?'Keep carbs low at non-training meals. Volume from vegetables kills hunger.':'Consistency here is the highest-leverage habit in your nutrition.' },
+      breakfast:    { name:'Breakfast', role:'Kickstart metabolism. Break the overnight fast with protein and stable energy.', macroFocus: goal.includes('cut')?'High protein ¬∑ Low-moderate carbs ¬∑ Healthy fats':'High protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal.includes('cut')?['Eggs (3-4 whole)','Greek yogurt or cottage cheese','Oats (¬Ω cup) or whole grain toast','Berries']:['3-4 eggs or Greek yogurt','Oats or whole grain toast','Fruit (banana or berries)','Coffee or green tea'], notes: goal.includes('cut')?'Avoid high-sugar options. Protein here reduces cravings all day.':'Front-load protein to hit targets earlier in the day.' },
+      pre_workout:  { name:'Pre-Workout', role:'Fuel performance. Carbs for energy, protein to prime muscle protein synthesis.', macroFocus:'High carbs ¬∑ Moderate protein ¬∑ Low fat ¬∑ Low fiber', foods:['White rice or pasta (1-1.5 cups cooked)','Chicken breast or lean protein (4-6 oz)','Banana or rice cakes','Sports drink or water'], notes:'Eat 60-90 min before training. Low fat and fiber = faster digestion = better performance.' },
+      post_workout: { name:'Post-Workout', role:'Maximize recovery. Protein to rebuild muscle. Carbs to replenish glycogen.', macroFocus:'High protein ¬∑ High carbs ¬∑ Very low fat', foods:['Protein shake (30-40g protein)','White rice or potato (1-2 cups)','Banana or gummy candy (fast carbs)','Low fat Greek yogurt'], notes:'Eat within 30-60 min after training. This is the most important meal on a training day.' },
+      last_meal:    { name:'Last Meal', role:'Sustain overnight recovery. Slow-digesting protein to prevent muscle breakdown during sleep.', macroFocus: goal==='aggressive_cut'?'High protein ¬∑ Low carbs ¬∑ Low-moderate fats':'High protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal==='aggressive_cut'?['Cottage cheese (1 cup)','Casein protein shake','Vegetables (unlimited)','Handful of almonds']:['Cottage cheese or Greek yogurt','Salmon or lean beef','Sweet potato or rice','Leafy greens + olive oil dressing'], notes:'Casein or cottage cheese digest slowly ‚Äî ideal before sleep to prevent overnight catabolism.' },
+      middle:       { name:'Lunch', role:'Sustain energy and hit macro targets. Keep it consistent and easy to prep.', macroFocus: goal.includes('cut')?'High protein ¬∑ Low carbs ¬∑ Moderate fats':goal.includes('bulk')?'High protein ¬∑ High carbs ¬∑ Moderate fats':'Balanced protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal.includes('cut')?['Grilled chicken, turkey, or tuna (6-8 oz)','Large salad or mixed vegetables','Avocado (¬º-¬Ω)','Olive oil dressing']:goal.includes('bulk')?['Chicken, beef or salmon (6-8 oz)','Rice, pasta or potatoes (1.5-2 cups)','Mixed vegetables','Olive oil or cheese']:['Lean protein (chicken, fish, turkey, 6 oz)','Brown rice or sweet potato (1 cup)','Vegetables (broccoli, peppers, spinach)','Olive oil or light dressing'], notes: goal.includes('cut')?'Keep carbs low at non-training meals. Volume from vegetables kills hunger.':'Consistency here is the highest-leverage habit in your nutrition.' },
     }
 
     const meals = slots.map((slot, idx) => {
@@ -1155,8 +1155,8 @@ function MealTimingEngine({ addToast }) {
     })
 
     const periMsg = isTrainingDay
-      ? `Training at ${toLabel(trainMins)} · Pre-workout meal at ${toLabel(trainingIsEarly ? breakfastTime : preWorkoutTime)} · Post-workout at ${toLabel(postWorkoutTime)}`
-      : 'Rest day: meals are spaced evenly. Slight calorie reduction is fine — keep protein identical to training days.'
+      ? `Training at ${toLabel(trainMins)} ¬∑ Pre-workout meal at ${toLabel(trainingIsEarly ? breakfastTime : preWorkoutTime)} ¬∑ Post-workout at ${toLabel(postWorkoutTime)}`
+      : 'Rest day: meals are spaced evenly. Slight calorie reduction is fine ‚Äî keep protein identical to training days.'
 
     setSchedule({ meals, goal: gd.label, strategy: gd.strategy, carbTiming: gd.carbTiming, fatTiming: gd.fatTiming, periMsg, trainingTime: isTrainingDay ? toLabel(trainMins) : null })
     addToast('Meal schedule generated!', 'success')
@@ -1166,7 +1166,7 @@ function MealTimingEngine({ addToast }) {
   const IS = { width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 14px', outline:'none' }
   const LS = { fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8, display:'block' }
   const mealTagColor = (meal) => { if (meal.isPreWorkout) return '#eab308'; if (meal.isPostWorkout) return '#22c55e'; if (meal.isFirst) return '#E8000D'; if (meal.isLast) return '#aaaaaa'; return '#6a6a6a' }
-  const mealTag = (meal) => { if (meal.isPreWorkout) return '⚡ PRE-WORKOUT'; if (meal.isPostWorkout) return '✓ POST-WORKOUT'; if (meal.isFirst) return '◈ FIRST MEAL'; if (meal.isLast) return '◉ LAST MEAL'; return `● MEAL ${meal.index}` }
+  const mealTag = (meal) => { if (meal.isPreWorkout) return '‚ö° PRE-WORKOUT'; if (meal.isPostWorkout) return '‚úì POST-WORKOUT'; if (meal.isFirst) return '‚óà FIRST MEAL'; if (meal.isLast) return '‚óâ LAST MEAL'; return `‚óè MEAL ${meal.index}` }
 
   if (macrosLoading) return <div style={{ padding:40, textAlign:'center', color:'#6a6a6a', fontFamily:"'Share Tech Mono',monospace", fontSize:12 }}>Loading your data...</div>
 
@@ -1179,7 +1179,7 @@ function MealTimingEngine({ addToast }) {
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>Eat At The<br/><span style={{ color:'#E8000D' }}>Right Time.</span></h2>
       </div>
       <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding:40, textAlign:'center' }}>
-        <div style={{ fontSize:48, marginBottom:20 }}>📊</div>
+        <div style={{ fontSize:48, marginBottom:20 }}>üìä</div>
         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:12 }}>Run The Macro Calculator First</div>
         <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, color:'#aaaaaa', lineHeight:1.8, maxWidth:380, margin:'0 auto 28px' }}>Meal Timing needs your calorie and macro targets to build a precise schedule. Calculate your macros first, then come back here.</div>
         <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1.5 }}>No macro data found for your account</div>
@@ -1197,8 +1197,6 @@ function MealTimingEngine({ addToast }) {
           Eat At The<br/><span style={{ color:'#E8000D' }}>Right Time.</span>
         </h2>
       </div>
-
-      {/* Macro selector */}
       <div style={{ marginBottom:20 }}>
         <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:10 }}>Select Macro Target to Build From</div>
         <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
@@ -1210,9 +1208,9 @@ function MealTimingEngine({ addToast }) {
                   {selectedMacros?.id === m.id && <div style={{ width:8, height:8, borderRadius:'50%', background:'#E8000D', flexShrink:0 }} />}
                   <div>
                     <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: selectedMacros?.id === m.id ? '#E8000D' : '#F5F5F5' }}>
-                      {goalLabels[m.goal] || m.goal} · {m.calories} kcal
+                      {goalLabels[m.goal] || m.goal} ¬∑ {m.calories} kcal
                     </div>
-                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:3 }}>P: {m.protein}g · C: {m.carbs}g · F: {m.fats}g</div>
+                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:3 }}>P: {m.protein}g ¬∑ C: {m.carbs}g ¬∑ F: {m.fats}g</div>
                   </div>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:10 }}>
@@ -1226,7 +1224,6 @@ function MealTimingEngine({ addToast }) {
           ))}
         </div>
       </div>
-
       {!schedule ? (
         <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 36 }}>
           <div style={{ display:'flex', flexDirection:'column', gap:22 }}>
@@ -1254,7 +1251,7 @@ function MealTimingEngine({ addToast }) {
                 <div>
                   <label style={{ ...LS, marginTop:12 }}>Training Start Time</label>
                   <input type="time" value={form.trainingTime} onChange={e => set('trainingTime', e.target.value)} style={{ ...IS, colorScheme:'dark' }} />
-                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>Pre-workout meal: ~75 min before · Post-workout: ~45 min after</div>
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>Pre-workout meal: ~75 min before ¬∑ Post-workout: ~45 min after</div>
                 </div>
               )}
             </div>
@@ -1266,11 +1263,11 @@ function MealTimingEngine({ addToast }) {
                     style={{ flex:1, height:50, fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, cursor:'pointer', border:'1px solid #2a2a2a', background: form.mealCount === n ? '#E8000D' : '#0d0d0d', color: form.mealCount === n ? '#080808' : '#cccccc' }}>{n}</button>
                 ))}
               </div>
-              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>3–4 meals = easier to execute · 5–6 = more frequent protein doses</div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>3‚Äì4 meals = easier to execute ¬∑ 5‚Äì6 = more frequent protein doses</div>
             </div>
             <button onClick={buildSchedule} disabled={loading}
               style={{ width:'100%', padding:'17px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-              {loading ? 'BUILDING SCHEDULE...' : 'BUILD MY MEAL SCHEDULE →'}
+              {loading ? 'BUILDING SCHEDULE...' : 'BUILD MY MEAL SCHEDULE ‚Üí'}
             </button>
           </div>
         </div>
@@ -1279,7 +1276,7 @@ function MealTimingEngine({ addToast }) {
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'24px' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10, marginBottom:14 }}>
               <div>
-                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:4 }}>{schedule.goal} · {form.mealCount} Meals/Day</div>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:4 }}>{schedule.goal} ¬∑ {form.mealCount} Meals/Day</div>
                 <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1 }}>Your Timing Plan</div>
               </div>
               <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', textAlign:'right', lineHeight:1.8 }}>
@@ -1373,8 +1370,659 @@ function MealTimingEngine({ addToast }) {
           </div>
           <button onClick={() => setSchedule(null)}
             style={{ width:'100%', padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
-            ← Rebuild Schedule
+            ‚Üê Rebuild Schedule
           </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ‚îÄ‚îÄ‚îÄ AI PHYSIQUE RATING ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+function PhysiqueRating({ addToast }) {
+  const isMobile = useIsMobile()
+  const fileRef = useRef(null)
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
+  const [photo, setPhoto] = useState(null)
+  const [photoBase64, setPhotoBase64] = useState(null)
+  const [stats, setStats] = useState({ weight:'', height:'', bodyFat:'', gender:'male', goal:'maintain' })
+  const [analysis, setAnalysis] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [history, setHistory] = useState([])
+  const [historyLoading, setHistoryLoading] = useState(true)
+  const [error, setError] = useState('')
+
+  const setS = (k, v) => setStats(s => ({ ...s, [k]: v }))
+
+  useEffect(() => {
+    const load = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.user) { setHistoryLoading(false); return }
+      const { data } = await supabase.from('physique_analyses')
+        .select('*').eq('user_id', session.user.id)
+        .order('created_at', { ascending: false }).limit(5)
+      if (data) setHistory(data)
+      setHistoryLoading(false)
+    }
+    load()
+  }, [])
+
+  const handlePhoto = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 10 * 1024 * 1024) { setError('Photo must be under 10MB'); return }
+    setPhoto(URL.createObjectURL(file))
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const base64 = ev.target.result.split(',')[1]
+      setPhotoBase64(base64)
+    }
+    reader.readAsDataURL(file)
+    setError('')
+  }
+
+  const runAnalysis = async () => {
+    if (!photoBase64) { setError('Please upload a photo first'); return }
+    if (!stats.weight || !stats.height) { setError('Please enter at least your weight and height'); return }
+    setLoading(true); setError('')
+
+    const goalLabels = { aggressive_cut:'Aggressive Cut', moderate_cut:'Moderate Cut', maintain:'Maintenance', lean_bulk:'Lean Bulk', bulk:'Bulk' }
+
+    const prompt = `You are an expert physique coach analyzing a client's physique photo combined with their stats. Provide honest, specific, actionable feedback in a structured format.
+
+Client Stats:
+- Gender: ${stats.gender}
+- Weight: ${stats.weight} lbs
+- Height: ${stats.height}
+- Body Fat %: ${stats.bodyFat ? stats.bodyFat + '%' : 'Not provided'}
+- Current Goal: ${goalLabels[stats.goal] || stats.goal}
+
+Analyze the physique in the photo and provide feedback in EXACTLY this structure ‚Äî use these exact section headers:
+
+**OVERALL ASSESSMENT**
+2-3 sentences on overall physique development, conditioning, and what stage of development this person appears to be at.
+
+**STRENGTHS**
+List 3 specific muscle groups or qualities that are well-developed. Be specific about what's good and why.
+
+**AREAS TO IMPROVE**
+List 3 specific muscle groups or areas that need the most work. Be direct and specific.
+
+**TRAINING RECOMMENDATIONS**
+3-4 specific training adjustments to address the weak points. Include specific exercises or approaches.
+
+**NUTRITION NOTES**
+2-3 sentences connecting their stats and current goal to what you observe in the photo. Be specific about whether their approach matches their physique.
+
+**COACH'S BOTTOM LINE**
+1-2 sentences of direct, honest coaching advice. What's the single most important thing this person should focus on?
+
+Be direct, specific, and honest. Avoid generic statements. This is professional coaching feedback, not flattery.`
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify({
+          model: 'claude-opus-4-5',
+          max_tokens: 1200,
+          messages: [{
+            role: 'user',
+            content: [
+              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: photoBase64 } },
+              { type: 'text', text: prompt }
+            ]
+          }]
+        })
+      })
+      const data = await response.json()
+      if (!response.ok) { setError('Analysis failed. Please try again.'); setLoading(false); return }
+      const text = data.content?.[0]?.text || ''
+      setAnalysis(text)
+
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session?.user) {
+        const { data: saved } = await supabase.from('physique_analyses').insert({
+          user_id: session.user.id,
+          analysis_text: text,
+          stats: { weight: stats.weight, height: stats.height, bodyFat: stats.bodyFat, gender: stats.gender, goal: stats.goal }
+        }).select()
+        if (saved) {
+          const { data: hData } = await supabase.from('physique_analyses')
+            .select('*').eq('user_id', session.user.id)
+            .order('created_at', { ascending: false }).limit(5)
+          if (hData) setHistory(hData)
+        }
+      }
+      addToast('Analysis complete!', 'success')
+    } catch (err) {
+      setError('Something went wrong. Check your connection and try again.')
+    }
+    setLoading(false)
+  }
+
+  // Parse analysis text into sections
+  const parseSections = (text) => {
+    const sections = []
+    const headers = ['OVERALL ASSESSMENT','STRENGTHS','AREAS TO IMPROVE','TRAINING RECOMMENDATIONS','NUTRITION NOTES','COACH\'S BOTTOM LINE']
+    headers.forEach((header, i) => {
+      const start = text.indexOf(`**${header}**`)
+      if (start === -1) return
+      const nextHeader = headers.slice(i + 1).map(h => text.indexOf(`**${h}**`)).filter(x => x > start)
+      const end = nextHeader.length > 0 ? Math.min(...nextHeader) : text.length
+      const content = text.slice(start + header.length + 4, end).trim()
+      sections.push({ header, content })
+    })
+    return sections
+  }
+
+  const sectionIcons = {
+    'OVERALL ASSESSMENT': '‚óà',
+    'STRENGTHS': '‚úì',
+    'AREAS TO IMPROVE': '‚ö°',
+    'TRAINING RECOMMENDATIONS': '‚ñ≤',
+    'NUTRITION NOTES': '‚óè',
+    "COACH'S BOTTOM LINE": '‚òÖ'
+  }
+  const sectionColors = {
+    'OVERALL ASSESSMENT': '#F5F5F5',
+    'STRENGTHS': '#22c55e',
+    'AREAS TO IMPROVE': '#E8000D',
+    'TRAINING RECOMMENDATIONS': '#eab308',
+    'NUTRITION NOTES': '#aaaaaa',
+    "COACH'S BOTTOM LINE": '#E8000D'
+  }
+
+  // Disclaimer screen
+  if (!disclaimerAccepted) {
+    return (
+      <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:700, margin:'0 auto' }}>
+        <div style={{ marginBottom: isMobile ? 24 : 36 }}>
+          <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
+            <span style={{ width:20, height:1, background:'#E8000D', opacity:0.4 }}/>AI Physique Rating<span style={{ width:32, height:1, background:'#E8000D', opacity:0.4 }}/>
+          </div>
+          <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize: isMobile ? 'clamp(32px,8vw,48px)' : 'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>
+            Know Your<br/><span style={{ color:'#E8000D' }}>Physique.</span>
+          </h2>
+        </div>
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding: isMobile ? 24 : 40 }}>
+          <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:20 }}>Before You Continue</div>
+          <div style={{ display:'flex', flexDirection:'column', gap:16, marginBottom:28 }}>
+            {[
+              ['AI-Generated Feedback', 'This analysis is generated by Claude AI (Anthropic) based on general exercise science and fitness principles. It is not based on any official competitive bodybuilding standard.'],
+              ['Not Professional Advice', 'This is not a substitute for feedback from a certified personal trainer, sports physician, or registered dietitian. Results are for informational and motivational purposes only.'],
+              ['Photo Privacy', 'Your photo is sent to Anthropic\'s API for analysis only and is not stored on our servers. The analysis text is saved to your account ‚Äî your photo is not.'],
+              ['Accuracy Limitations', 'AI physique analysis cannot account for lighting, camera angle, or individual genetic factors. Treat all feedback as general guidance, not diagnostic assessment.'],
+            ].map(([title, desc]) => (
+              <div key={title} style={{ display:'flex', gap:14, paddingBottom:16, borderBottom:'1px solid #1e1e1e' }}>
+                <div style={{ width:6, height:6, borderRadius:'50%', background:'#E8000D', flexShrink:0, marginTop:6 }} />
+                <div>
+                  <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:4 }}>{title}</div>
+                  <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.8 }}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div style={{ background:'#0d0d0d', border:'1px solid #2a2a2a', padding:'14px 18px', marginBottom:24 }}>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
+              By continuing, you acknowledge that this tool provides AI-generated feedback for informational purposes only, and is not medical or professional advice. BUILT by YELYK and YELYK Fitness are not liable for decisions made based on this analysis.
+            </div>
+          </div>
+          <button onClick={() => setDisclaimerAccepted(true)}
+            style={{ width:'100%', padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+            I Understand ‚Äî Continue ‚Üí
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:700, margin:'0 auto' }}>
+      <div style={{ marginBottom: isMobile ? 24 : 36 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
+          <span style={{ width:20, height:1, background:'#E8000D', opacity:0.4 }}/>AI Physique Rating<span style={{ width:32, height:1, background:'#E8000D', opacity:0.4 }}/>
+        </div>
+        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize: isMobile ? 'clamp(32px,8vw,48px)' : 'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>
+          Know Your<br/><span style={{ color:'#E8000D' }}>Physique.</span>
+        </h2>
+      </div>
+
+      {!analysis ? (
+        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          {/* Photo Upload */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 32 }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:18, display:'flex', alignItems:'center', gap:8 }}>
+              <span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>Step 1: Upload Photo<span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>
+            </div>
+            <input ref={fileRef} type="file" accept="image/*" onChange={handlePhoto} style={{ display:'none' }} />
+            {!photo ? (
+              <div onClick={() => fileRef.current?.click()}
+                style={{ border:'2px dashed #2a2a2a', padding:'48px 24px', textAlign:'center', cursor:'pointer', transition:'all 0.2s' }}
+                onMouseOver={e => e.currentTarget.style.borderColor = '#E8000D'}
+                onMouseOut={e => e.currentTarget.style.borderColor = '#2a2a2a'}>
+                <div style={{ fontSize:36, marginBottom:12, opacity:0.4 }}>üì∑</div>
+                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:20, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Upload Your Photo</div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#6a6a6a', lineHeight:1.7 }}>Front or back pose works best<br/>Good lighting = better analysis<br/>JPG or PNG ¬∑ Max 10MB</div>
+              </div>
+            ) : (
+              <div style={{ position:'relative' }}>
+                <img src={photo} alt="Your physique" style={{ width:'100%', maxHeight:400, objectFit:'contain', background:'#0d0d0d', display:'block' }} />
+                <button onClick={() => { setPhoto(null); setPhotoBase64(null) }}
+                  style={{ position:'absolute', top:10, right:10, background:'rgba(8,8,8,0.85)', border:'1px solid #2a2a2a', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, padding:'8px 12px', cursor:'pointer' }}>
+                  ‚úï Remove
+                </button>
+                <div style={{ padding:'10px 14px', background:'#0d0d0d', fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#22c55e', letterSpacing:1 }}>
+                  ‚úì Photo ready ¬∑ Not stored on our servers
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Stats */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 24 : 32 }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:18, display:'flex', alignItems:'center', gap:8 }}>
+              <span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>Step 2: Your Stats<span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>
+            </div>
+            <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
+              <div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Gender</div>
+                <div style={{ display:'flex', gap:8 }}>
+                  {['male','female'].map(g => (
+                    <button key={g} onClick={() => setS('gender', g)}
+                      style={{ flex:1, padding:'12px', fontFamily:"'Barlow',sans-serif", fontSize:13, letterSpacing:2, textTransform:'uppercase', cursor:'pointer', border:'1px solid #2a2a2a', background: stats.gender === g ? '#E8000D' : '#0d0d0d', color: stats.gender === g ? '#080808' : '#cccccc', fontWeight: stats.gender === g ? 600 : 400 }}>{g.toUpperCase()}</button>
+                  ))}
+                </div>
+              </div>
+              <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:12 }}>
+                <div>
+                  <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Weight (lbs) *</div>
+                  <input type="number" value={stats.weight} onChange={e => setS('weight', e.target.value)} placeholder="175"
+                    style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }}
+                    onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+                </div>
+                <div>
+                  <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Height *</div>
+                  <input type="text" value={stats.height} onChange={e => setS('height', e.target.value)} placeholder='5\'10"'
+                    style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }}
+                    onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+                </div>
+              </div>
+              <div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:4 }}>Body Fat % <span style={{ color:'#6a6a6a', fontSize:11, letterSpacing:0 }}>(optional)</span></div>
+                <input type="number" value={stats.bodyFat} onChange={e => setS('bodyFat', e.target.value)} placeholder="Optional ‚Äî e.g. 15"
+                  style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }}
+                  onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+              </div>
+              <div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Current Goal</div>
+                <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:8 }}>
+                  {[['aggressive_cut','Aggressive Cut'],['moderate_cut','Moderate Cut'],['maintain','Maintain'],['lean_bulk','Lean Bulk'],['bulk','Bulk']].map(([k, l]) => (
+                    <div key={k} onClick={() => setS('goal', k)}
+                      style={{ padding:'10px 12px', cursor:'pointer', background: stats.goal === k ? 'rgba(232,0,13,0.08)' : '#0d0d0d', border:`1px solid ${stats.goal === k ? '#E8000D' : '#2a2a2a'}`, gridColumn: k === 'maintain' ? 'span 2' : 'span 1', transition:'all 0.2s' }}>
+                      <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, textTransform:'uppercase', color: stats.goal === k ? '#E8000D' : '#F5F5F5' }}>{l}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Disclaimer badge */}
+          <div style={{ background:'rgba(232,0,13,0.04)', border:'1px solid rgba(232,0,13,0.15)', padding:'12px 18px' }}>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
+              ‚ö† AI-generated analysis by Claude (Anthropic) ¬∑ Based on general exercise science, not official bodybuilding standards ¬∑ Not medical or professional advice ¬∑ Your photo is not stored on our servers
+            </div>
+          </div>
+
+          {error && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#E8000D', letterSpacing:1, padding:'12px 16px', background:'rgba(232,0,13,0.06)', border:'1px solid rgba(232,0,13,0.2)' }}>{error}</div>}
+
+          <button onClick={runAnalysis} disabled={loading}
+            style={{ width:'100%', padding:'18px', background: loading ? '#2a2a2a' : '#E8000D', color: loading ? '#6a6a6a' : '#080808', fontFamily:"'Barlow',sans-serif", fontSize:15, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor: loading ? 'not-allowed' : 'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
+            {loading ? 'ANALYZING YOUR PHYSIQUE...' : 'RUN AI ANALYSIS ‚Üí'}
+          </button>
+          {loading && (
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#6a6a6a', textAlign:'center', letterSpacing:1, lineHeight:1.8 }}>
+              Analyzing photo + stats ¬∑ This takes 10-20 seconds
+            </div>
+          )}
+        </div>
+      ) : (
+        <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
+          {/* Analysis Header */}
+          <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding:'24px 28px' }}>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:6 }}>AI Physique Analysis ¬∑ YELYK Fitness</div>
+            <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1, marginBottom:8 }}>Your Report</div>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1 }}>
+              {stats.weight}lbs ¬∑ {stats.height}{stats.bodyFat ? ` ¬∑ ${stats.bodyFat}% BF` : ''} ¬∑ {stats.gender}
+            </div>
+          </div>
+
+          {/* Sections */}
+          {parseSections(analysis).map(({ header, content }) => (
+            <div key={header} style={{ background:'#111111', border:'1px solid #1e1e1e', overflow:'hidden' }}>
+              <div style={{ padding:'14px 22px', borderBottom:'1px solid #1e1e1e', background: header === "COACH'S BOTTOM LINE" ? 'rgba(232,0,13,0.06)' : 'transparent', display:'flex', alignItems:'center', gap:10 }}>
+                <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:14, color: sectionColors[header] || '#aaaaaa' }}>{sectionIcons[header] || '¬∑'}</span>
+                <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, textTransform:'uppercase', letterSpacing:1, color: sectionColors[header] || '#F5F5F5' }}>{header}</div>
+              </div>
+              <div style={{ padding:'16px 22px' }}>
+                {content.split('\n').filter(l => l.trim()).map((line, i) => {
+                  const isBullet = line.trim().startsWith('-') || line.trim().startsWith('‚Ä¢') || /^\d+\./.test(line.trim())
+                  return (
+                    <div key={i} style={{ display:'flex', gap:10, marginBottom:8, alignItems:'flex-start' }}>
+                      {isBullet && <div style={{ width:4, height:4, borderRadius:'50%', background: sectionColors[header] || '#E8000D', flexShrink:0, marginTop:8, opacity:0.7 }} />}
+                      <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, color:'#cccccc', lineHeight:1.8 }}>
+                        {line.replace(/^[-‚Ä¢]\s*/, '').replace(/^\d+\.\s*/, '')}
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          ))}
+
+          {/* Disclaimer at bottom of results */}
+          <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid #1e1e1e', padding:'14px 18px' }}>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
+              DISCLAIMER: This analysis is AI-generated by Claude (Anthropic) based on general exercise science and fitness principles. It is not based on any official competitive bodybuilding standards and is not a substitute for feedback from a certified personal trainer or sports physician. For informational and motivational purposes only. ¬© BUILT by YELYK ¬∑ YELYK Fitness.
+            </div>
+          </div>
+
+          <div style={{ display:'flex', gap:10 }}>
+            <button onClick={() => setAnalysis(null)}
+              style={{ flex:1, padding:'15px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>
+              ‚Üê New Analysis
+            </button>
+          </div>
+
+          {/* History */}
+          {history.length > 1 && (
+            <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'18px 22px' }}>
+              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', marginBottom:14 }}>Past Analyses</div>
+              <div style={{ display:'flex', flexDirection:'column', gap:8 }}>
+                {history.slice(1).map(h => (
+                  <div key={h.id} style={{ padding:'12px 16px', background:'#0d0d0d', border:'1px solid #1e1e1e', cursor:'pointer' }}
+                    onClick={() => setAnalysis(h.analysis_text)}>
+                    <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
+                      <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa' }}>
+                        {h.stats?.weight}lbs ¬∑ {h.stats?.height}{h.stats?.bodyFat ? ` ¬∑ ${h.stats.bodyFat}% BF` : ''}
+                      </div>
+                      <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a' }}>
+                        {new Date(h.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ‚îÄ‚îÄ‚îÄ PROGRESS TRACKER ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ‚îÄ
+function ProgressTracker({ isPro, onUpgrade, addToast }) {
+  const isMobile = useIsMobile()
+  const [logs, setLogs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [inputWeight, setInputWeight] = useState('')
+  const [inputDate, setInputDate] = useState(new Date().toISOString().split('T')[0])
+  const [saving, setSaving] = useState(false)
+  const [goalWeight, setGoalWeight] = useState('')
+  const [showGoalInput, setShowGoalInput] = useState(false)
+
+  const FREE_LIMIT_DAYS = 30
+
+  useEffect(() => {
+    loadLogs()
+  }, [])
+
+  const loadLogs = async () => {
+    setLoading(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) { setLoading(false); return }
+    const { data } = await supabase.from('body_weight_logs')
+      .select('*').eq('user_id', session.user.id)
+      .order('logged_date', { ascending: true })
+    if (data) setLogs(data)
+    setLoading(false)
+  }
+
+  const visibleLogs = isPro ? logs : logs.filter(l => {
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - FREE_LIMIT_DAYS)
+    return new Date(l.logged_date) >= cutoff
+  })
+
+  const saveLog = async () => {
+    if (!inputWeight || isNaN(parseFloat(inputWeight))) { addToast('Enter a valid weight', 'error'); return }
+    if (parseFloat(inputWeight) < 50 || parseFloat(inputWeight) > 700) { addToast('Weight must be between 50‚Äì700 lbs', 'error'); return }
+    setSaving(true)
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session?.user) { addToast('Not signed in', 'error'); setSaving(false); return }
+    const { error } = await supabase.from('body_weight_logs').upsert({
+      user_id: session.user.id,
+      weight_lbs: parseFloat(inputWeight),
+      logged_date: inputDate
+    }, { onConflict: 'user_id,logged_date' })
+    if (error) { addToast('Failed to save', 'error'); setSaving(false); return }
+    addToast('Weight logged!', 'success')
+    setInputWeight('')
+    await loadLogs()
+    setSaving(false)
+  }
+
+  const deleteLog = async (id) => {
+    const { error } = await supabase.from('body_weight_logs').delete().eq('id', id)
+    if (!error) { setLogs(l => l.filter(x => x.id !== id)); addToast('Entry deleted', 'success') }
+  }
+
+  // Stats
+  const n = visibleLogs.length
+  const weights = visibleLogs.map(l => l.weight_lbs)
+  const currentWeight = weights[weights.length - 1] ?? null
+  const startWeight = weights[0] ?? null
+  const totalChange = n >= 2 ? (currentWeight - startWeight) : null
+  const weeklyRate = (() => {
+    if (n < 2) return null
+    const days = (new Date(visibleLogs[n-1].logged_date) - new Date(visibleLogs[0].logged_date)) / (1000*60*60*24)
+    if (days < 1) return null
+    return (totalChange / days) * 7
+  })()
+  const lowestWeight = n > 0 ? Math.min(...weights) : null
+  const highestWeight = n > 0 ? Math.max(...weights) : null
+
+  // SVG Chart
+  const ChartSVG = () => {
+    if (visibleLogs.length < 2) return null
+    const W = 600, H = 200
+    const pad = { top:16, right:16, bottom:36, left:44 }
+    const minW = Math.min(...weights) - 2
+    const maxW = Math.max(...weights) + 2
+    const xScale = (i) => pad.left + (i / (n - 1)) * (W - pad.left - pad.right)
+    const yScale = (w) => pad.top + (1 - (w - minW) / (maxW - minW)) * (H - pad.top - pad.bottom)
+    const points = weights.map((w, i) => `${xScale(i)},${yScale(w)}`).join(' ')
+    const areaPoints = `${xScale(0)},${H - pad.bottom} ${points} ${xScale(n-1)},${H - pad.bottom}`
+    const yTicks = 4
+    const goal = parseFloat(goalWeight)
+
+    return (
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width:'100%', height:'auto', display:'block' }}>
+        {/* Grid lines */}
+        {Array.from({ length: yTicks + 1 }, (_, i) => {
+          const val = minW + (i / yTicks) * (maxW - minW)
+          const y = yScale(val)
+          return (
+            <g key={i}>
+              <line x1={pad.left} y1={y} x2={W - pad.right} y2={y} stroke="#1e1e1e" strokeWidth="1" />
+              <text x={pad.left - 6} y={y + 4} textAnchor="end" style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, fill:'#6a6a6a' }}>{Math.round(val)}</text>
+            </g>
+          )
+        })}
+
+        {/* Goal weight line */}
+        {!isNaN(goal) && goal > minW && goal < maxW && (
+          <>
+            <line x1={pad.left} y1={yScale(goal)} x2={W - pad.right} y2={yScale(goal)} stroke="#22c55e" strokeWidth="1.5" strokeDasharray="6,4" />
+            <text x={W - pad.right + 4} y={yScale(goal) + 4} style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, fill:'#22c55e' }}>GOAL</text>
+          </>
+        )}
+
+        {/* Area fill */}
+        <polygon points={areaPoints} fill="rgba(232,0,13,0.06)" />
+
+        {/* Line */}
+        <polyline points={points} fill="none" stroke="#E8000D" strokeWidth="2" strokeLinejoin="round" />
+
+        {/* Data points */}
+        {weights.map((w, i) => (
+          <circle key={i} cx={xScale(i)} cy={yScale(w)} r="3.5" fill="#E8000D" stroke="#080808" strokeWidth="1.5" />
+        ))}
+
+        {/* X axis date labels ‚Äî show first, middle, last */}
+        {[0, Math.floor((n-1)/2), n-1].filter((v,i,a) => a.indexOf(v) === i).map(i => (
+          <text key={i} x={xScale(i)} y={H - pad.bottom + 16} textAnchor="middle" style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, fill:'#6a6a6a' }}>
+            {new Date(visibleLogs[i].logged_date + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' })}
+          </text>
+        ))}
+      </svg>
+    )
+  }
+
+  if (loading) return <div style={{ padding:40, textAlign:'center', color:'#6a6a6a', fontFamily:"'Share Tech Mono',monospace", fontSize:12 }}>Loading...</div>
+
+  return (
+    <div style={{ padding: isMobile ? '24px 16px' : '40px', maxWidth:800, margin:'0 auto' }}>
+      <div style={{ marginBottom: isMobile ? 24 : 36 }}>
+        <div style={{ display:'flex', alignItems:'center', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:3, textTransform:'uppercase', color:'#E8000D', marginBottom:10 }}>
+          <span style={{ width:20, height:1, background:'#E8000D', opacity:0.4 }}/>Progress<span style={{ width:32, height:1, background:'#E8000D', opacity:0.4 }}/>
+        </div>
+        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize: isMobile ? 'clamp(32px,8vw,48px)' : 'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>
+          Track Your<br/><span style={{ color:'#E8000D' }}>Progress.</span>
+        </h2>
+      </div>
+
+      {/* Log input */}
+      <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? 20 : 28, marginBottom:14 }}>
+        <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:16, display:'flex', alignItems:'center', gap:8 }}>
+          <span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>Log Today's Weight<span style={{ flex:1, height:1, background:'#E8000D', opacity:0.3 }}/>
+        </div>
+        <div style={{ display:'grid', gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr auto', gap:10, alignItems:'flex-end' }}>
+          <div>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Weight (lbs)</div>
+            <input type="number" value={inputWeight} onChange={e => setInputWeight(e.target.value)} placeholder="175.5"
+              style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:18, padding:'13px 16px', outline:'none' }}
+              onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'}
+              onKeyDown={e => e.key === 'Enter' && saveLog()} />
+          </div>
+          <div>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Date</div>
+            <input type="date" value={inputDate} onChange={e => setInputDate(e.target.value)}
+              style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'13px 16px', outline:'none', colorScheme:'dark' }} />
+          </div>
+          <button onClick={saveLog} disabled={saving}
+            style={{ padding:'13px 24px', background: saving ? '#2a2a2a' : '#E8000D', color: saving ? '#6a6a6a' : '#080808', fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:700, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: saving ? 'not-allowed' : 'pointer', whiteSpace:'nowrap', clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
+            {saving ? 'Saving...' : 'Log ‚Üí'}
+          </button>
+        </div>
+      </div>
+
+      {/* Stats row */}
+      {n >= 1 && (
+        <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:8, marginBottom:14 }}>
+          {[
+            ['Current', currentWeight ? currentWeight.toFixed(1) + ' lbs' : '‚Äî', '#E8000D'],
+            ['Change', totalChange !== null ? (totalChange > 0 ? '+' : '') + totalChange.toFixed(1) + ' lbs' : '‚Äî', totalChange > 0 ? '#eab308' : totalChange < 0 ? '#22c55e' : '#aaaaaa'],
+            ['Rate', weeklyRate !== null ? (weeklyRate > 0 ? '+' : '') + weeklyRate.toFixed(2) + ' lbs/wk' : '‚Äî', '#aaaaaa'],
+            ['Logged', n + ' entries', '#6a6a6a'],
+          ].map(([label, val, color]) => (
+            <div key={label} style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'14px 16px' }}>
+              <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:11, fontWeight:500, color:'#888888', letterSpacing:1, textTransform:'uppercase', marginBottom:4 }}>{label}</div>
+              <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, color, lineHeight:1 }}>{val}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Chart */}
+      {n >= 2 ? (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding: isMobile ? '16px 12px' : '20px 24px', marginBottom:14 }}>
+          <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:14, flexWrap:'wrap', gap:10 }}>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase' }}>Weight Trend</div>
+            <button onClick={() => setShowGoalInput(g => !g)}
+              style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, color:'#6a6a6a', background:'none', border:'1px solid #2a2a2a', padding:'6px 12px', cursor:'pointer' }}>
+              {showGoalInput ? 'Hide Goal' : '+ Set Goal Weight'}
+            </button>
+          </div>
+          {showGoalInput && (
+            <div style={{ display:'flex', gap:10, marginBottom:14, alignItems:'center' }}>
+              <input type="number" value={goalWeight} onChange={e => setGoalWeight(e.target.value)} placeholder="Goal weight (lbs)"
+                style={{ flex:1, background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'10px 14px', outline:'none' }}
+                onFocus={e=>e.target.style.borderColor='#22c55e'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#22c55e', letterSpacing:1 }}>Shown as dashed line on chart</div>
+            </div>
+          )}
+          <ChartSVG />
+        </div>
+      ) : n === 1 ? (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'32px 24px', textAlign:'center', marginBottom:14 }}>
+          <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Log More Entries to See Your Chart</div>
+          <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.8 }}>Your chart appears once you have 2+ entries. Log your weight daily or weekly for best results.</div>
+        </div>
+      ) : (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'48px 24px', textAlign:'center', marginBottom:14 }}>
+          <div style={{ fontSize:40, marginBottom:14, opacity:0.2 }}>üìà</div>
+          <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Start Logging</div>
+          <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.8 }}>Enter your weight above to begin tracking your progress.</div>
+        </div>
+      )}
+
+      {/* Free tier notice */}
+      {!isPro && logs.length > 0 && (
+        <div style={{ background:'rgba(232,0,13,0.06)', border:'1px solid rgba(232,0,13,0.2)', padding:'14px 18px', marginBottom:14, display:'flex', justifyContent:'space-between', alignItems:'center', flexWrap:'wrap', gap:10 }}>
+          <div>
+            <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, color:'#E8000D', letterSpacing:0.5 }}>Free Plan: Last 30 Days Shown</div>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, marginTop:3 }}>
+              {logs.length} total entries ¬∑ {visibleLogs.length} visible ¬∑ Upgrade for full history
+            </div>
+          </div>
+          <button onClick={onUpgrade}
+            style={{ background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:700, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'10px 20px', cursor:'pointer' }}>
+            Upgrade ‚Üí
+          </button>
+        </div>
+      )}
+
+      {/* Log history table */}
+      {visibleLogs.length > 0 && (
+        <div style={{ background:'#111111', border:'1px solid #1e1e1e', overflow:'hidden' }}>
+          <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:2, color:'#888888', textTransform:'uppercase', padding:'14px 20px', borderBottom:'1px solid #1e1e1e' }}>Entry History</div>
+          <div style={{ maxHeight:320, overflowY:'auto' }}>
+            {[...visibleLogs].reverse().map((log, i, arr) => {
+              const prev = arr[i + 1]
+              const diff = prev ? (log.weight_lbs - prev.weight_lbs) : null
+              return (
+                <div key={log.id} style={{ display:'flex', justifyContent:'space-between', alignItems:'center', padding:'11px 20px', borderBottom: i < arr.length - 1 ? '1px solid #1e1e1e' : 'none', background: i % 2 === 0 ? '#111111' : '#0d0d0d' }}>
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#6a6a6a', letterSpacing:1 }}>
+                    {new Date(log.logged_date + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
+                  </div>
+                  <div style={{ display:'flex', alignItems:'center', gap:16 }}>
+                    <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:20, fontWeight:900, color:'#F5F5F5' }}>{log.weight_lbs.toFixed(1)} lbs</div>
+                    {diff !== null && (
+                      <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: diff > 0 ? '#eab308' : diff < 0 ? '#22c55e' : '#6a6a6a', minWidth:56, textAlign:'right' }}>
+                        {diff > 0 ? '+' : ''}{diff.toFixed(1)}
+                      </div>
+                    )}
+                    <button onClick={() => deleteLog(log.id)}
+                      style={{ background:'none', border:'none', color:'#2a2a2a', fontSize:14, cursor:'pointer', padding:'4px', lineHeight:1 }}
+                      onMouseOver={e => e.target.style.color = '#E8000D'} onMouseOut={e => e.target.style.color = '#2a2a2a'}>‚úï</button>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
         </div>
       )}
     </div>
@@ -1401,8 +2049,8 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
   const handleJoinClick = () => { if(!wlEmail||!wlEmail.includes('@')) return; onJoinWaitlist(wlEmail) }
   const faqs=[
     ['How is BUILT different from MyFitnessPal?',"MyFitnessPal tracks what you ate. BUILT by YELYK tells you what to eat, when to eat it, whether your training is optimized, and what your physique needs to improve. It's a complete intelligence system built by a real coach."],
-    ['Who is YELYK?',"YELYK Fitness is a physique coaching brand built on You Earn Longevity You Keep. BUILT by YELYK is the software tool from the exact system used inside YELYK's coaching program — now accessible to everyone."],
-    ['How does the AI Physique Rating work?',"Upload a front or back photo. AI analyzes your muscle development, symmetry, and proportion. Identifies your three strongest and three weakest muscle groups with specific training fixes. Your photo is immediately discarded."],
+    ['Who is YELYK?',"YELYK Fitness is a physique coaching brand built on You Earn Longevity You Keep. BUILT by YELYK is the software tool from the exact system used inside YELYK's coaching program ‚Äî now accessible to everyone."],
+    ['How does the AI Physique Rating work?',"Upload a front or back photo. AI analyzes your muscle development, symmetry, and proportion. Identifies your three strongest and three weakest muscle groups with specific training fixes. Your photo is immediately discarded after analysis."],
     ['What does the free tier give me?',"Two full macro calculations per day. Complete protein, carb, fat and calorie targets. Real, usable results. Training score, AI physique rating, and meal timing are Pro."],
     ['Can I cancel anytime?','Always. Cancel in under 30 seconds. No fees. You keep Pro through end of billing period then drop to free.'],
   ]
@@ -1431,7 +2079,7 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
           </div>
           <p style={{fontSize:isMobile?14:17,color:'#aaaaaa',maxWidth:500,marginTop:isMobile?18:22,lineHeight:1.82,fontWeight:300}}>The precision macro calculator, training intelligence score, AI physique rating, and meal timing engine for athletes who are done guessing.</p>
           <div style={{display:'flex',alignItems:'center',gap:isMobile?10:14,marginTop:isMobile?28:40,flexWrap:'wrap'}}>
-            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?11:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:isMobile?'14px 28px':'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free →</button>
+            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?11:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:isMobile?'14px 28px':'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free ‚Üí</button>
             <button onClick={()=>scrollTo('features')} style={{background:'transparent',color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'1px solid #2a2a2a',padding:isMobile?'13px 22px':'15px 28px',cursor:'pointer'}}>See The Engines</button>
           </div>
           <div style={{display:'flex',gap:0,marginTop:isMobile?36:56,paddingTop:isMobile?20:28,borderTop:'1px solid #1e1e1e',flexWrap:'wrap'}}>
@@ -1448,7 +2096,7 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
       <section style={{padding:pad,borderTop:'1px solid #1e1e1e'}} id="features">
         <h2 style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:isMobile?'clamp(36px,10vw,56px)':'clamp(40px,6vw,80px)',fontWeight:900,textTransform:'uppercase',lineHeight:0.9,marginBottom:isMobile?32:48}}>Built Different.<br/>Built Precise.</h2>
         <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'repeat(3,1fr)',gap:1,background:'#1e1e1e',border:'1px solid #1e1e1e'}}>
-          {[{n:'01',t:'Macro Engine',d:'Precise daily protein, carb, fat and calorie targets. Steps, workout intensity, and duration all factored in.'},{n:'02',t:'Training Score',d:'0–100 grade on your program with volume, frequency, balance, and recovery scored.'},{n:'03',t:'Meal Timing',d:'Every meal mapped to your schedule and training windows. Timed and portioned automatically.'},{n:'04',t:'AI Physique Rating',d:'Upload a photo. AI analyzes your physique and gives exact training fixes for weak points.'},{n:'05',t:'Progress Tracking',d:'Log weight and body fat. Visual charts show whether your plan is actually working.'}].map((f,i)=>(
+          {[{n:'01',t:'Macro Engine',d:'Precise daily protein, carb, fat and calorie targets. Steps, workout intensity, and duration all factored in.'},{n:'02',t:'Training Score',d:'0‚Äì100 grade on your program with volume, frequency, balance, and recovery scored.'},{n:'03',t:'Meal Timing',d:'Every meal mapped to your schedule and training windows. Timed and portioned automatically.'},{n:'04',t:'AI Physique Rating',d:'Upload a photo. AI analyzes your physique and gives exact training fixes for weak points.'},{n:'05',t:'Progress Tracking',d:'Log weight and body fat. Visual charts show whether your plan is actually working.'}].map((f,i)=>(
             <div key={i} style={{background:'#111111',padding:'44px 34px',position:'relative',overflow:'hidden',transition:'background 0.3s'}} onMouseOver={e=>e.currentTarget.style.background='#141414'} onMouseOut={e=>e.currentTarget.style.background='#111111'}>
               <div style={{position:'absolute',top:12,right:16,fontFamily:"'Barlow Condensed',sans-serif",fontSize:88,fontWeight:900,color:'#1e1e1e',lineHeight:1,letterSpacing:-4}}>{f.n}</div>
               <div style={{display:'flex',flexDirection:'column',gap:3,marginBottom:20}}>
@@ -1477,9 +2125,9 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
           <div style={{background:'#111111',padding:'36px 28px',display:'flex',flexDirection:'column'}}>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:900,textTransform:'uppercase',letterSpacing:2,marginBottom:4}}>Free</div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:52,fontWeight:900,color:'#F5F5F5',lineHeight:1,marginBottom:4}}>$0</div>
-            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:20}}>Forever free · No card needed</div>
+            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:20}}>Forever free ¬∑ No card needed</div>
             <div style={{flex:1,marginBottom:20}}>
-              {[['✓','2 macro calculations/day',true],['✓','Full macro breakdown',true],['✓','Steps + intensity inputs',true],['✗','Training Score',false],['✗','AI Physique Rating',false],['✗','Meal Timing',false],['✗','Progress Tracking',false]].map(([icon,label,yes],i)=>(
+              {[['‚úì','2 macro calculations/day',true],['‚úì','Full macro breakdown',true],['‚úì','Steps + intensity inputs',true],['‚úì','Progress Tracking (30 days)',true],['‚úó','Training Score',false],['‚úó','AI Physique Rating',false],['‚úó','Meal Timing',false],['‚úó','Full Progress History',false]].map(([icon,label,yes],i)=>(
                 <div key={i} style={{display:'flex',gap:10,padding:'8px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:yes?'#aaaaaa':'#6a6a6a'}}>
                   <span style={{color:yes?'#22c55e':'#2a2a2a',flexShrink:0}}>{icon}</span>{label}
                 </div>
@@ -1495,12 +2143,12 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
               <span style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:60,fontWeight:900,color:'#E8000D',lineHeight:1,letterSpacing:-2}}>{annual?'10.42':'12.99'}</span>
               <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',marginTop:'auto',marginBottom:8}}>/mo</span>
             </div>
-            {annual&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#22c55e',letterSpacing:1,marginBottom:4}}>Billed $124.99/year — save $30.89</div>}
+            {annual&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#22c55e',letterSpacing:1,marginBottom:4}}>Billed $124.99/year ‚Äî save $30.89</div>}
             <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:16}}>Cancel anytime</div>
             <div style={{flex:1,marginBottom:20}}>
-              {[['✓','Unlimited calculations'],['✓','Training Score (0–100)'],['✓','AI Physique Rating'],['✓','Meal Timing Engine'],['✓','Progress Tracking'],['✓','Micronutrient breakdown']].map(([icon,label],i)=>(
-                <div key={i} style={{display:'flex',gap:10,padding:'7px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:icon==='✓'?'#aaaaaa':'#6a6a6a'}}>
-                  <span style={{color:icon==='✓'?'#22c55e':'#6a6a6a',flexShrink:0}}>{icon}</span><strong style={{fontWeight:icon==='✓'?500:400}}>{label}</strong>
+              {[['‚úì','Unlimited calculations'],['‚úì','Training Score (0‚Äì100)'],['‚úì','AI Physique Rating'],['‚úì','Meal Timing Engine'],['‚úì','Full Progress History'],['‚úì','Micronutrient breakdown']].map(([icon,label],i)=>(
+                <div key={i} style={{display:'flex',gap:10,padding:'7px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:icon==='‚úì'?'#aaaaaa':'#6a6a6a'}}>
+                  <span style={{color:icon==='‚úì'?'#22c55e':'#6a6a6a',flexShrink:0}}>{icon}</span><strong style={{fontWeight:icon==='‚úì'?500:400}}>{label}</strong>
                 </div>
               ))}
             </div>
@@ -1541,17 +2189,18 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
             <div style={{display:'flex'}}>
               <input type="email" value={wlEmail} onChange={e=>setWlEmail(e.target.value)} placeholder="your@email.com" onKeyDown={e=>e.key==='Enter'&&handleJoinClick()}
                 style={{flex:1,background:'#111111',border:'1px solid #2a2a2a',borderRight:'none',color:'#F5F5F5',fontFamily:"'Barlow',sans-serif",fontSize:15,padding:'15px 18px',outline:'none'}}/>
-              <button onClick={handleJoinClick} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now →</button>
+              <button onClick={handleJoinClick} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now ‚Üí</button>
             </div>
           </div>
           <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',letterSpacing:2,marginTop:18}}>
-            <strong style={{color:'#E8000D'}}>{wlCount !== null ? wlCount : '—'}</strong> athletes already on the list
+            <strong style={{color:'#E8000D'}}>{wlCount !== null ? wlCount : '‚Äî'}</strong> athletes already on the list
           </div>
         </div>
       </section>
     </div>
   )
 }
+
 function ResetPasswordModal({ password, setPassword, confirm, setConfirm, loading, done, error, onSubmit }) {
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }}>
@@ -1562,19 +2211,19 @@ function ResetPasswordModal({ password, setPassword, confirm, setConfirm, loadin
         </div>
         {done ? (
           <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, color:'#22c55e', textAlign:'center', lineHeight:1.8 }}>
-            ✓ Password updated. You can now sign in.
+            ‚úì Password updated. You can now sign in.
           </div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
             <div>
               <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>New Password</div>
-              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="••••••••"
+              <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢"
                 style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }}
                 onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
             </div>
             <div>
               <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, textTransform:'uppercase', color:'#aaaaaa', marginBottom:8 }}>Confirm Password</div>
-              <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="••••••••"
+              <input type="password" value={confirm} onChange={e => setConfirm(e.target.value)} placeholder="‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢‚Ä¢"
                 style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 16px', outline:'none' }}
                 onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
             </div>
@@ -1589,6 +2238,7 @@ function ResetPasswordModal({ password, setPassword, confirm, setConfirm, loadin
     </div>
   )
 }
+
 function Footer() {
   const scrollTo = (id) => document.getElementById(id)?.scrollIntoView({ behavior:'smooth' })
   const isMobile = useIsMobile()
@@ -1615,7 +2265,7 @@ function Footer() {
         </div>
       </div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:14}}>
-        <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase'}}>© 2026 BUILT by YELYK · YELYK Fitness. All rights reserved.</div>
+        <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase'}}>¬© 2026 BUILT by YELYK ¬∑ YELYK Fitness. All rights reserved.</div>
         <div style={{display:'flex',gap:20}}>
           {['Privacy Policy','Terms'].map(l=><button key={l} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:1.5,color:'#6a6a6a',textTransform:'uppercase',background:'none',border:'none',cursor:'pointer'}}>{l}</button>)}
         </div>
@@ -1634,20 +2284,21 @@ export default function App() {
   const [activeTab, setActiveTab] = useState(0)
   const [lastMacros, setLastMacros] = useState(null)
   const [sessionLoading, setSessionLoading] = useState(true)
-const [welcomeOpen, setWelcomeOpen] = useState(false)
+  const [welcomeOpen, setWelcomeOpen] = useState(false)
   const [resetMode, setResetMode] = useState(false)
   const [resetPassword, setResetPassword] = useState('')
   const [resetConfirm, setResetConfirm] = useState('')
   const [resetLoading, setResetLoading] = useState(false)
   const [resetDone, setResetDone] = useState(false)
   const [resetError, setResetError] = useState('')
-const [upgradeOpen, setUpgradeOpen] = useState(false)
+  const [upgradeOpen, setUpgradeOpen] = useState(false)
   const isMobile = useIsMobile()
+
   const openAuth = (tab = 'signin', email = '') => {
     setAuthInitialTab(tab); setAuthInitialEmail(email); setAuthOpen(true)
   }
 
-useEffect(() => {
+  useEffect(() => {
     const init = async () => {
       await new Promise(r => setTimeout(r, 200))
       const { data: { session } } = await supabase.auth.getSession()
@@ -1675,7 +2326,7 @@ useEffect(() => {
     window.location.href = window.location.origin
   }
 
-const handleResetSubmit = async () => {
+  const handleResetSubmit = async () => {
     if (!resetPassword || resetPassword.length < 8) { setResetError('Password must be at least 8 characters'); return }
     if (resetPassword !== resetConfirm) { setResetError('Passwords do not match'); return }
     setResetLoading(true); setResetError('')
@@ -1686,27 +2337,27 @@ const handleResetSubmit = async () => {
     setTimeout(() => {
       setResetMode(false)
       window.location.href = window.location.origin
-   }, 2000)
+    }, 2000)
   }
 
   const handleUpgrade = () => {
-  if (!isLoggedIn) { openAuth('signup'); return }
-  setUpgradeOpen(true)
-}
+    if (!isLoggedIn) { openAuth('signup'); return }
+    setUpgradeOpen(true)
+  }
 
-const handleUpgradeSuccess = async () => {
-  setUpgradeOpen(false)
-  setIsPro(true)
-  addToast('You\'re now Pro! Welcome. 🔥', 'success')
-}
+  const handleUpgradeSuccess = async () => {
+    setUpgradeOpen(false)
+    setIsPro(true)
+    addToast('You\'re now Pro! Welcome. üî•', 'success')
+  }
 
   const renderTab = () => {
     switch(activeTab) {
       case 0: return <MacroCalculator isPro={isPro} onUpgrade={handleUpgrade} addToast={addToast} onMacrosCalculated={setLastMacros}/>
       case 1: return isPro ? <TrainingScore addToast={addToast} /> : <Paywall feature="Training Score" onUpgrade={handleUpgrade}/>
       case 2: return isPro ? <MealTimingEngine addToast={addToast} /> : <Paywall feature="Meal Timing" onUpgrade={handleUpgrade}/>
-      case 3: return isPro?<div style={{padding:40,color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace"}}>AI Physique Rating — Coming soon</div>:<Paywall feature="AI Physique Rating" onUpgrade={handleUpgrade}/>
-      case 4: return isPro?<div style={{padding:40,color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace"}}>Progress Tracking — Coming soon</div>:<Paywall feature="Progress Tracking" onUpgrade={handleUpgrade}/>
+      case 3: return isPro ? <PhysiqueRating addToast={addToast} /> : <Paywall feature="AI Physique Rating" onUpgrade={handleUpgrade}/>
+      case 4: return <ProgressTracker isPro={isPro} onUpgrade={handleUpgrade} addToast={addToast} />
       default: return null
     }
   }
@@ -1727,7 +2378,7 @@ const handleUpgradeSuccess = async () => {
           <div style={{background:'#111111',borderBottom:'1px solid #1e1e1e',display:'flex',overflowX:'auto',marginTop:isMobile?56:65,WebkitOverflowScrolling:'touch',scrollbarWidth:'none'}}>
             {['Macro Calc','Training Score','Meal Timing','AI Physique','Progress'].map((tab,i)=>(
               <button key={i} onClick={()=>setActiveTab(i)} style={{fontFamily:"'Barlow',sans-serif",fontSize:isMobile?12:14,fontWeight:500,letterSpacing:isMobile?'1px':'2px',textTransform:'uppercase',color:activeTab===i?'#F5F5F5':'#6a6a6a',background:'none',border:'none',borderBottom:activeTab===i?'2px solid #E8000D':'2px solid transparent',padding:isMobile?'14px 14px':'16px 24px',cursor:'pointer',whiteSpace:'nowrap',transition:'all 0.2s',flexShrink:0}}>
-                {tab}{[1,2,3,4].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:10,color:'#E8000D',fontWeight:600}}>PRO</span>}
+                {tab}{[1,2,3].includes(i)&&!isPro&&<span style={{marginLeft:5,fontSize:10,color:'#E8000D',fontWeight:600}}>PRO</span>}
               </button>
             ))}
           </div>
@@ -1761,3 +2412,4 @@ const handleUpgradeSuccess = async () => {
     </div>
   )
 }
+
