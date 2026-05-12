@@ -1643,7 +1643,7 @@ Be direct, specific, and honest. Avoid generic statements. This is professional 
                 </div>
                 <div>
                   <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8 }}>Height *</div>
-                  <input type="text" value={stats.height} onChange={e => setS('height', e.target.value)} placeholder='5\'10"'
+                  <input type="text" value={stats.height} onChange={e => setS('height', e.target.value)} placeholder="e.g. 5ft 10in"
                     style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }}
                     onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
                 </div>
