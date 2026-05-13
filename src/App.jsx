@@ -1613,8 +1613,8 @@ Be direct, specific, and honest. Avoid generic statements. This is professional 
                   style={{ position:'absolute', top:10, right:10, background:'rgba(8,8,8,0.85)', border:'1px solid #2a2a2a', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, padding:'8px 12px', cursor:'pointer' }}>
                   X Remove
                 </button>
-                <div style={{ padding:'10px 14px', background:'#0d0d0d', fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#22c55e', letterSpacing:1 }}>
-                  + Photo ready - Not stored on our servers
+                <div style={{ padding:'10px 14px', background:'#0d0d0d', fontFamily:"'Share Tech Mono',monospace", fontSize:10, color: uploadLoading ? '#eab308' : photoBase64 ? '#22c55e' : '#E8000D', letterSpacing:1 }}>
+                  {uploadLoading ? 'Uploading photo...' : photoBase64 ? '+ Photo ready' : 'Upload failed - try again'}
                 </div>
               </div>
             )}
