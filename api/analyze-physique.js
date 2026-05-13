@@ -13,34 +13,12 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-opus-4-5',
-max_tokens: 500,
-messages: [{
+        max_tokens: 500,
+        messages: [{
           role: 'user',
           content: [
             { type: 'image', source: { type: 'url', url: imageUrl } },
-            { type: 'text', text: `You are an expert physique coach. Analyze this physique photo with these stats: Gender: ${stats.gender}, Weight: ${stats.weight}lbs, Height: ${stats.height}, Body Fat: ${stats.bodyFat || 'not provided'}%, Goal: ${goalLabels[stats.goal] || stats.goal}.
-
-Provide feedback in EXACTLY this structure:
-
-**OVERALL ASSESSMENT**
-2-3 sentences on overall physique development and conditioning.
-
-**STRENGTHS**
-List 3 specific muscle groups or qualities that are well-developed.
-
-**AREAS TO IMPROVE**
-List 3 specific areas that need the most work.
-
-**TRAINING RECOMMENDATIONS**
-3-4 specific training adjustments to address weak points.
-
-**NUTRITION NOTES**
-2-3 sentences connecting their stats to what you observe.
-
-**COACH'S BOTTOM LINE**
-1-2 sentences of direct honest coaching advice.
-
-Be specific and honest. No generic statements.` }
+            { type: 'text', text: `You are an expert physique coach. Analyze this physique photo with these stats: Gender: ${stats.gender}, Weight: ${stats.weight}lbs, Height: ${stats.height}, Body Fat: ${stats.bodyFat || 'not provided'}%, Goal: ${goalLabels[stats.goal] || stats.goal}. Provide feedback in EXACTLY this structure: **OVERALL ASSESSMENT** 2-3 sentences on overall physique development. **STRENGTHS** List 3 specific muscle groups that are well-developed. **AREAS TO IMPROVE** List 3 specific areas that need work. **TRAINING RECOMMENDATIONS** 3-4 specific training adjustments. **NUTRITION NOTES** 2-3 sentences connecting stats to what you observe. **COACH'S BOTTOM LINE** 1-2 sentences of direct coaching advice. Be specific and honest.` }
           ]
         }]
       })
