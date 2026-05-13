@@ -1387,8 +1387,8 @@ function PhysiqueRating({ addToast }) {
 const [loading, setLoading] = useState(false)
 const [uploadLoading, setUploadLoading] = useState(false)
 const [history, setHistory] = useState([])
-  const [historyLoading, setHistoryLoading] = useState(true)  const [error, setError] = useState('')
-
+const [historyLoading, setHistoryLoading] = useState(true)
+  const [error, setError] = useState('')
   const setS = (k, v) => setStats(s => ({ ...s, [k]: v }))
 
   useEffect(() => {
