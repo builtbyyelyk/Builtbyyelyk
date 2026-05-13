@@ -1460,24 +1460,14 @@ List 3 specific muscle groups or areas that need the most work. Be direct and sp
 Be direct, specific, and honest. Avoid generic statements. This is professional coaching feedback, not flattery.`
 
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': import.meta.env.VITE_ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({
-          model: 'claude-opus-4-5',
-          max_tokens: 1200,
-          messages: [{
-            role: 'user',
-            content: [
-              { type: 'image', source: { type: 'base64', media_type: 'image/jpeg', data: photoBase64 } },
-              { type: 'text', text: prompt }
-            ]
-          }]
-        })
-      })
-      const data = await response.json()
-      if (!response.ok) { setError('Analysis failed. Please try again.'); setLoading(false); return }
-      const text = data.content?.[0]?.text || ''
+      const response = await fetch('/api/analyze-physique', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ imageBase64: photoBase64, stats })
+})
+const data = await response.json()
+if (!response.ok) { setError('Analysis failed. Please try again.'); setLoading(false); return }
+const text = data.analysis || ''
       setAnalysis(text)
 
       const { data: { session } } = await supabase.auth.getSession()
