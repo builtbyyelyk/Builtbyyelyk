@@ -1407,27 +1407,42 @@ const [historyLoading, setHistoryLoading] = useState(true)
 const handlePhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 20 * 1024 * 1024) { setError('Photo must be under 20MB'); return }
     setError('')
     setPhoto(URL.createObjectURL(file))
     setPhotoBase64(null)
     setUploadLoading(true)
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) { setError('Not signed in.'); setUploadLoading(false); return }
-      const fileName = `${session.user.id}-${Date.now()}.jpg`
-      const { data, error } = await supabase.storage
-        .from('physique-photos')
-        .upload(fileName, file, { contentType: file.type, upsert: true })
-      if (error) { setError('Upload error: ' + JSON.stringify(error)); setUploadLoading(false); return }
-      const { data: urlData } = supabase.storage
-        .from('physique-photos')
-        .getPublicUrl(fileName)
-      setPhotoBase64(urlData.publicUrl)
-    } catch (err) {
-      setError('Upload failed: ' + err.message)
+
+    // Compress before uploading
+    const canvas = document.createElement('canvas')
+    const img = new Image()
+    const objectUrl = URL.createObjectURL(file)
+    img.onload = async () => {
+      const maxW = 1200
+      const scale = Math.min(1, maxW / img.width)
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      canvas.toBlob(async (blob) => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession()
+          if (!session?.user) { setError('Not signed in.'); setUploadLoading(false); return }
+          const fileName = `${session.user.id}-${Date.now()}.jpg`
+          const { data, error } = await supabase.storage
+            .from('physique-photos')
+            .upload(fileName, blob, { contentType: 'image/jpeg', upsert: true })
+          if (error) { setError('Upload error: ' + error.message); setUploadLoading(false); return }
+          const { data: urlData } = supabase.storage
+            .from('physique-photos')
+            .getPublicUrl(fileName)
+          setPhotoBase64(urlData.publicUrl)
+        } catch (err) {
+          setError('Upload failed: ' + err.message)
+        }
+        setUploadLoading(false)
+      }, 'image/jpeg', 0.8)
     }
-    setUploadLoading(false)
+    img.src = objectUrl
   }
 
   const runAnalysis = async () => {
