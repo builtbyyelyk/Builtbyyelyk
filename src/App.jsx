@@ -540,7 +540,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
             <div>
               <label style={LS}>Daily Steps</label>
               <select value={form.stepsPerDay} onChange={e=>set('stepsPerDay',e.target.value)} style={IS}>
-                {[['2500','Under 3,000 (very sedentary)'],['5000','3,000‚Äì6,000 (desk job)'],['7500','6,000‚Äì9,000 (light activity)'],['10000','9,000‚Äì12,000 (moderately active)'],['13000','12,000‚Äì15,000 (very active)'],['17500','15,000+ (extremely active)']].map(([k,l])=><option key={k} value={k}>{l}</option>)}
+                {[['2500','Under 3,000 (very sedentary)'],['5000','3,000-6,000 (desk job)'],['7500','6,000-9,000 (light activity)'],['10000','9,000-12,000 (moderately active)'],['13000','12,000-15,000 (very active)'],,['17500','15,000+ (extremely active)']].map(([k,l])=><option key={k} value={k}>{l}</option>)}
               </select>
               <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',marginTop:5,letterSpacing:0.5}}>Fine-tunes your TDEE beyond gym sessions</div>
             </div>
