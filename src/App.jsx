@@ -1385,8 +1385,8 @@ function PhysiqueRating({ addToast }) {
   const [stats, setStats] = useState({ weight:'', height:'', bodyFat:'', gender:'male', goal:'maintain' })
   const [analysis, setAnalysis] = useState(null)
 const [loading, setLoading] = useState(false)
-const [uploadLoading, setUploadLoading] = useState(false)  const [history, setHistory] = useState([])
-  const [historyLoading, setHistoryLoading] = useState(true)
+const [uploadLoading, setUploadLoading] = useState(false)
+  const [history, setHistory] = useState([])  const [historyLoading, setHistoryLoading] = useState(true)
   const [error, setError] = useState('')
 
   const setS = (k, v) => setStats(s => ({ ...s, [k]: v }))
