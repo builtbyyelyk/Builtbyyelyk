@@ -1404,27 +1404,22 @@ function PhysiqueRating({ addToast }) {
     load()
   }, [])
 
- const handlePhoto = (e) => {
+ const handlePhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 10 * 1024 * 1024) { setError('Photo must be under 10MB'); return }
-    const url = URL.createObjectURL(file)
-    setPhoto(url)
-    const img = new Image()
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      const maxW = 600
-const maxH = 600
-const scale = Math.min(1, maxW / img.width, maxH / img.height)
-canvas.width = img.width * scale
-canvas.height = img.height * scale
-const ctx = canvas.getContext('2d')
-ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-const base64 = canvas.toDataURL('image/jpeg', 0.5).split(',')[1]
-      setPhotoBase64(base64)
-    }
-    img.src = url
+    if (file.size > 20 * 1024 * 1024) { setError('Photo must be under 20MB'); return }
     setError('')
+    setPhoto(URL.createObjectURL(file))
+    const { data: { session } } = await supabase.auth.getSession()
+    const fileName = `${session.user.id}-${Date.now()}.jpg`
+    const { data, error } = await supabase.storage
+      .from('physique-photos')
+      .upload(fileName, file, { contentType: file.type, upsert: true })
+    if (error) { setError('Photo upload failed. Try again.'); return }
+    const { data: urlData } = supabase.storage
+      .from('physique-photos')
+      .getPublicUrl(fileName)
+    setPhotoBase64(urlData.publicUrl)
   }
 
   const runAnalysis = async () => {
