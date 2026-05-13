@@ -1411,22 +1411,23 @@ const handlePhoto = async (e) => {
     setError('')
     setPhoto(URL.createObjectURL(file))
     setPhotoBase64(null)
-    setLoading(true)
+    setUploadLoading(true)
     try {
       const { data: { session } } = await supabase.auth.getSession()
-      if (!session?.user) { setError('Not signed in.'); setLoading(false); return }
+      if (!session?.user) { setError('Not signed in.'); setUploadLoading(false); return }
       const fileName = `${session.user.id}-${Date.now()}.jpg`
       const { data, error } = await supabase.storage
         .from('physique-photos')
         .upload(fileName, file, { contentType: file.type, upsert: true })
-if (error) { setError('Upload error: ' + JSON.stringify(error)); setLoading(false); return }      const { data: urlData } = supabase.storage
+      if (error) { setError('Upload error: ' + JSON.stringify(error)); setUploadLoading(false); return }
+      const { data: urlData } = supabase.storage
         .from('physique-photos')
         .getPublicUrl(fileName)
       setPhotoBase64(urlData.publicUrl)
     } catch (err) {
       setError('Upload failed: ' + err.message)
     }
-    setLoading(false)
+    setUploadLoading(false)
   }
 
   const runAnalysis = async () => {
