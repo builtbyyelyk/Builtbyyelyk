@@ -377,8 +377,7 @@ function Paywall({ feature, onUpgrade }) {
   return (
     <div style={{ padding:'80px 40px', textAlign:'center', minHeight:'60vh', display:'flex', alignItems:'center', justifyContent:'center' }}>
       <div style={{ maxWidth:440 }}>
-        <div style={{ fontSize:52, marginBottom:20 }}>üîí</div>
-        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:52, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:14, lineHeight:0.9 }}>
+<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#E8000D" strokeWidth="1.5" style={{opacity:0.6,display:'block',margin:'0 auto 20px'}}><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>        <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:52, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:14, lineHeight:0.9 }}>
           {feature}<br/><span style={{color:'#E8000D'}}>is Pro</span>
         </h2>
         <p style={{ color:'#aaaaaa', fontSize:15, lineHeight:1.8, fontWeight:300, marginBottom:32 }}>Upgrade to Pro to unlock {feature} plus unlimited macro calculations, meal timing, and AI physique rating.</p>
