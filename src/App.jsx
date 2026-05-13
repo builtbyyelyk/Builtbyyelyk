@@ -1413,13 +1413,14 @@ function PhysiqueRating({ addToast }) {
     const img = new Image()
     img.onload = () => {
       const canvas = document.createElement('canvas')
-      const maxW = 800
-      const scale = Math.min(1, maxW / img.width)
-      canvas.width = img.width * scale
-      canvas.height = img.height * scale
-      const ctx = canvas.getContext('2d')
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1]
+      const maxW = 600
+const maxH = 600
+const scale = Math.min(1, maxW / img.width, maxH / img.height)
+canvas.width = img.width * scale
+canvas.height = img.height * scale
+const ctx = canvas.getContext('2d')
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+const base64 = canvas.toDataURL('image/jpeg', 0.5).split(',')[1]
       setPhotoBase64(base64)
     }
     img.src = url
