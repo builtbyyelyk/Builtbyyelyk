@@ -1419,8 +1419,7 @@ const handlePhoto = async (e) => {
       const { data, error } = await supabase.storage
         .from('physique-photos')
         .upload(fileName, file, { contentType: file.type, upsert: true })
-      if (error) { setError('Photo upload failed: ' + error.message); setLoading(false); return }
-      const { data: urlData } = supabase.storage
+if (error) { setError('Upload error: ' + JSON.stringify(error)); setLoading(false); return }      const { data: urlData } = supabase.storage
         .from('physique-photos')
         .getPublicUrl(fileName)
       setPhotoBase64(urlData.publicUrl)
