@@ -598,8 +598,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           {!results?(
             <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:400,gap:14}}>
-              <div style={{fontSize:44,opacity:0.25}}></div>
-              <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,color:'#888888',textAlign:'center',letterSpacing:0.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" strokeWidth="1.5" style={{opacity:0.25,display:'block',margin:'0 auto 14px'}}><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>              <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,color:'#888888',textAlign:'center',letterSpacing:0.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
             </div>
           ):(
             <>
