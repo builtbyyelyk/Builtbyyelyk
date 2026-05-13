@@ -1964,8 +1964,7 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
         </div>
       ) : (
         <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'48px 24px', textAlign:'center', marginBottom:14 }}>
-          <div style={{ fontSize:40, marginBottom:14, opacity:0.2 }}></div>
-          <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Start Logging</div>
+<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" strokeWidth="1.5" style={{opacity:0.2,display:'block',margin:'0 auto 14px'}}><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>          <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Start Logging</div>
           <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.8 }}>Enter your weight above to begin tracking your progress.</div>
         </div>
       )}
