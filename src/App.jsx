@@ -1460,15 +1460,15 @@ List 3 specific muscle groups or areas that need the most work. Be direct and sp
 
 Be direct, specific, and honest. Avoid generic statements. This is professional coaching feedback, not flattery.`
 
-    try {
-     const response = await fetch('/api/analyze-physique', {
+  try {
+      const response = await fetch('/api/analyze-physique', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ imageUrl: photoBase64, stats })
       })
-const data = await response.json()
-if (!response.ok) { setError('Analysis failed. Please try again.'); setLoading(false); return }
-const text = data.analysis || ''
+      const data = await response.json()
+      if (!response.ok) { setError('Analysis failed. Please try again.'); setLoading(false); return }
+      const text = data.analysis || ''
       setAnalysis(text)
 
       const { data: { session } } = await supabase.auth.getSession()
