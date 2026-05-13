@@ -1178,8 +1178,7 @@ function MealTimingEngine({ addToast }) {
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>Eat At The<br/><span style={{ color:'#E8000D' }}>Right Time.</span></h2>
       </div>
       <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding:40, textAlign:'center' }}>
-        <div style={{ fontSize:48, marginBottom:20 }}></div>
-        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:12 }}>Run The Macro Calculator First</div>
+<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#6a6a6a" strokeWidth="1.5" style={{opacity:0.4,display:'block',margin:'0 auto 20px'}}><rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/></svg>        <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:12 }}>Run The Macro Calculator First</div>
         <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, color:'#aaaaaa', lineHeight:1.8, maxWidth:380, margin:'0 auto 28px' }}>Meal Timing needs your calorie and macro targets to build a precise schedule. Calculate your macros first, then come back here.</div>
         <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1.5 }}>No macro data found for your account</div>
       </div>
