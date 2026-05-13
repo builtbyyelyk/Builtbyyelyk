@@ -1404,22 +1404,30 @@ function PhysiqueRating({ addToast }) {
     load()
   }, [])
 
- const handlePhoto = async (e) => {
+const handlePhoto = async (e) => {
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 20 * 1024 * 1024) { setError('Photo must be under 20MB'); return }
     setError('')
     setPhoto(URL.createObjectURL(file))
-    const { data: { session } } = await supabase.auth.getSession()
-    const fileName = `${session.user.id}-${Date.now()}.jpg`
-    const { data, error } = await supabase.storage
-      .from('physique-photos')
-      .upload(fileName, file, { contentType: file.type, upsert: true })
-    if (error) { setError('Photo upload failed. Try again.'); return }
-    const { data: urlData } = supabase.storage
-      .from('physique-photos')
-      .getPublicUrl(fileName)
-    setPhotoBase64(urlData.publicUrl)
+    setPhotoBase64(null)
+    setLoading(true)
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session?.user) { setError('Not signed in.'); setLoading(false); return }
+      const fileName = `${session.user.id}-${Date.now()}.jpg`
+      const { data, error } = await supabase.storage
+        .from('physique-photos')
+        .upload(fileName, file, { contentType: file.type, upsert: true })
+      if (error) { setError('Photo upload failed: ' + error.message); setLoading(false); return }
+      const { data: urlData } = supabase.storage
+        .from('physique-photos')
+        .getPublicUrl(fileName)
+      setPhotoBase64(urlData.publicUrl)
+    } catch (err) {
+      setError('Upload failed: ' + err.message)
+    }
+    setLoading(false)
   }
 
   const runAnalysis = async () => {
