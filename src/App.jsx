@@ -1404,17 +1404,25 @@ function PhysiqueRating({ addToast }) {
     load()
   }, [])
 
-  const handlePhoto = (e) => {
+ const handlePhoto = (e) => {
     const file = e.target.files[0]
     if (!file) return
     if (file.size > 10 * 1024 * 1024) { setError('Photo must be under 10MB'); return }
-    setPhoto(URL.createObjectURL(file))
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const base64 = ev.target.result.split(',')[1]
+    const url = URL.createObjectURL(file)
+    setPhoto(url)
+    const img = new Image()
+    img.onload = () => {
+      const canvas = document.createElement('canvas')
+      const maxW = 800
+      const scale = Math.min(1, maxW / img.width)
+      canvas.width = img.width * scale
+      canvas.height = img.height * scale
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+      const base64 = canvas.toDataURL('image/jpeg', 0.7).split(',')[1]
       setPhotoBase64(base64)
     }
-    reader.readAsDataURL(file)
+    img.src = url
     setError('')
   }
 
