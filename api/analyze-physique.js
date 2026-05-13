@@ -13,8 +13,8 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'claude-opus-4-5',
-        max_tokens: 1024,
-        messages: [{
+max_tokens: 500,
+messages: [{
           role: 'user',
           content: [
             { type: 'image', source: { type: 'url', url: imageUrl } },
