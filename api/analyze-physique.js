@@ -1,18 +1,9 @@
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' })
-
   const { imageUrl, stats } = req.body
   if (!imageUrl) return res.status(400).json({ error: 'No image URL provided' })
-
   try {
-    // Fetch the image from Supabase Storage
-    const imageRes = await fetch(imageUrl)
-    const arrayBuffer = await imageRes.arrayBuffer()
-    const base64 = Buffer.from(arrayBuffer).toString('base64')
-    const mediaType = imageRes.headers.get('content-type') || 'image/jpeg'
-
     const goalLabels = { aggressive_cut:'Aggressive Cut', moderate_cut:'Moderate Cut', maintain:'Maintenance', lean_bulk:'Lean Bulk', bulk:'Bulk' }
-
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -26,7 +17,7 @@ export default async function handler(req, res) {
         messages: [{
           role: 'user',
           content: [
-            { type: 'image', source: { type: 'base64', media_type: mediaType, data: base64 } },
+            { type: 'image', source: { type: 'url', url: imageUrl } },
             { type: 'text', text: `You are an expert physique coach. Analyze this physique photo with these stats: Gender: ${stats.gender}, Weight: ${stats.weight}lbs, Height: ${stats.height}, Body Fat: ${stats.bodyFat || 'not provided'}%, Goal: ${goalLabels[stats.goal] || stats.goal}.
 
 Provide feedback in EXACTLY this structure:
@@ -54,7 +45,6 @@ Be specific and honest. No generic statements.` }
         }]
       })
     })
-
     const data = await response.json()
     if (!response.ok) return res.status(500).json({ error: data.error?.message || 'API error' })
     const text = data.content?.[0]?.text || ''
