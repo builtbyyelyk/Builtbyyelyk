@@ -26,7 +26,7 @@ function ToastContainer({ toasts }) {
     <div style={{ position:'fixed', bottom:24, right:24, zIndex:10000, display:'flex', flexDirection:'column', gap:10 }}>
       {toasts.map(t => (
         <div key={t.id} style={{ background:'#111111', border:'1px solid #2a2a2a', borderLeft:`3px solid ${t.type==='success'?'#22c55e':t.type==='error'?'#E8000D':'#F5F5F5'}`, padding:'14px 20px', fontSize:13, color:'#F5F5F5', display:'flex', alignItems:'center', gap:10, minWidth:260 }}>
-          <span>{t.type==='success'?'‚úì':'‚úï'}</span>{t.message}
+          <span>{t.type==='success'?'+':'X'}</span>{t.message}
         </div>
       ))}
     </div>
@@ -48,24 +48,24 @@ function WelcomePopup({ onSignIn, onSignUp, onClose }) {
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.88)', backdropFilter:'blur(12px)', zIndex:900, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 24px':48, width:'100%', maxWidth:460, position:'relative', textAlign:'center' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer', fontFamily:"'Share Tech Mono',monospace" }}>‚úï</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer', fontFamily:"'Share Tech Mono',monospace" }}>X</button>
         <div style={{ display:'flex', justifyContent:'center', marginBottom:24 }}><Logo /></div>
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:isMobile?32:42, fontWeight:900, textTransform:'uppercase', lineHeight:0.9, marginBottom:12, color:'#F5F5F5' }}>
           GET <span style={{color:'#E8000D'}}>BUILT.</span>
         </h2>
         <p style={{ color:'#aaaaaa', fontSize:isMobile?13:15, lineHeight:1.8, fontWeight:300, marginBottom:28, maxWidth:340, margin:'0 auto 28px' }}>
-          Precision macro targets, training intelligence, and AI physique rating ‚Äî built by a real coach.
+          Precision macro targets, training intelligence, and AI physique rating - built by a real coach.
         </p>
         <div style={{ display:'flex', flexDirection:'column', gap:10 }}>
           <button onClick={onSignUp} style={{ width:'100%', background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'15px', cursor:'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-            Create Account ‚Üí
+            Create Account ->
           </button>
           <button onClick={onSignIn} style={{ width:'100%', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', padding:'14px', cursor:'pointer' }}>
             I Already Have An Account
           </button>
         </div>
         <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', letterSpacing:1.5, marginTop:18, lineHeight:1.6 }}>
-          Join the waitlist ¬∑ Lock in founding member pricing
+          Join the waitlist - Lock in founding member pricing
         </div>
       </div>
     </div>
@@ -192,7 +192,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.85)', backdropFilter:'blur(8px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:40, width:'100%', maxWidth:420, position:'relative' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>‚úï</button>
+        <button onClick={onClose} style={{ position:'absolute', top:16, right:16, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>X</button>
         <div style={{ textAlign:'center', marginBottom:28 }}><Logo /></div>
         <div style={{ display:'flex', marginBottom:24, borderBottom:'1px solid #1e1e1e' }}>
           {['signin','signup'].map(t => (
@@ -202,7 +202,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
           ))}
         </div>
         {message ? (
-          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center', lineHeight:1.8 }}>‚úì {message}</div>
+          <div style={{ padding:20, background:'rgba(34,197,94,0.08)', border:'1px solid rgba(34,197,94,0.25)', color:'#22c55e', fontFamily:"'Share Tech Mono',monospace", fontSize:12, textAlign:'center', lineHeight:1.8 }}>+ {message}</div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
             {tab==='signup'&&(
@@ -236,7 +236,7 @@ function AuthModal({ isOpen, onClose, onSuccess, addToast, initialTab, initialEm
               <div style={{ display:'flex', flexDirection:'column', gap:12, padding:'16px', background:'#0d0d0d', border:'1px solid #2a2a2a' }}>
                 {forgotSent ? (
                   <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#22c55e', letterSpacing:1, lineHeight:1.8, textAlign:'center' }}>
-                    ‚úì Reset link sent. Check your email.
+                    + Reset link sent. Check your email.
                   </div>
                 ) : (
                   <>
@@ -300,7 +300,7 @@ function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
         const { error: actionError } = await stripe.confirmCardPayment(data.clientSecret)
         if (actionError) { setError(actionError.message); setLoading(false); return }
       }
-      addToast('Welcome to Pro! üî•', 'success')
+      addToast('Welcome to Pro! ', 'success')
       onSuccess()
     } catch (err) {
       setError('Payment failed. Try again.')
@@ -324,10 +324,10 @@ function CheckoutForm({ priceType, onSuccess, addToast, onClose }) {
       {error && <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#E8000D', letterSpacing:1 }}>{error}</div>}
       <button onClick={handleSubmit} disabled={loading || !stripe}
         style={{ width:'100%', padding:'16px', background: loading ? '#2a2a2a' : '#E8000D', color: loading ? '#6a6a6a' : '#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: loading ? 'not-allowed' : 'pointer', fontWeight:600, clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-        {loading ? 'Processing...' : `Pay ${priceType === 'annual' ? '$124.99/year' : '$12.99/month'} ‚Üí`}
+        {loading ? 'Processing...' : `Pay ${priceType === 'annual' ? '$124.99/year' : '$12.99/month'} ->`}
       </button>
       <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', textAlign:'center', letterSpacing:1, lineHeight:1.8 }}>
-        Secured by Stripe ¬∑ Cancel anytime ¬∑ No hidden fees
+        Secured by Stripe - Cancel anytime - No hidden fees
       </div>
     </div>
   )
@@ -340,7 +340,7 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
   return (
     <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.92)', backdropFilter:'blur(12px)', zIndex:2000, display:'flex', alignItems:'center', justifyContent:'center', padding:isMobile?16:24 }} onClick={onClose}>
       <div style={{ background:'#111111', border:'1px solid #2a2a2a', borderTop:'2px solid #E8000D', padding:isMobile?'32px 20px':40, width:'100%', maxWidth:460, position:'relative', maxHeight:'90vh', overflowY:'auto' }} onClick={e=>e.stopPropagation()}>
-        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>‚úï</button>
+        <button onClick={onClose} style={{ position:'absolute', top:14, right:14, background:'none', border:'none', color:'#6a6a6a', fontSize:20, cursor:'pointer' }}>X</button>
         <div style={{ textAlign:'center', marginBottom:24 }}>
           <Logo />
           <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:36, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginTop:16, lineHeight:0.9 }}>
@@ -361,7 +361,7 @@ function ProUpgradeModal({ isOpen, onClose, addToast, onUpgradeSuccess }) {
         <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'12px 16px', marginBottom:20, display:'flex', flexDirection:'column', gap:6 }}>
           {['Unlimited macro calculations','Training Score (0‚Äì100)','Meal Timing Engine','AI Physique Rating','Progress Tracking'].map(f => (
             <div key={f} style={{ display:'flex', gap:10, fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', alignItems:'center' }}>
-              <span style={{ color:'#22c55e', flexShrink:0 }}>‚úì</span>{f}
+              <span style={{ color:'#22c55e', flexShrink:0 }}>+</span>{f}
             </div>
           ))}
         </div>
@@ -383,7 +383,7 @@ function Paywall({ feature, onUpgrade }) {
         </h2>
         <p style={{ color:'#aaaaaa', fontSize:15, lineHeight:1.8, fontWeight:300, marginBottom:32 }}>Upgrade to Pro to unlock {feature} plus unlimited macro calculations, meal timing, and AI physique rating.</p>
         <button onClick={onUpgrade} style={{ background:'#E8000D', color:'#080808', fontFamily:"'Share Tech Mono',monospace", fontSize:12, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'16px 40px', cursor:'pointer', fontWeight:600 }}>
-          Upgrade to Pro ‚Äî $12.99/mo ‚Üí
+          Upgrade to Pro - $12.99/mo ->
         </button>
       </div>
     </div>
@@ -480,7 +480,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
   const goals=[
     {k:'aggressive_cut',l:'Aggressive Cut',s:'-500 cal'},
     {k:'moderate_cut',l:'Moderate Cut',s:'-250 cal'},
-    {k:'maintain',l:'Maintain',s:'¬±0 cal'},
+    {k:'maintain',l:'Maintain',s:'+/-0 cal'},
     {k:'lean_bulk',l:'Lean Bulk',s:'+300 cal'},
     {k:'bulk',l:'Bulk',s:'+500 cal'},
   ]
@@ -500,7 +500,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
       {limitReached&&(
         <div style={{background:'rgba(232,0,13,0.08)',border:'1px solid rgba(232,0,13,0.3)',padding:'14px 20px',marginBottom:20,display:'flex',justifyContent:'space-between',alignItems:'center',gap:12,flexWrap:'wrap'}}>
           <span style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:500,color:'#E8000D',letterSpacing:0.5}}>‚ö° 2 free calculations used today. Upgrade for unlimited.</span>
-          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'10px 20px',cursor:'pointer'}}>Upgrade ‚Üí</button>
+          <button onClick={onUpgrade} style={{background:'#E8000D',color:'#080808',fontFamily:"'Barlow',sans-serif",fontSize:12,fontWeight:700,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'10px 20px',cursor:'pointer'}}>Upgrade -></button>
         </div>
       )}
       <div style={{display:'grid',gridTemplateColumns:isMobile?'1fr':'1fr 1fr',gap:isMobile?16:20}}>
@@ -598,7 +598,7 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
         <div style={{display:'flex',flexDirection:'column',gap:14}}>
           {!results?(
             <div style={{background:'#111111',border:'1px solid #1e1e1e',padding:32,display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',minHeight:400,gap:14}}>
-              <div style={{fontSize:44,opacity:0.25}}>üìä</div>
+              <div style={{fontSize:44,opacity:0.25}}></div>
               <div style={{fontFamily:"'Barlow',sans-serif",fontSize:14,color:'#888888',textAlign:'center',letterSpacing:0.5,lineHeight:1.8}}>Enter your stats and hit<br/>Calculate to see your targets.</div>
             </div>
           ):(
@@ -645,8 +645,8 @@ function MacroCalculator({ isPro, onUpgrade, addToast, onMacrosCalculated }) {
                 <div style={{fontFamily:"'Barlow',sans-serif",fontSize:12,color:'#888888',letterSpacing:0.5,textAlign:'right',maxWidth:180,lineHeight:1.6}}>Supports digestion,<br/>satiety &amp; absorption</div>
               </div>
               <div style={{background:'#111111',border:'1px solid rgba(232,0,13,0.2)',padding:'18px 22px'}}>
-                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>‚úì Macros Ready</div>
-                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',letterSpacing:0.5,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating ‚Üí</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,fontWeight:600,letterSpacing:2,color:'#E8000D',textTransform:'uppercase',marginBottom:6}}>+ Macros Ready</div>
+                <div style={{fontFamily:"'Barlow',sans-serif",fontSize:13,color:'#888888',letterSpacing:0.5,lineHeight:1.8}}>Pro unlocks meal timing, training score, micronutrients &amp; AI physique rating -></div>
               </div>
             </>
           )}
@@ -857,7 +857,7 @@ function TrainingScore({ addToast }) {
                 </div>
               </div>
               <button onClick={() => setStep(2)} style={{ width:'100%', padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-                Next ‚Äî Muscle Groups ‚Üí
+                Next - Muscle Groups ->
               </button>
             </div>
           )}
@@ -872,7 +872,7 @@ function TrainingScore({ addToast }) {
                     <div key={mg.key} style={{ background: isActive ? 'rgba(232,0,13,0.06)' : '#0d0d0d', border:`1px solid ${isActive ? '#E8000D' : '#2a2a2a'}`, transition:'all 0.2s' }}>
                       <div onClick={() => toggleMuscle(mg.key)} style={{ padding:'14px 16px', cursor:'pointer', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: isActive ? '#E8000D' : '#F5F5F5' }}>{mg.label}</div>
-                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: isActive ? '#22c55e' : '#2a2a2a' }}>{isActive ? '‚úì' : '‚Äî'}</div>
+                        <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color: isActive ? '#22c55e' : '#2a2a2a' }}>{isActive ? '+' : '-'}</div>
                       </div>
                       {isActive && (
                         <div style={{ padding:'0 16px 14px', display:'flex', gap:6 }}>
@@ -894,7 +894,7 @@ function TrainingScore({ addToast }) {
                 <button onClick={() => setStep(1)} style={{ flex:1, padding:'14px', background:'transparent', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:11, letterSpacing:2, textTransform:'uppercase', border:'1px solid #2a2a2a', cursor:'pointer' }}>‚Üê Back</button>
                 <button onClick={() => { if (trainedMuscleCount > 0) setStep(3) }}
                   style={{ flex:2, padding:'14px', background: trainedMuscleCount > 0 ? '#E8000D' : '#2a2a2a', color: trainedMuscleCount > 0 ? '#080808' : '#6a6a6a', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor: trainedMuscleCount > 0 ? 'pointer' : 'not-allowed', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-                  Next ‚Äî Recovery ‚Üí
+                  Next - Recovery ->
                 </button>
               </div>
             </div>
@@ -928,7 +928,7 @@ function TrainingScore({ addToast }) {
               <div style={{ background:'#0d0d0d', border:'1px solid #1e1e1e', padding:'14px 18px' }}>
                 <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, textTransform:'uppercase', marginBottom:6 }}>Summary</div>
                 <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa', lineHeight:1.8 }}>
-                  {form.daysPerWeek} days/week ¬∑ {form.avgDuration} min sessions ¬∑ {Object.keys(form.muscleGroups).length} muscle groups ¬∑ {form.sleepHours}h sleep
+                  {form.daysPerWeek} days/week - {form.avgDuration} min sessions - {Object.keys(form.muscleGroups).length} muscle groups - {form.sleepHours}h sleep
                 </div>
               </div>
               <div style={{ display:'flex', gap:10 }}>
@@ -956,7 +956,7 @@ function TrainingScore({ addToast }) {
               ['Frequency', results.breakdown.frequency.score, 20, `${results.breakdown.frequency.daysPerWeek} days/week`],
               ['Balance', results.breakdown.balance.score, 20, `Push ${results.breakdown.balance.pushSets} / Pull ${results.breakdown.balance.pullSets} / Legs ${results.breakdown.balance.legSets}`],
               ['Intensity', results.breakdown.intensity.score, 15, form.avgIntensity],
-              ['Recovery', results.breakdown.recovery.score, 20, `${results.breakdown.recovery.restDays} rest days ¬∑ ${results.breakdown.recovery.sleepH}h sleep`],
+              ['Recovery', results.breakdown.recovery.score, 20, `${results.breakdown.recovery.restDays} rest days - ${results.breakdown.recovery.sleepH}h sleep`],
             ].map(([label, score, max, detail]) => (
               <div key={label} style={{ marginBottom:14 }}>
                 <div style={{ display:'flex', justifyContent:'space-between', marginBottom:5 }}>
@@ -993,11 +993,11 @@ function TrainingScore({ addToast }) {
               {(() => {
                 const fixes = []
                 const b = results.breakdown
-                if (b.volume.score < 18) fixes.push('Increase weekly volume ‚Äî aim for 10-20 sets per muscle group.')
+                if (b.volume.score < 18) fixes.push('Increase weekly volume - aim for 10-20 sets per muscle group.')
                 if (b.balance.pushSets === 0) fixes.push('No push work. Add chest, shoulder, or tricep training.')
                 if (b.balance.pullSets === 0) fixes.push('No pull work. Add back or bicep training.')
                 if (b.balance.legSets === 0) fixes.push('Don\'t skip legs. Add squats, RDLs, or leg press.')
-                if (b.balance.score < 14) fixes.push('Push/pull/legs ratio is off ‚Äî aim for roughly equal thirds.')
+                if (b.balance.score < 14) fixes.push('Push/pull/legs ratio is off - aim for roughly equal thirds.')
                 if (b.recovery.sleepH < 7) fixes.push('Sleep under 7 hours tanks recovery. Target 7-9 hours.')
                 if (b.recovery.restDays < 2) fixes.push('More rest days needed. Muscles grow during recovery.')
                 if (b.frequency.daysPerWeek < 3) fixes.push('Under 3 days/week limits progress. Try adding another day.')
@@ -1130,20 +1130,20 @@ function MealTimingEngine({ addToast }) {
     slots = slots.slice(0, count).sort((a, b) => a.time - b.time)
 
     const goalData = {
-      aggressive_cut: { label:'Aggressive Cut', strategy:'Keep meals evenly spaced to control hunger. Protein at every meal is non-negotiable.', carbTiming:'carbs around training only ‚Äî minimal at other meals', fatTiming:'healthy fats at breakfast and last meal' },
+      aggressive_cut: { label:'Aggressive Cut', strategy:'Keep meals evenly spaced to control hunger. Protein at every meal is non-negotiable.', carbTiming:'carbs around training only - minimal at other meals', fatTiming:'healthy fats at breakfast and last meal' },
       moderate_cut:   { label:'Moderate Cut', strategy:'Even meal spacing with carb focus around training. Keep fat moderate at every meal.', carbTiming:'moderate carbs all day, higher around training', fatTiming:'distribute fats evenly, reduce post-workout' },
       maintain:       { label:'Maintenance', strategy:'Balanced intake across the day. Use training window to maximise performance and recovery.', carbTiming:'carbs evenly spread with a bump around training', fatTiming:'healthy fats at all meals except directly post-workout' },
       lean_bulk:      { label:'Lean Bulk', strategy:'Prioritise peri-workout nutrition. More calories around training, controlled at other meals.', carbTiming:'higher carbs pre and post workout, moderate elsewhere', fatTiming:'fats at breakfast and dinner, low around training' },
-      bulk:           { label:'Bulk', strategy:'Maximise caloric density around training. Don\'t skip meals ‚Äî every window counts.', carbTiming:'high carbs all day, highest pre and post workout', fatTiming:'fats at all meals, increase at breakfast and dinner' },
+      bulk:           { label:'Bulk', strategy:'Maximise caloric density around training. Don\'t skip meals - every window counts.', carbTiming:'high carbs all day, highest pre and post workout', fatTiming:'fats at all meals, increase at breakfast and dinner' },
     }
     const gd = goalData[goal] || goalData.maintain
 
     const mealDefs = {
-      breakfast:    { name:'Breakfast', role:'Kickstart metabolism. Break the overnight fast with protein and stable energy.', macroFocus: goal.includes('cut')?'High protein ¬∑ Low-moderate carbs ¬∑ Healthy fats':'High protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal.includes('cut')?['Eggs (3-4 whole)','Greek yogurt or cottage cheese','Oats (¬Ω cup) or whole grain toast','Berries']:['3-4 eggs or Greek yogurt','Oats or whole grain toast','Fruit (banana or berries)','Coffee or green tea'], notes: goal.includes('cut')?'Avoid high-sugar options. Protein here reduces cravings all day.':'Front-load protein to hit targets earlier in the day.' },
-      pre_workout:  { name:'Pre-Workout', role:'Fuel performance. Carbs for energy, protein to prime muscle protein synthesis.', macroFocus:'High carbs ¬∑ Moderate protein ¬∑ Low fat ¬∑ Low fiber', foods:['White rice or pasta (1-1.5 cups cooked)','Chicken breast or lean protein (4-6 oz)','Banana or rice cakes','Sports drink or water'], notes:'Eat 60-90 min before training. Low fat and fiber = faster digestion = better performance.' },
-      post_workout: { name:'Post-Workout', role:'Maximize recovery. Protein to rebuild muscle. Carbs to replenish glycogen.', macroFocus:'High protein ¬∑ High carbs ¬∑ Very low fat', foods:['Protein shake (30-40g protein)','White rice or potato (1-2 cups)','Banana or gummy candy (fast carbs)','Low fat Greek yogurt'], notes:'Eat within 30-60 min after training. This is the most important meal on a training day.' },
-      last_meal:    { name:'Last Meal', role:'Sustain overnight recovery. Slow-digesting protein to prevent muscle breakdown during sleep.', macroFocus: goal==='aggressive_cut'?'High protein ¬∑ Low carbs ¬∑ Low-moderate fats':'High protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal==='aggressive_cut'?['Cottage cheese (1 cup)','Casein protein shake','Vegetables (unlimited)','Handful of almonds']:['Cottage cheese or Greek yogurt','Salmon or lean beef','Sweet potato or rice','Leafy greens + olive oil dressing'], notes:'Casein or cottage cheese digest slowly ‚Äî ideal before sleep to prevent overnight catabolism.' },
-      middle:       { name:'Lunch', role:'Sustain energy and hit macro targets. Keep it consistent and easy to prep.', macroFocus: goal.includes('cut')?'High protein ¬∑ Low carbs ¬∑ Moderate fats':goal.includes('bulk')?'High protein ¬∑ High carbs ¬∑ Moderate fats':'Balanced protein ¬∑ Moderate carbs ¬∑ Moderate fats', foods: goal.includes('cut')?['Grilled chicken, turkey, or tuna (6-8 oz)','Large salad or mixed vegetables','Avocado (¬º-¬Ω)','Olive oil dressing']:goal.includes('bulk')?['Chicken, beef or salmon (6-8 oz)','Rice, pasta or potatoes (1.5-2 cups)','Mixed vegetables','Olive oil or cheese']:['Lean protein (chicken, fish, turkey, 6 oz)','Brown rice or sweet potato (1 cup)','Vegetables (broccoli, peppers, spinach)','Olive oil or light dressing'], notes: goal.includes('cut')?'Keep carbs low at non-training meals. Volume from vegetables kills hunger.':'Consistency here is the highest-leverage habit in your nutrition.' },
+      breakfast:    { name:'Breakfast', role:'Kickstart metabolism. Break the overnight fast with protein and stable energy.', macroFocus: goal.includes('cut')?'High protein - Low-moderate carbs - Healthy fats':'High protein - Moderate carbs - Moderate fats', foods: goal.includes('cut')?['Eggs (3-4 whole)','Greek yogurt or cottage cheese','Oats (1/2 cup) or whole grain toast','Berries']:['3-4 eggs or Greek yogurt','Oats or whole grain toast','Fruit (banana or berries)','Coffee or green tea'], notes: goal.includes('cut')?'Avoid high-sugar options. Protein here reduces cravings all day.':'Front-load protein to hit targets earlier in the day.' },
+      pre_workout:  { name:'Pre-Workout', role:'Fuel performance. Carbs for energy, protein to prime muscle protein synthesis.', macroFocus:'High carbs - Moderate protein - Low fat - Low fiber', foods:['White rice or pasta (1-1.5 cups cooked)','Chicken breast or lean protein (4-6 oz)','Banana or rice cakes','Sports drink or water'], notes:'Eat 60-90 min before training. Low fat and fiber = faster digestion = better performance.' },
+      post_workout: { name:'Post-Workout', role:'Maximize recovery. Protein to rebuild muscle. Carbs to replenish glycogen.', macroFocus:'High protein - High carbs - Very low fat', foods:['Protein shake (30-40g protein)','White rice or potato (1-2 cups)','Banana or gummy candy (fast carbs)','Low fat Greek yogurt'], notes:'Eat within 30-60 min after training. This is the most important meal on a training day.' },
+      last_meal:    { name:'Last Meal', role:'Sustain overnight recovery. Slow-digesting protein to prevent muscle breakdown during sleep.', macroFocus: goal==='aggressive_cut'?'High protein - Low carbs - Low-moderate fats':'High protein - Moderate carbs - Moderate fats', foods: goal==='aggressive_cut'?['Cottage cheese (1 cup)','Casein protein shake','Vegetables (unlimited)','Handful of almonds']:['Cottage cheese or Greek yogurt','Salmon or lean beef','Sweet potato or rice','Leafy greens + olive oil dressing'], notes:'Casein or cottage cheese digest slowly - ideal before sleep to prevent overnight catabolism.' },
+      middle:       { name:'Lunch', role:'Sustain energy and hit macro targets. Keep it consistent and easy to prep.', macroFocus: goal.includes('cut')?'High protein - Low carbs - Moderate fats':goal.includes('bulk')?'High protein - High carbs - Moderate fats':'Balanced protein - Moderate carbs - Moderate fats', foods: goal.includes('cut')?['Grilled chicken, turkey, or tuna (6-8 oz)','Large salad or mixed vegetables','Avocado (1/4-1/2)','Olive oil dressing']:goal.includes('bulk')?['Chicken, beef or salmon (6-8 oz)','Rice, pasta or potatoes (1.5-2 cups)','Mixed vegetables','Olive oil or cheese']:['Lean protein (chicken, fish, turkey, 6 oz)','Brown rice or sweet potato (1 cup)','Vegetables (broccoli, peppers, spinach)','Olive oil or light dressing'], notes: goal.includes('cut')?'Keep carbs low at non-training meals. Volume from vegetables kills hunger.':'Consistency here is the highest-leverage habit in your nutrition.' },
     }
 
     const meals = slots.map((slot, idx) => {
@@ -1155,8 +1155,8 @@ function MealTimingEngine({ addToast }) {
     })
 
     const periMsg = isTrainingDay
-      ? `Training at ${toLabel(trainMins)} ¬∑ Pre-workout meal at ${toLabel(trainingIsEarly ? breakfastTime : preWorkoutTime)} ¬∑ Post-workout at ${toLabel(postWorkoutTime)}`
-      : 'Rest day: meals are spaced evenly. Slight calorie reduction is fine ‚Äî keep protein identical to training days.'
+      ? `Training at ${toLabel(trainMins)} - Pre-workout meal at ${toLabel(trainingIsEarly ? breakfastTime : preWorkoutTime)} - Post-workout at ${toLabel(postWorkoutTime)}`
+      : 'Rest day: meals are spaced evenly. Slight calorie reduction is fine - keep protein identical to training days.'
 
     setSchedule({ meals, goal: gd.label, strategy: gd.strategy, carbTiming: gd.carbTiming, fatTiming: gd.fatTiming, periMsg, trainingTime: isTrainingDay ? toLabel(trainMins) : null })
     addToast('Meal schedule generated!', 'success')
@@ -1166,7 +1166,7 @@ function MealTimingEngine({ addToast }) {
   const IS = { width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:15, padding:'12px 14px', outline:'none' }
   const LS = { fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:8, display:'block' }
   const mealTagColor = (meal) => { if (meal.isPreWorkout) return '#eab308'; if (meal.isPostWorkout) return '#22c55e'; if (meal.isFirst) return '#E8000D'; if (meal.isLast) return '#aaaaaa'; return '#6a6a6a' }
-  const mealTag = (meal) => { if (meal.isPreWorkout) return '‚ö° PRE-WORKOUT'; if (meal.isPostWorkout) return '‚úì POST-WORKOUT'; if (meal.isFirst) return '‚óà FIRST MEAL'; if (meal.isLast) return '‚óâ LAST MEAL'; return `‚óè MEAL ${meal.index}` }
+  const mealTag = (meal) => { if (meal.isPreWorkout) return '‚ö° PRE-WORKOUT'; if (meal.isPostWorkout) return '+ POST-WORKOUT'; if (meal.isFirst) return ' FIRST MEAL'; if (meal.isLast) return '‚óâ LAST MEAL'; return `‚óè MEAL ${meal.index}` }
 
   if (macrosLoading) return <div style={{ padding:40, textAlign:'center', color:'#6a6a6a', fontFamily:"'Share Tech Mono',monospace", fontSize:12 }}>Loading your data...</div>
 
@@ -1179,7 +1179,7 @@ function MealTimingEngine({ addToast }) {
         <h2 style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:'clamp(36px,5vw,64px)', fontWeight:900, textTransform:'uppercase', lineHeight:0.9 }}>Eat At The<br/><span style={{ color:'#E8000D' }}>Right Time.</span></h2>
       </div>
       <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding:40, textAlign:'center' }}>
-        <div style={{ fontSize:48, marginBottom:20 }}>üìä</div>
+        <div style={{ fontSize:48, marginBottom:20 }}></div>
         <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', marginBottom:12 }}>Run The Macro Calculator First</div>
         <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:14, color:'#aaaaaa', lineHeight:1.8, maxWidth:380, margin:'0 auto 28px' }}>Meal Timing needs your calorie and macro targets to build a precise schedule. Calculate your macros first, then come back here.</div>
         <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1.5 }}>No macro data found for your account</div>
@@ -1208,9 +1208,9 @@ function MealTimingEngine({ addToast }) {
                   {selectedMacros?.id === m.id && <div style={{ width:8, height:8, borderRadius:'50%', background:'#E8000D', flexShrink:0 }} />}
                   <div>
                     <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:18, fontWeight:800, textTransform:'uppercase', color: selectedMacros?.id === m.id ? '#E8000D' : '#F5F5F5' }}>
-                      {goalLabels[m.goal] || m.goal} ¬∑ {m.calories} kcal
+                      {goalLabels[m.goal] || m.goal} - {m.calories} kcal
                     </div>
-                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:3 }}>P: {m.protein}g ¬∑ C: {m.carbs}g ¬∑ F: {m.fats}g</div>
+                    <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:3 }}>P: {m.protein}g - C: {m.carbs}g - F: {m.fats}g</div>
                   </div>
                 </div>
                 <div style={{ display:'flex', alignItems:'center', gap:10 }}>
@@ -1251,7 +1251,7 @@ function MealTimingEngine({ addToast }) {
                 <div>
                   <label style={{ ...LS, marginTop:12 }}>Training Start Time</label>
                   <input type="time" value={form.trainingTime} onChange={e => set('trainingTime', e.target.value)} style={{ ...IS, colorScheme:'dark' }} />
-                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>Pre-workout meal: ~75 min before ¬∑ Post-workout: ~45 min after</div>
+                  <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>Pre-workout meal: ~75 min before - Post-workout: ~45 min after</div>
                 </div>
               )}
             </div>
@@ -1263,11 +1263,11 @@ function MealTimingEngine({ addToast }) {
                     style={{ flex:1, height:50, fontFamily:"'Barlow Condensed',sans-serif", fontSize:22, fontWeight:900, cursor:'pointer', border:'1px solid #2a2a2a', background: form.mealCount === n ? '#E8000D' : '#0d0d0d', color: form.mealCount === n ? '#080808' : '#cccccc' }}>{n}</button>
                 ))}
               </div>
-              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>3‚Äì4 meals = easier to execute ¬∑ 5‚Äì6 = more frequent protein doses</div>
+              <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', marginTop:6, letterSpacing:1 }}>3‚Äì4 meals = easier to execute - 5‚Äì6 = more frequent protein doses</div>
             </div>
             <button onClick={buildSchedule} disabled={loading}
               style={{ width:'100%', padding:'17px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-              {loading ? 'BUILDING SCHEDULE...' : 'BUILD MY MEAL SCHEDULE ‚Üí'}
+              {loading ? 'BUILDING SCHEDULE...' : 'BUILD MY MEAL SCHEDULE ->'}
             </button>
           </div>
         </div>
@@ -1276,7 +1276,7 @@ function MealTimingEngine({ addToast }) {
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'24px' }}>
             <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', flexWrap:'wrap', gap:10, marginBottom:14 }}>
               <div>
-                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:4 }}>{schedule.goal} ¬∑ {form.mealCount} Meals/Day</div>
+                <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:4 }}>{schedule.goal} - {form.mealCount} Meals/Day</div>
                 <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1 }}>Your Timing Plan</div>
               </div>
               <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', textAlign:'right', lineHeight:1.8 }}>
@@ -1437,7 +1437,7 @@ Client Stats:
 - Body Fat %: ${stats.bodyFat ? stats.bodyFat + '%' : 'Not provided'}
 - Current Goal: ${goalLabels[stats.goal] || stats.goal}
 
-Analyze the physique in the photo and provide feedback in EXACTLY this structure ‚Äî use these exact section headers:
+Analyze the physique in the photo and provide feedback in EXACTLY this structure - use these exact section headers:
 
 **OVERALL ASSESSMENT**
 2-3 sentences on overall physique development, conditioning, and what stage of development this person appears to be at.
@@ -1507,8 +1507,8 @@ const text = data.analysis || ''
   }
 
   const sectionIcons = {
-    'OVERALL ASSESSMENT': '‚óà',
-    'STRENGTHS': '‚úì',
+    'OVERALL ASSESSMENT': '',
+    'STRENGTHS': '+',
     'AREAS TO IMPROVE': '‚ö°',
     'TRAINING RECOMMENDATIONS': '‚ñ≤',
     'NUTRITION NOTES': '‚óè',
@@ -1541,7 +1541,7 @@ const text = data.analysis || ''
             {[
               ['AI-Generated Feedback', 'This analysis is generated by Claude AI (Anthropic) based on general exercise science and fitness principles. It is not based on any official competitive bodybuilding standard.'],
               ['Not Professional Advice', 'This is not a substitute for feedback from a certified personal trainer, sports physician, or registered dietitian. Results are for informational and motivational purposes only.'],
-              ['Photo Privacy', 'Your photo is sent to Anthropic\'s API for analysis only and is not stored on our servers. The analysis text is saved to your account ‚Äî your photo is not.'],
+              ['Photo Privacy', 'Your photo is sent to Anthropic\'s API for analysis only and is not stored on our servers. The analysis text is saved to your account - your photo is not.'],
               ['Accuracy Limitations', 'AI physique analysis cannot account for lighting, camera angle, or individual genetic factors. Treat all feedback as general guidance, not diagnostic assessment.'],
             ].map(([title, desc]) => (
               <div key={title} style={{ display:'flex', gap:14, paddingBottom:16, borderBottom:'1px solid #1e1e1e' }}>
@@ -1560,7 +1560,7 @@ const text = data.analysis || ''
           </div>
           <button onClick={() => setDisclaimerAccepted(true)}
             style={{ width:'100%', padding:'16px', background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:14, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor:'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-            I Understand ‚Äî Continue ‚Üí
+            I Understand - Continue ->
           </button>
         </div>
       </div>
@@ -1593,17 +1593,17 @@ const text = data.analysis || ''
                 onMouseOut={e => e.currentTarget.style.borderColor = '#2a2a2a'}>
                 <div style={{ fontSize:36, marginBottom:12, opacity:0.4 }}>üì∑</div>
                 <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:20, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Upload Your Photo</div>
-                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#6a6a6a', lineHeight:1.7 }}>Front or back pose works best<br/>Good lighting = better analysis<br/>JPG or PNG ¬∑ Max 10MB</div>
+                <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#6a6a6a', lineHeight:1.7 }}>Front or back pose works best<br/>Good lighting = better analysis<br/>JPG or PNG - Max 10MB</div>
               </div>
             ) : (
               <div style={{ position:'relative' }}>
                 <img src={photo} alt="Your physique" style={{ width:'100%', maxHeight:400, objectFit:'contain', background:'#0d0d0d', display:'block' }} />
                 <button onClick={() => { setPhoto(null); setPhotoBase64(null) }}
                   style={{ position:'absolute', top:10, right:10, background:'rgba(8,8,8,0.85)', border:'1px solid #2a2a2a', color:'#aaaaaa', fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:1, padding:'8px 12px', cursor:'pointer' }}>
-                  ‚úï Remove
+                  X Remove
                 </button>
                 <div style={{ padding:'10px 14px', background:'#0d0d0d', fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#22c55e', letterSpacing:1 }}>
-                  ‚úì Photo ready ¬∑ Not stored on our servers
+                  + Photo ready - Not stored on our servers
                 </div>
               </div>
             )}
@@ -1640,7 +1640,7 @@ const text = data.analysis || ''
               </div>
               <div>
                 <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:500, letterSpacing:1, textTransform:'uppercase', color:'#cccccc', marginBottom:4 }}>Body Fat % <span style={{ color:'#6a6a6a', fontSize:11, letterSpacing:0 }}>(optional)</span></div>
-                <input type="number" value={stats.bodyFat} onChange={e => setS('bodyFat', e.target.value)} placeholder="Optional ‚Äî e.g. 15"
+                <input type="number" value={stats.bodyFat} onChange={e => setS('bodyFat', e.target.value)} placeholder="Optional - e.g. 15"
                   style={{ width:'100%', background:'#0d0d0d', border:'1px solid #2a2a2a', color:'#F5F5F5', fontFamily:"'Barlow',sans-serif", fontSize:16, padding:'13px 16px', outline:'none' }}
                   onFocus={e=>e.target.style.borderColor='#E8000D'} onBlur={e=>e.target.style.borderColor='#2a2a2a'} />
               </div>
@@ -1661,7 +1661,7 @@ const text = data.analysis || ''
           {/* Disclaimer badge */}
           <div style={{ background:'rgba(232,0,13,0.04)', border:'1px solid rgba(232,0,13,0.15)', padding:'12px 18px' }}>
             <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
-              ‚ö† AI-generated analysis by Claude (Anthropic) ¬∑ Based on general exercise science, not official bodybuilding standards ¬∑ Not medical or professional advice ¬∑ Your photo is not stored on our servers
+              ‚ö† AI-generated analysis by Claude (Anthropic) - Based on general exercise science, not official bodybuilding standards - Not medical or professional advice - Your photo is not stored on our servers
             </div>
           </div>
 
@@ -1669,11 +1669,11 @@ const text = data.analysis || ''
 
           <button onClick={runAnalysis} disabled={loading}
             style={{ width:'100%', padding:'18px', background: loading ? '#2a2a2a' : '#E8000D', color: loading ? '#6a6a6a' : '#080808', fontFamily:"'Barlow',sans-serif", fontSize:15, fontWeight:700, letterSpacing:3, textTransform:'uppercase', border:'none', cursor: loading ? 'not-allowed' : 'pointer', clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))' }}>
-            {loading ? 'ANALYZING YOUR PHYSIQUE...' : 'RUN AI ANALYSIS ‚Üí'}
+            {loading ? 'ANALYZING YOUR PHYSIQUE...' : 'RUN AI ANALYSIS ->'}
           </button>
           {loading && (
             <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:11, color:'#6a6a6a', textAlign:'center', letterSpacing:1, lineHeight:1.8 }}>
-              Analyzing photo + stats ¬∑ This takes 10-20 seconds
+              Analyzing photo + stats - This takes 10-20 seconds
             </div>
           )}
         </div>
@@ -1681,10 +1681,10 @@ const text = data.analysis || ''
         <div style={{ display:'flex', flexDirection:'column', gap:14 }}>
           {/* Analysis Header */}
           <div style={{ background:'#111111', border:'1px solid #1e1e1e', borderTop:'2px solid #E8000D', padding:'24px 28px' }}>
-            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:6 }}>AI Physique Analysis ¬∑ YELYK Fitness</div>
+            <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, letterSpacing:2, color:'#E8000D', textTransform:'uppercase', marginBottom:6 }}>AI Physique Analysis - YELYK Fitness</div>
             <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:32, fontWeight:900, textTransform:'uppercase', color:'#F5F5F5', lineHeight:1, marginBottom:8 }}>Your Report</div>
             <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1 }}>
-              {stats.weight}lbs ¬∑ {stats.height}{stats.bodyFat ? ` ¬∑ ${stats.bodyFat}% BF` : ''} ¬∑ {stats.gender}
+              {stats.weight}lbs - {stats.height}{stats.bodyFat ? ` - ${stats.bodyFat}% BF` : ''} - {stats.gender}
             </div>
           </div>
 
@@ -1692,7 +1692,7 @@ const text = data.analysis || ''
           {parseSections(analysis).map(({ header, content }) => (
             <div key={header} style={{ background:'#111111', border:'1px solid #1e1e1e', overflow:'hidden' }}>
               <div style={{ padding:'14px 22px', borderBottom:'1px solid #1e1e1e', background: header === "COACH'S BOTTOM LINE" ? 'rgba(232,0,13,0.06)' : 'transparent', display:'flex', alignItems:'center', gap:10 }}>
-                <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:14, color: sectionColors[header] || '#aaaaaa' }}>{sectionIcons[header] || '¬∑'}</span>
+                <span style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:14, color: sectionColors[header] || '#aaaaaa' }}>{sectionIcons[header] || '-'}</span>
                 <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:16, fontWeight:800, textTransform:'uppercase', letterSpacing:1, color: sectionColors[header] || '#F5F5F5' }}>{header}</div>
               </div>
               <div style={{ padding:'16px 22px' }}>
@@ -1714,7 +1714,7 @@ const text = data.analysis || ''
           {/* Disclaimer at bottom of results */}
           <div style={{ background:'rgba(255,255,255,0.02)', border:'1px solid #1e1e1e', padding:'14px 18px' }}>
             <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, color:'#6a6a6a', letterSpacing:1, lineHeight:1.8 }}>
-              DISCLAIMER: This analysis is AI-generated by Claude (Anthropic) based on general exercise science and fitness principles. It is not based on any official competitive bodybuilding standards and is not a substitute for feedback from a certified personal trainer or sports physician. For informational and motivational purposes only. ¬© BUILT by YELYK ¬∑ YELYK Fitness.
+              DISCLAIMER: This analysis is AI-generated by Claude (Anthropic) based on general exercise science and fitness principles. It is not based on any official competitive bodybuilding standards and is not a substitute for feedback from a certified personal trainer or sports physician. For informational and motivational purposes only. ¬© BUILT by YELYK - YELYK Fitness.
             </div>
           </div>
 
@@ -1735,7 +1735,7 @@ const text = data.analysis || ''
                     onClick={() => setAnalysis(h.analysis_text)}>
                     <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center' }}>
                       <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#aaaaaa' }}>
-                        {h.stats?.weight}lbs ¬∑ {h.stats?.height}{h.stats?.bodyFat ? ` ¬∑ ${h.stats.bodyFat}% BF` : ''}
+                        {h.stats?.weight}lbs - {h.stats?.height}{h.stats?.bodyFat ? ` - ${h.stats.bodyFat}% BF` : ''}
                       </div>
                       <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a' }}>
                         {new Date(h.created_at).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' })}
@@ -1871,7 +1871,7 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
           <circle key={i} cx={xScale(i)} cy={yScale(w)} r="3.5" fill="#E8000D" stroke="#080808" strokeWidth="1.5" />
         ))}
 
-        {/* X axis date labels ‚Äî show first, middle, last */}
+        {/* X axis date labels - show first, middle, last */}
         {[0, Math.floor((n-1)/2), n-1].filter((v,i,a) => a.indexOf(v) === i).map(i => (
           <text key={i} x={xScale(i)} y={H - pad.bottom + 16} textAnchor="middle" style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:9, fill:'#6a6a6a' }}>
             {new Date(visibleLogs[i].logged_date + 'T12:00:00').toLocaleDateString('en-US', { month:'short', day:'numeric' })}
@@ -1914,7 +1914,7 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
           </div>
           <button onClick={saveLog} disabled={saving}
             style={{ padding:'13px 24px', background: saving ? '#2a2a2a' : '#E8000D', color: saving ? '#6a6a6a' : '#080808', fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:700, letterSpacing:2, textTransform:'uppercase', border:'none', cursor: saving ? 'not-allowed' : 'pointer', whiteSpace:'nowrap', clipPath:'polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))' }}>
-            {saving ? 'Saving...' : 'Log ‚Üí'}
+            {saving ? 'Saving...' : 'Log ->'}
           </button>
         </div>
       </div>
@@ -1923,9 +1923,9 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
       {n >= 1 && (
         <div style={{ display:'grid', gridTemplateColumns: isMobile ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap:8, marginBottom:14 }}>
           {[
-            ['Current', currentWeight ? currentWeight.toFixed(1) + ' lbs' : '‚Äî', '#E8000D'],
-            ['Change', totalChange !== null ? (totalChange > 0 ? '+' : '') + totalChange.toFixed(1) + ' lbs' : '‚Äî', totalChange > 0 ? '#eab308' : totalChange < 0 ? '#22c55e' : '#aaaaaa'],
-            ['Rate', weeklyRate !== null ? (weeklyRate > 0 ? '+' : '') + weeklyRate.toFixed(2) + ' lbs/wk' : '‚Äî', '#aaaaaa'],
+            ['Current', currentWeight ? currentWeight.toFixed(1) + ' lbs' : '-', '#E8000D'],
+            ['Change', totalChange !== null ? (totalChange > 0 ? '+' : '') + totalChange.toFixed(1) + ' lbs' : '-', totalChange > 0 ? '#eab308' : totalChange < 0 ? '#22c55e' : '#aaaaaa'],
+            ['Rate', weeklyRate !== null ? (weeklyRate > 0 ? '+' : '') + weeklyRate.toFixed(2) + ' lbs/wk' : '-', '#aaaaaa'],
             ['Logged', n + ' entries', '#6a6a6a'],
           ].map(([label, val, color]) => (
             <div key={label} style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'14px 16px' }}>
@@ -1963,7 +1963,7 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
         </div>
       ) : (
         <div style={{ background:'#111111', border:'1px solid #1e1e1e', padding:'48px 24px', textAlign:'center', marginBottom:14 }}>
-          <div style={{ fontSize:40, marginBottom:14, opacity:0.2 }}>üìà</div>
+          <div style={{ fontSize:40, marginBottom:14, opacity:0.2 }}></div>
           <div style={{ fontFamily:"'Barlow Condensed',sans-serif", fontSize:28, fontWeight:800, textTransform:'uppercase', color:'#F5F5F5', marginBottom:8 }}>Start Logging</div>
           <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, color:'#888888', lineHeight:1.8 }}>Enter your weight above to begin tracking your progress.</div>
         </div>
@@ -1975,12 +1975,12 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
           <div>
             <div style={{ fontFamily:"'Barlow',sans-serif", fontSize:13, fontWeight:600, color:'#E8000D', letterSpacing:0.5 }}>Free Plan: Last 30 Days Shown</div>
             <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:10, color:'#6a6a6a', letterSpacing:1, marginTop:3 }}>
-              {logs.length} total entries ¬∑ {visibleLogs.length} visible ¬∑ Upgrade for full history
+              {logs.length} total entries - {visibleLogs.length} visible - Upgrade for full history
             </div>
           </div>
           <button onClick={onUpgrade}
             style={{ background:'#E8000D', color:'#080808', fontFamily:"'Barlow',sans-serif", fontSize:12, fontWeight:700, letterSpacing:2, textTransform:'uppercase', border:'none', padding:'10px 20px', cursor:'pointer' }}>
-            Upgrade ‚Üí
+            Upgrade ->
           </button>
         </div>
       )}
@@ -2007,7 +2007,7 @@ function ProgressTracker({ isPro, onUpgrade, addToast }) {
                     )}
                     <button onClick={() => deleteLog(log.id)}
                       style={{ background:'none', border:'none', color:'#2a2a2a', fontSize:14, cursor:'pointer', padding:'4px', lineHeight:1 }}
-                      onMouseOver={e => e.target.style.color = '#E8000D'} onMouseOut={e => e.target.style.color = '#2a2a2a'}>‚úï</button>
+                      onMouseOver={e => e.target.style.color = '#E8000D'} onMouseOut={e => e.target.style.color = '#2a2a2a'}>X</button>
                   </div>
                 </div>
               )
@@ -2039,7 +2039,7 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
   const handleJoinClick = () => { if(!wlEmail||!wlEmail.includes('@')) return; onJoinWaitlist(wlEmail) }
   const faqs=[
     ['How is BUILT different from MyFitnessPal?',"MyFitnessPal tracks what you ate. BUILT by YELYK tells you what to eat, when to eat it, whether your training is optimized, and what your physique needs to improve. It's a complete intelligence system built by a real coach."],
-    ['Who is YELYK?',"YELYK Fitness is a physique coaching brand built on You Earn Longevity You Keep. BUILT by YELYK is the software tool from the exact system used inside YELYK's coaching program ‚Äî now accessible to everyone."],
+    ['Who is YELYK?',"YELYK Fitness is a physique coaching brand built on You Earn Longevity You Keep. BUILT by YELYK is the software tool from the exact system used inside YELYK's coaching program - now accessible to everyone."],
     ['How does the AI Physique Rating work?',"Upload a front or back photo. AI analyzes your muscle development, symmetry, and proportion. Identifies your three strongest and three weakest muscle groups with specific training fixes. Your photo is immediately discarded after analysis."],
     ['What does the free tier give me?',"Two full macro calculations per day. Complete protein, carb, fat and calorie targets. Real, usable results. Training score, AI physique rating, and meal timing are Pro."],
     ['Can I cancel anytime?','Always. Cancel in under 30 seconds. No fees. You keep Pro through end of billing period then drop to free.'],
@@ -2069,7 +2069,7 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
           </div>
           <p style={{fontSize:isMobile?14:17,color:'#aaaaaa',maxWidth:500,marginTop:isMobile?18:22,lineHeight:1.82,fontWeight:300}}>The precision macro calculator, training intelligence score, AI physique rating, and meal timing engine for athletes who are done guessing.</p>
           <div style={{display:'flex',alignItems:'center',gap:isMobile?10:14,marginTop:isMobile?28:40,flexWrap:'wrap'}}>
-            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?11:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:isMobile?'14px 28px':'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free ‚Üí</button>
+            <button onClick={onGetStarted} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:isMobile?11:12,letterSpacing:2,textTransform:'uppercase',border:'none',padding:isMobile?'14px 28px':'16px 36px',cursor:'pointer',fontWeight:600,clipPath:'polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px))'}}>Start For Free -></button>
             <button onClick={()=>scrollTo('features')} style={{background:'transparent',color:'#aaaaaa',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'1px solid #2a2a2a',padding:isMobile?'13px 22px':'15px 28px',cursor:'pointer'}}>See The Engines</button>
           </div>
           <div style={{display:'flex',gap:0,marginTop:isMobile?36:56,paddingTop:isMobile?20:28,borderTop:'1px solid #1e1e1e',flexWrap:'wrap'}}>
@@ -2115,9 +2115,9 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
           <div style={{background:'#111111',padding:'36px 28px',display:'flex',flexDirection:'column'}}>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:30,fontWeight:900,textTransform:'uppercase',letterSpacing:2,marginBottom:4}}>Free</div>
             <div style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:52,fontWeight:900,color:'#F5F5F5',lineHeight:1,marginBottom:4}}>$0</div>
-            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:20}}>Forever free ¬∑ No card needed</div>
+            <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:20}}>Forever free - No card needed</div>
             <div style={{flex:1,marginBottom:20}}>
-              {[['‚úì','2 macro calculations/day',true],['‚úì','Full macro breakdown',true],['‚úì','Steps + intensity inputs',true],['‚úì','Progress Tracking (30 days)',true],['‚úó','Training Score',false],['‚úó','AI Physique Rating',false],['‚úó','Meal Timing',false],['‚úó','Full Progress History',false]].map(([icon,label,yes],i)=>(
+              {[['+','2 macro calculations/day',true],['+','Full macro breakdown',true],['+','Steps + intensity inputs',true],['+','Progress Tracking (30 days)',true],['‚úó','Training Score',false],['‚úó','AI Physique Rating',false],['‚úó','Meal Timing',false],['‚úó','Full Progress History',false]].map(([icon,label,yes],i)=>(
                 <div key={i} style={{display:'flex',gap:10,padding:'8px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:yes?'#aaaaaa':'#6a6a6a'}}>
                   <span style={{color:yes?'#22c55e':'#2a2a2a',flexShrink:0}}>{icon}</span>{label}
                 </div>
@@ -2133,12 +2133,12 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
               <span style={{fontFamily:"'Barlow Condensed',sans-serif",fontSize:60,fontWeight:900,color:'#E8000D',lineHeight:1,letterSpacing:-2}}>{annual?'10.42':'12.99'}</span>
               <span style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',marginTop:'auto',marginBottom:8}}>/mo</span>
             </div>
-            {annual&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#22c55e',letterSpacing:1,marginBottom:4}}>Billed $124.99/year ‚Äî save $30.89</div>}
+            {annual&&<div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,color:'#22c55e',letterSpacing:1,marginBottom:4}}>Billed $124.99/year - save $30.89</div>}
             <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:9,color:'#6a6a6a',letterSpacing:1,marginBottom:16}}>Cancel anytime</div>
             <div style={{flex:1,marginBottom:20}}>
-              {[['‚úì','Unlimited calculations'],['‚úì','Training Score (0‚Äì100)'],['‚úì','AI Physique Rating'],['‚úì','Meal Timing Engine'],['‚úì','Full Progress History'],['‚úì','Micronutrient breakdown']].map(([icon,label],i)=>(
-                <div key={i} style={{display:'flex',gap:10,padding:'7px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:icon==='‚úì'?'#aaaaaa':'#6a6a6a'}}>
-                  <span style={{color:icon==='‚úì'?'#22c55e':'#6a6a6a',flexShrink:0}}>{icon}</span><strong style={{fontWeight:icon==='‚úì'?500:400}}>{label}</strong>
+              {[['+','Unlimited calculations'],['+','Training Score (0‚Äì100)'],['+','AI Physique Rating'],['+','Meal Timing Engine'],['+','Full Progress History'],['+','Micronutrient breakdown']].map(([icon,label],i)=>(
+                <div key={i} style={{display:'flex',gap:10,padding:'7px 0',borderBottom:'1px solid #1e1e1e',fontSize:13,color:icon==='+'?'#aaaaaa':'#6a6a6a'}}>
+                  <span style={{color:icon==='+'?'#22c55e':'#6a6a6a',flexShrink:0}}>{icon}</span><strong style={{fontWeight:icon==='+'?500:400}}>{label}</strong>
                 </div>
               ))}
             </div>
@@ -2179,11 +2179,11 @@ function Landing({ onGetStarted, onJoinWaitlist }) {
             <div style={{display:'flex'}}>
               <input type="email" value={wlEmail} onChange={e=>setWlEmail(e.target.value)} placeholder="your@email.com" onKeyDown={e=>e.key==='Enter'&&handleJoinClick()}
                 style={{flex:1,background:'#111111',border:'1px solid #2a2a2a',borderRight:'none',color:'#F5F5F5',fontFamily:"'Barlow',sans-serif",fontSize:15,padding:'15px 18px',outline:'none'}}/>
-              <button onClick={handleJoinClick} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now ‚Üí</button>
+              <button onClick={handleJoinClick} style={{background:'#E8000D',color:'#080808',fontFamily:"'Share Tech Mono',monospace",fontSize:11,letterSpacing:2,textTransform:'uppercase',border:'none',padding:'15px 24px',cursor:'pointer',fontWeight:600,whiteSpace:'nowrap'}}>Join Now -></button>
             </div>
           </div>
           <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:11,color:'#6a6a6a',letterSpacing:2,marginTop:18}}>
-            <strong style={{color:'#E8000D'}}>{wlCount !== null ? wlCount : '‚Äî'}</strong> athletes already on the list
+            <strong style={{color:'#E8000D'}}>{wlCount !== null ? wlCount : '-'}</strong> athletes already on the list
           </div>
         </div>
       </section>
@@ -2201,7 +2201,7 @@ function ResetPasswordModal({ password, setPassword, confirm, setConfirm, loadin
         </div>
         {done ? (
           <div style={{ fontFamily:"'Share Tech Mono',monospace", fontSize:12, color:'#22c55e', textAlign:'center', lineHeight:1.8 }}>
-            ‚úì Password updated. You can now sign in.
+            + Password updated. You can now sign in.
           </div>
         ) : (
           <div style={{ display:'flex', flexDirection:'column', gap:16 }}>
@@ -2255,7 +2255,7 @@ function Footer() {
         </div>
       </div>
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexWrap:'wrap',gap:14}}>
-        <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase'}}>¬© 2026 BUILT by YELYK ¬∑ YELYK Fitness. All rights reserved.</div>
+        <div style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:2,color:'#6a6a6a',textTransform:'uppercase'}}>¬© 2026 BUILT by YELYK - YELYK Fitness. All rights reserved.</div>
         <div style={{display:'flex',gap:20}}>
           {['Privacy Policy','Terms'].map(l=><button key={l} style={{fontFamily:"'Share Tech Mono',monospace",fontSize:10,letterSpacing:1.5,color:'#6a6a6a',textTransform:'uppercase',background:'none',border:'none',cursor:'pointer'}}>{l}</button>)}
         </div>
@@ -2338,7 +2338,7 @@ export default function App() {
   const handleUpgradeSuccess = async () => {
     setUpgradeOpen(false)
     setIsPro(true)
-    addToast('You\'re now Pro! Welcome. üî•', 'success')
+    addToast('You\'re now Pro! Welcome. ', 'success')
   }
 
   const renderTab = () => {
