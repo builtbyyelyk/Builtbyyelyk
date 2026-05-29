@@ -1,3 +1,7 @@
+# HeyGen
+.env
+heygen-video-log.jsonl
+
 # Logs
 logs
 *.log
